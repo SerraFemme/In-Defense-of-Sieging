@@ -1,0 +1,41 @@
+{
+ "Starting_Equipment_List": [
+  {
+    "Paladin_Starting_Equipment": [
+      "DivineMelee4",
+      "MartialArmor3"
+    ],
+    "Knight_Starting_Equipment": [
+      "MartialMelee3",
+      "MartialArmor2",
+      "MartialShield2"
+    ],
+    "Cleric_Starting_Equipment": [
+      "DivineMelee4",
+      "MartialArmor2",
+      "MartialShield1"
+    ],
+    "Ranger_Starting_Equipment": [
+      "MartialRanged2",
+      "MartialArmor1"
+    ],
+    "Mage_Starting_Equipment": [
+      "ArcaneRanged1"
+    ],
+    "Barbarian_Starting_Equipment": [
+      "MartialMelee6"
+    ],
+    "Arbalest_Starting_Equipment": [
+      "MartialRanged3",
+      "MartialArmor1",
+      "MartialShield2"
+    ],
+    "Zealot_Starting_Equipment": [
+      "DivineMelee3"
+    ],
+    "Monk_Starting_Equipment": [
+      "DivineMelee6"
+    ]
+  }
+ ]
+}
