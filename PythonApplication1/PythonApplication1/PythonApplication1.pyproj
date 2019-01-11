@@ -22,9 +22,19 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ReadCardL.py" />
-    <Compile Include="ReadClassL.py" />
-    <Compile Include="ReadEquipL.py" />
+    <Compile Include="MapCreator.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Diamond.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ReadCardList.py" />
+    <Compile Include="ReadClassList.py" />
+    <Compile Include="ReadEquipmentList.py" />
+    <Compile Include="ReadTerrainList.py" />
+    <Compile Include="Tile.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JSON Files\" />
@@ -32,6 +42,7 @@
   <ItemGroup>
     <Content Include="JSON Files\CardLibrary.json" />
     <Content Include="JSON Files\ClassList.json" />
+    <Content Include="JSON Files\EnemyRaces.json" />
     <Content Include="JSON Files\EnemyRoleList.json" />
     <Content Include="JSON Files\EquipmentLibrary.json" />
     <Content Include="JSON Files\MapTerrain.json" />
