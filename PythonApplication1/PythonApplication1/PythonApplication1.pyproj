@@ -22,6 +22,26 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Factory Classes\Card_Factory.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factory Classes\Enemy_Factory.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factory Classes\Equipment_Factory.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Judge Classes\Combat_Judge.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Judge Classes\Interrupt_Judge.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Keyword Library\Close.py" />
+    <Compile Include="Keyword Library\Inline.py" />
+    <Compile Include="Keyword Library\Orthogonal.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MapCreator.py">
       <SubType>Code</SubType>
     </Compile>
@@ -38,6 +58,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JSON Files\" />
+    <Folder Include="Keyword Library\" />
+    <Folder Include="Judge Classes\" />
+    <Folder Include="Factory Classes\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="JSON Files\CardLibrary.json" />

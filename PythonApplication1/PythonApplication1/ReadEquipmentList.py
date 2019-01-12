@@ -28,5 +28,6 @@ class ReadEquipmentList():
 
     #get Equipment Library and print to screen
     with open('EquipmentLibrary.json') as EquipL:
-        data = json.load(EquipL)
-    print(json.dumps(data, indent=4))
+        data = json.load(EquipL) #type is class 'dict'
+    #print(json.dumps(data, indent=4))
+    #print(type(data))

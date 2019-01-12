@@ -1,7 +1,7 @@
-class Close(object):
+class Close(Orthogonal):
     """description of class"""
 
-    #Inherits Inline Class
+    #Inherits Orthogonal Class
 
     #Restricts targeting to the nearest target in a given direction
 
