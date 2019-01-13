@@ -1,5 +1,4 @@
-{
- "Starting_Equipment_List": [
+[
   {
     "Paladin_Starting_Equipment": [
       "DivineMelee4",
@@ -37,5 +36,4 @@
       "DivineMelee6"
     ]
   }
- ]
-}
+]

@@ -1,41 +1,39 @@
-{
-  "Enemy_Races": [
-    {
-      "Enemy_Role": "Kobold",
-      "Base_Health": 6,
-      "Base_Armor": 0,
-      "Stamina_Pool": 4
-    },
-    {
-      "Enemy_Role": "Goblin",
-      "Base_Health": 12,
-      "Base_Armor": 1,
-      "Stamina_Pool": 4
-    },
-    {
-      "Enemy_Role": "Orc",
-      "Base_Health": 20,
-      "Base_Armor": 2,
-      "Stamina_Pool": 4
-    },
-    {
-      "Enemy_Role": "Giant",
-      "Base_Health": 30,
-      "Base_Armor": 2,
-      "Stamina_Pool": 4,
-      "Special": [ {} ]
-    },
-    {
-      "Enemy_Role": "Zombie",
-      "Base_Health": 12,
-      "Base_Armor": 0,
-      "Stamina_Pool": 3
-    },
-    {
-      "Enemy_Role": "Skeleton",
-      "Base_Health": 16,
-      "Base_Armor": 2,
-      "Stamina_Pool": 3
-    }
-  ]
-}
+[
+  {
+    "Enemy_Role": "Kobold",
+    "Base_Health": 6,
+    "Base_Armor": 0,
+    "Stamina_Pool": 4
+  },
+  {
+    "Enemy_Role": "Goblin",
+    "Base_Health": 12,
+    "Base_Armor": 1,
+    "Stamina_Pool": 4
+  },
+  {
+    "Enemy_Role": "Orc",
+    "Base_Health": 20,
+    "Base_Armor": 2,
+    "Stamina_Pool": 4
+  },
+  {
+    "Enemy_Role": "Giant",
+    "Base_Health": 30,
+    "Base_Armor": 2,
+    "Stamina_Pool": 4,
+    "Special": [ {} ]
+  },
+  {
+    "Enemy_Role": "Zombie",
+    "Base_Health": 12,
+    "Base_Armor": 0,
+    "Stamina_Pool": 3
+  },
+  {
+    "Enemy_Role": "Skeleton",
+    "Base_Health": 16,
+    "Base_Armor": 2,
+    "Stamina_Pool": 3
+  }
+]
