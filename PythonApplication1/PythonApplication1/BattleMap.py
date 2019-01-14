@@ -1,7 +1,7 @@
 class BattleMap(object):
-    """Creates the Map"""
+    """Creates and manages the Battle Map"""
 
-    #terrainType = 'Grass'
+    terrainType = 'Grass' # replace with map terrain generator
 
     #used to create an X by Y sized Map
     def __init__(self, X=12, Y=12):
@@ -12,7 +12,7 @@ class BattleMap(object):
             SUBLIST = [] #List of Tiles
             MAINLIST.append(SUBLIST)
             for j in range(X):
-                SUBLIST.append(Tile(X, Y, terrainType)) #'seat %2d%c'%(i,ord('A')+j)
+                SUBLIST.append(Tile(X, Y, terrainType))
 
     
     #Getter functnions for the X and Y sizes of the map
@@ -20,15 +20,14 @@ class BattleMap(object):
         return self.X
     def get_Y(self):
         return self.Y
-    def get_Map_Size(self):
+    def get_map_size(self):
         return (self.X, self.Y) # should return Tuple
 
     #Getter function to get a tile
     def get_Tile(self, X, Y):
-        Y_List = self.MAINLIST(Y)
-        X_Tile = Y_List(X)
-        return X_Tile
-    #TerrainList = ReadTerrainList()
+        Y_List = self.MAINLIST(Y) # find the Y value
+        X_Tile = Y_List(X) # find the X value
+        return X_Tile # return the tile
 
     
 
