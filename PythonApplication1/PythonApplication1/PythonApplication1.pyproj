@@ -45,7 +45,7 @@
     <Compile Include="Keyword Library\Orthogonal.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MapCreator.py">
+    <Compile Include="BattleMap.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Diamond.py">

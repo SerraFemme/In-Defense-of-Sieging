@@ -7,12 +7,12 @@ class BattleMap(object):
     def __init__(self, X=12, Y=12):
         self.X = X #Size in X Tiles on the X-axis
         self.Y = Y #Size in Y Tiles on the Y-axis
-        MAINLIST = [] #"List of rows"
+        self.MainList = [] #"List of rows"
         for i in range(Y):
-            SUBLIST = [] #List of Tiles
-            MAINLIST.append(SUBLIST)
+            self.SubList = [] #List of Tiles
+            MainList.append(SubList)
             for j in range(X):
-                SUBLIST.append(Tile(X, Y, terrainType))
+                SubList.append(Tile(X, Y, terrainType))
 
     
     #Getter functnions for the X and Y sizes of the map
@@ -24,8 +24,8 @@ class BattleMap(object):
         return (self.X, self.Y) # should return Tuple
 
     #Getter function to get a tile
-    def get_Tile(self, X, Y):
-        Y_List = self.MAINLIST(Y) # find the Y value
+    def get_tile(self, X, Y):
+        Y_List = self.MainList(Y) # find the Y value
         X_Tile = Y_List(X) # find the X value
         return X_Tile # return the tile
 

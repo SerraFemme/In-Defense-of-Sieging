@@ -1,33 +1,39 @@
-
 # testing how to use json in python
 import json # allows Python to use JSON
 import os
 
+
 class ReadEquipmentList():
+    """Class for reading ClassList.json then returning the entire list as a dict."""
 
-    #methor to return whole list
+    #function to return whole list
+    def __init__(self):
+        data = self.read_file()
+        return data # returns whole list as a 'dict' type
 
-    #method to return specific item
 
+    #function to return specific terrain
+    def __init__(self, equipName):
+        data = self.read_file()
+        for i in data:
+            if i['ID']==equipName:
+                equipData = i['ID']
+                
+        #Either returns a selected equip as a 'dict' type or None
+        return equipData
 
-    #list directory contents
-    #print(os.listdir())
+    def read_file(self):
+        try:
+            #Change directory to the one needed, later change to be adaptive
+            os.chdir("D:\\3 My New Game\\PythonGameCode\\PythonApplication1\\PythonApplication1\\JSON Files")
 
-    #List current working directory
-    print("Current Working Directory " , os.getcwd())
+        except:
+            print("Can't change the Current Working Directory") 
 
-    try:
-        #Change directory to the one I need to
-        os.chdir("D:\\3 My New Game\\PythonGameCode\\PythonApplication1\\PythonApplication1\\JSON Files")
+        #get Equipment List
+        with open('EquipmentLibrary.json') as EquipL:
+            data = json.load(EquipL)
 
-    except:
-        print("Can't change the Current Working Directory") 
+        return data # returns a 'dict' type
 
-    #test line of code
-    #with open('EquipmentLibrary.json') as EquipL: data = json.load(EquipL)
-
-    #get Equipment Library and print to screen
-    with open('EquipmentLibrary.json') as EquipL:
-        data = json.load(EquipL) #type is class 'dict'
-    #print(json.dumps(data, indent=4))
-    #print(type(data))
+    #def has_equip(self, equipName):

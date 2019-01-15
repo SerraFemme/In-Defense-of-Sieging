@@ -1,4 +1,4 @@
 class Tuple_List(object):
-    """description of class"""
+    """Primarily used for Stats for Units"""
 
 

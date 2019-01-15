@@ -8,7 +8,8 @@ class Tile(object):
     def __init__(self, X, Y, terraintype):
         self.X = X #X coordinate
         self.Y = Y #Y coordinate
-        self.terrain = ReadTerrainList(terraintype) #function for setting the Terrain Type
+        #function for setting the Terrain Type
+        self.terrain = ReadTerrainList(terraintype)
         self.tileEffects = []
         self.unit = None
 
@@ -27,23 +28,23 @@ class Tile(object):
 
     def get_terrain_movement_cost(self):
         return self.terrain['Movement_Cost']
-    #def get_whatever(self):
+    #def get_whatever(self): # getter for other misc. terrain info
 
 
     #Tile Effects
     #may need to change 'effect' variable
-    def add_effect(self, effect):
-        self.tileEffects.append(effect)
+    #def add_effect(self, effect):
+        #self.tileEffects.append(effect)
 
-    def remove_effect(self, effect):
-        self.tileEffects.remove(effect)
+    #def remove_effect(self, effect):
+        #self.tileEffects.remove(effect)
 
-    #method to return specific info
-    def has_effect(self, effect):
-        for i in tileEffects:
-            if tileEffects[i]==effect:
-                return true
-        return false
+    #method to return specific effect
+    #def has_effect(self, effect):
+        #for i in tileEffects:
+            #if tileEffects[i]==effect:
+                #return true
+        #return false
 
 
     #Unit: Getter and Setter
@@ -52,7 +53,3 @@ class Tile(object):
 
     def set_unit(self, unit):
         self.unit = unit #ONLY EVER 1 UNIT, 2 units cannot occupy the same tile
-
-
-    #No need for Setter functions (yet)
-        #coordinates should only be created when instantiated

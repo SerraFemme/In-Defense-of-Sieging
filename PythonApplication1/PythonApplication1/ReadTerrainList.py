@@ -4,7 +4,7 @@ import os
 
 
 class ReadTerrainList():
-    """Class for reading MapTerrain.json returning the entire list as a dict.  May add functionality to return a specific item"""
+    """Class for reading MapTerrain.json then returning the entire list as a dict. May add functionality to return a specific item"""
 
     #function to return whole list
     def __init__(self):
@@ -19,7 +19,8 @@ class ReadTerrainList():
             if i['ID']==terrain:
                 terrainType = i['ID']
 
-        return terrainType # returns a selected tarrain as a 'dict' type
+        #Either returns a selected terrain as a 'dict' type or None
+        return terrainType
 
     def read_file(self):
         try:
