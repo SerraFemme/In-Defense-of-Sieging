@@ -1,3 +1,8 @@
+#
+#DECOMMISSION
+#
+
+
 # testing how to use json in python
 import json # allows Python to use JSON
 import os
@@ -18,6 +23,7 @@ class ReadEquipmentList():
         for i in data:
             if i['ID']==equipName:
                 equipData = i['ID']
+                break # valid?
                 
         #Either returns a selected equip as a 'dict' type or None
         return equipData
@@ -35,5 +41,3 @@ class ReadEquipmentList():
             data = json.load(EquipL)
 
         return data # returns a 'dict' type
-
-    #def has_equip(self, equipName):

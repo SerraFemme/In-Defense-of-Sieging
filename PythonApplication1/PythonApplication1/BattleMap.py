@@ -28,31 +28,3 @@ class BattleMap(object):
         Y_List = self.MainList(Y) # find the Y value
         X_Tile = Y_List(X) # find the X value
         return X_Tile # return the tile
-
-    
-
-
-
-
-
-#    for i in range(Y):
-#        for j in range(X):
-#            print(j, end=" ", flush=True)
-#        print('\n')
-
-
-#    class Array(object):
-#    def __init__(self, rows, cols):
-#        self.rows = rows
-#        self.cols = cols
-#        # initialize array and fill with zeroes
-#        self.data = [[0 for _ in range(cols)] for _ in range(rows)]
-#    def __iter__(self):
-#        for row in self.data:
-#            yield row
-#    def __repr__(self):
-#        return 'Array(%d, %d)' % (self.rows, self.cols)
-
-
-
-

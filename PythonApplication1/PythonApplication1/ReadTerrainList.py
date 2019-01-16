@@ -18,6 +18,7 @@ class ReadTerrainList():
         for i in data:
             if i['ID']==terrain:
                 terrainType = i['ID']
+                break # valid?
 
         #Either returns a selected terrain as a 'dict' type or None
         return terrainType

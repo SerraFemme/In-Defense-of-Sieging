@@ -1,3 +1,6 @@
+#
+#DECOMMISSION
+#
 
 # testing how to use json in python
 import json # allows Python to use JSON
@@ -5,15 +8,22 @@ import os
 
 class ReadCardList():
 
-    #methor to return whole list
+    #function to return whole list
+    def __init__(self):
+        data = self.read_file()
+        return data # returns whole list as a 'dict' type
 
-    #method to return specific item
 
-    #list directory contents
-    #print(os.listdir())
-
-    #List current working directory
-    print("Current Working Directory " , os.getcwd())
+    #function to return specific card
+    def __init__(self, className):
+        data = self.read_file()
+        for i in data:
+            if i['ID']==className:
+                classData = i['ID']
+                break # valid?
+         
+        #Either returns a selected class as a 'dict' type or None
+        return classData
 
     try:
         #Change directory to the one I need to

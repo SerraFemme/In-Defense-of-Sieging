@@ -1,14 +1,8 @@
-#
-#DECOMMISSION
-#
-
-
 import json # allows Python to use JSON
 import os
 
-
-class ReadClassList():
-    """Class for reading ClassList.json then returning the entire list as a dict."""
+class ReadCardList():
+    """Generic class for reading JSON list then either returning the entire list or a single item as a dict."""
 
     #function to return whole list
     def __init__(self):
@@ -17,17 +11,19 @@ class ReadClassList():
 
 
     #function to return specific terrain
-    def __init__(self, className):
+    def __init__(self, item):
         data = self.read_file()
         for i in data:
-            if i['Class_Name']==className:
-                classData = i['Class_Name']
+            if i['ID']==item:
+                itemBlock = i['ID']
                 break # valid?
          
         #Either returns a selected class as a 'dict' type or None
-        return classData
+        return itemBlock
 
     def read_file(self):
+        # set listFileName
+        
         try:
             #Change directory to the one needed, later change to be adaptive
             os.chdir("D:\\3 My New Game\\PythonGameCode\\PythonApplication1\\PythonApplication1\\JSON Files")
@@ -36,7 +32,7 @@ class ReadClassList():
             print("Can't change the Current Working Directory") 
 
         #get Map Terrain List
-        with open('ClassList.json') as ClassL:
-            data = json.load(ClassL)
+        with open(listFileName) as jsonList:
+            data = json.load(jsonList)
 
         return data # returns a 'dict' type

@@ -1,6 +1,6 @@
 [
   {
-    "Class_Name": "Paladin",
+    "ID": "Paladin",
     "Faction_1": "Divine",
     "Faction_2": "Martial",
     "Allowed_Equipment_1": "Melee",
@@ -13,7 +13,7 @@
     ]
   },
   {
-    "Class_Name": "Cleric",
+    "ID": "Cleric",
     "Faction_1": "Divine",
     "Faction_2": "Martial",
     "Allowed_Equipment_1": "Melee",
@@ -27,7 +27,7 @@
     ]
   },
   {
-    "Class_Name": "Barbarian",
+    "ID": "Barbarian",
     "Faction_1": "Martial",
     "Allowed_Equipment_1": "Melee",
     "Hand_Size": 3,
@@ -38,7 +38,7 @@
     ]
   },
   {
-    "Class_Name": "Ranger",
+    "ID": "Ranger",
     "Faction_1": "Martial",
     "Allowed_Equipment_1": "Ranged",
     "Allowed_Equipment_2": "Armor",
@@ -50,7 +50,7 @@
     ]
   },
   {
-    "Class_Name": "Mage",
+    "ID": "Mage",
     "Faction_1": "Arcane",
     "Allowed_Equipment_1": "Ranged",
     "Hand_Size": 6,
@@ -61,7 +61,7 @@
     ]
   },
   {
-    "Class_Name": "Arbalest",
+    "ID": "Arbalest",
     "Faction_1": "Martial",
     "Allowed_Equipment_1": "Ranged",
     "Allowed_Equipment_2": "Armor",
@@ -74,7 +74,7 @@
     ]
   },
   {
-    "Class_Name": "Knight",
+    "ID": "Knight",
     "Faction_1": "Martial",
     "Allowed_Equipment_1": "Melee",
     "Allowed_Equipment_2": "Armor",
@@ -87,7 +87,7 @@
     ]
   },
   {
-    "Class_Name": "Zealot",
+    "ID": "Zealot",
     "Faction_1": "Divine",
     "Faction_2": "Martial",
     "Allowed_Equipment_1": "Melee",
@@ -99,7 +99,7 @@
     ]
   },
   {
-    "Class_Name": "Monk",
+    "ID": "Monk",
     "Faction_1": "Divine",
     "Faction_2": "Martial",
     "Allowed_Equipment_1": "Melee",
