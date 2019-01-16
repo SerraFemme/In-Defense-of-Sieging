@@ -22,6 +22,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Player.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ReadJSONList.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Stamina.py">
       <SubType>Code</SubType>
     </Compile>
@@ -64,7 +70,7 @@
     <Compile Include="Tile.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tuple_List.py">
+    <Compile Include="UnitStat.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
