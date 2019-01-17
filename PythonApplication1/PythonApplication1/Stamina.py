@@ -1,3 +1,5 @@
+import UnitStat
+
 class Stamina(object):
     """Used by Units to keep track of Stamina Points, Pool, and effects"""
 

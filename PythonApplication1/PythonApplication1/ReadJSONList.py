@@ -21,7 +21,7 @@ class ReadJSONList():
 
         return data # returns a 'dict' type
 
-    def find_item(self, item):
+    def get_item(self, item):
         data = self._read_file()
         for i in data:
             if i['ID']==item:

@@ -1,15 +1,17 @@
 import json
-
+import ReadJSONList
 
 class Tile(object):
     """Tile Object containing all relevant information for a tile"""
+       
+    
+    terrainList = ReadJSONList('MapTerrain.json') # temporary for now
 
-    #used to create instance of a tile at X, Y
     def __init__(self, X, Y, terraintype):
         self.X = X #X coordinate
         self.Y = Y #Y coordinate
         #function for selecting the terrain type
-        self.terrain = ReadJSONList(terraintype)
+        self.terrain = terrainList.get_item('Grass')
         self.tileEffects = []
         self.unit = None
 
@@ -28,6 +30,7 @@ class Tile(object):
 
     def get_terrain_movement_cost(self):
         return self.terrain['Movement_Cost']
+
     #def get_whatever(self): # getter for other misc. terrain info
 
 
@@ -51,5 +54,6 @@ class Tile(object):
     def get_unit(self):
         return self.unit
 
-    def set_unit(self, unit):
-        self.unit = unit #ONLY EVER 1 UNIT, 2 units cannot occupy the same tile at the same time
+    #Intention: point to the unit, never create a new one
+    def set_unit(self, unit): # ONLY EVER 1 UNIT
+        self.unit = unit

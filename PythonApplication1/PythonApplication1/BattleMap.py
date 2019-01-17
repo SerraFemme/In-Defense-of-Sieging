@@ -1,3 +1,5 @@
+import Tile
+
 class BattleMap(object):
     """Creates and manages the Battle Map"""
 
@@ -28,3 +30,5 @@ class BattleMap(object):
         Y_List = self.MainList(Y) # find the Y value
         X_Tile = Y_List(X) # find the X value
         return X_Tile # return the tile
+
+    #Shouldn't need setter methods for changing tiles themselves

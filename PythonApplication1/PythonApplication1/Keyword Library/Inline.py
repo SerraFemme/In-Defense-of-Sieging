@@ -1,3 +1,5 @@
+import Orthogonal
+
 class Inline(Orthogonal):
     """description of class"""
 

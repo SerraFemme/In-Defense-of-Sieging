@@ -1,3 +1,5 @@
+import Orthogonal
+
 class Close(Orthogonal):
     """description of class"""
 
