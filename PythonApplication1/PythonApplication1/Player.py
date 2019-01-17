@@ -3,8 +3,8 @@ class Player(object):
 
     def __init__(self, NameOfClass):
         if ReadClassList(NameOfClass) is not None: # may need to change
-            PlayerClass = ReadClassList(NameOfClass)
-            self.className = NameOfClass # redundant?
+            PlayerClass = ReadJSONList(NameOfClass)
+            self.className = PlayerClass['ID'] # redundant?
             self.Stamina()
             self.Armor()
             self.HandSize()

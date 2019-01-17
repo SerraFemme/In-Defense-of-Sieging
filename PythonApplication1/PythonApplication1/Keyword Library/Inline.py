@@ -3,7 +3,7 @@ class Inline(Orthogonal):
 
     #Inherits Orthogonal Class
 
-    #Targeting restricted to Orthogonal tiles
+    #Applies to targeting explicitly, but is used by effect implicitly
 
 
 

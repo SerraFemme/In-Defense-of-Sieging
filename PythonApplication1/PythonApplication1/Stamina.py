@@ -16,7 +16,7 @@ class Stamina(object):
         self.points += value
 
     def spend_stamina_points(self, value):
-        if self.can_spend(value):
+        if self.can_spend(value): # may be redundant?
             self.points -= value
         else:
             self.points = 0 # may need to change later
@@ -32,4 +32,4 @@ class Stamina(object):
 
 
     #Stamina Pool Functions
-        #Implements Tuple_List
+        #Implements UnitStat class

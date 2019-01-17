@@ -23,3 +23,4 @@ class Combat_Judge(object):
         #Throw Error
 
     #Do any additional effects
+        #Ex: Splash damage: in affected area, call Damage_Received(Defender, Splash_Damage)

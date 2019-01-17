@@ -11,9 +11,8 @@ class ReadJSONList():
 
     def _read_file(self):
         try:
-            #Change directory to the one needed, later change to be adaptive.
-            os.chdir("D:\\3 My New Game\\PythonGameCode\\PythonApplication1\\PythonApplication1\\JSON Files")
-
+            path = os.path.abspath('.\\JSON Files')
+            os.chdir(path)
         except:
             print("Can't change the Current Working Directory") 
 
@@ -29,5 +28,4 @@ class ReadJSONList():
                 itemBlock = i['ID']
                 break # valid?
          
-        #Either returns a selected class as a 'dict' type or None
         return itemBlock

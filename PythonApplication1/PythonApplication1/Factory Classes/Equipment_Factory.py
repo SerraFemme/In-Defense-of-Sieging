@@ -1,4 +1,4 @@
 class Equipment_Factory(object):
-    """Creates an equipment object"""
+    """Creates an Equipment object"""
 
     #use EquipmentLibrary.json

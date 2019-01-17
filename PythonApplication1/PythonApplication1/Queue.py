@@ -1,5 +1,5 @@
 class Queue(object):
-    """Default Queue implementation"""
+    """Example Queue implementation. decomission later"""
 
     def __init__(self):
         self.queue = list() #May need changing

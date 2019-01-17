@@ -8,8 +8,8 @@ class Tile(object):
     def __init__(self, X, Y, terraintype):
         self.X = X #X coordinate
         self.Y = Y #Y coordinate
-        #function for setting the Terrain Type
-        self.terrain = ReadTerrainList(terraintype)
+        #function for selecting the terrain type
+        self.terrain = ReadJSONList(terraintype)
         self.tileEffects = []
         self.unit = None
 
@@ -52,4 +52,4 @@ class Tile(object):
         return self.unit
 
     def set_unit(self, unit):
-        self.unit = unit #ONLY EVER 1 UNIT, 2 units cannot occupy the same tile
+        self.unit = unit #ONLY EVER 1 UNIT, 2 units cannot occupy the same tile at the same time

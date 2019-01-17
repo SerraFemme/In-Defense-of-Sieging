@@ -60,10 +60,6 @@
     <Compile Include="Queue.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ReadCardList.py" />
-    <Compile Include="ReadClassList.py" />
-    <Compile Include="ReadEquipmentList.py" />
-    <Compile Include="ReadTerrainList.py" />
     <Compile Include="Stack.py">
       <SubType>Code</SubType>
     </Compile>

@@ -1,5 +1,5 @@
 class Stack(object):
-    """Default Stack implementation"""
+    """Example Stack implementation, decomission later"""
 
     def __init__(self):
         self.stack = [] #May need changing

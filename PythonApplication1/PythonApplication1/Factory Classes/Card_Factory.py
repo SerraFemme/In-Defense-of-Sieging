@@ -1,5 +1,5 @@
 class Card_Factory(object):
-    """Creates a card object"""
+    """Creates a Card object"""
 
     #use CardLibrary.json
 

@@ -21,4 +21,4 @@ class UnitStat(object):
         self.value =- newValue
 
 
-    #EffectList values
+    #EffectList functions

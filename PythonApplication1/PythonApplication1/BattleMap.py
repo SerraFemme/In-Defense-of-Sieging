@@ -16,9 +16,9 @@ class BattleMap(object):
 
     
     #Getter functnions for the X and Y sizes of the map
-    def get_X(self):
+    def get_X(self): # redundant?
         return self.X
-    def get_Y(self):
+    def get_Y(self): # redundant?
         return self.Y
     def get_map_size(self):
         return (self.X, self.Y) # should return Tuple
