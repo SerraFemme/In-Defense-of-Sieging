@@ -1,9 +1,12 @@
 [
   {
-    "Paladin_Starting_Equipment": [
+    "ID":  "Paladin",
+    "Starting_Equipment": [
       "DivineMelee4",
       "MartialArmor3"
-    ],
+    ]
+  },
+  {
     "Knight_Starting_Equipment": [
       "MartialMelee3",
       "MartialArmor2",

@@ -1,113 +1,122 @@
 [
   {
     "ID": "Paladin",
-    "Faction_1": "Divine",
-    "Faction_2": "Martial",
-    "Allowed_Equipment_1": "Melee",
-    "Allowed_Equipment_2": "Armor",
+    "Allowed_Faction": [
+      "Divine",
+      "Martial"
+    ],
+    "Allowed_Equipment": [
+      "Melee",
+      "Armor"
+    ],
     "Hand_Size": 4,
     "Stamina_Pool": 10,
-    "Passive": [
-      {
-      }
-    ]
+    "Passive": [{}]
   },
   {
     "ID": "Cleric",
-    "Faction_1": "Divine",
-    "Faction_2": "Martial",
-    "Allowed_Equipment_1": "Melee",
-    "Allowed_Equipment_2": "Armor",
-    "Allowed_Equipment_3": "Shield",
+    "Allowed_Faction": [
+      "Divine",
+      "Martial"
+    ],
+    "Allowed_Equipment": [
+      "Melee",
+      "Armor",
+      "Shield"
+    ],
     "Hand_Size": 5,
     "Stamina_Pool": 10,
-    "Passive": [
-      {
-      }
-    ]
+    "Passive": [{}]
   },
   {
     "ID": "Barbarian",
-    "Faction_1": "Martial",
-    "Allowed_Equipment_1": "Melee",
+    "Allowed_Faction": [
+      "Martial"
+    ],
+    "Allowed_Equipment": [
+      "Melee"
+    ],
     "Hand_Size": 3,
     "Stamina_Pool": 10,
-    "Passive": [
-      {
-      }
-    ]
+    "Passive": [{}]
   },
   {
     "ID": "Ranger",
-    "Faction_1": "Martial",
-    "Allowed_Equipment_1": "Ranged",
-    "Allowed_Equipment_2": "Armor",
+    "Allowed_Faction": [
+      "Martial"
+    ],
+    "Allowed_Equipment": [
+      "Ranged",
+      "Armor"
+    ],
     "Hand_Size": 4,
     "Stamina_Pool": 10,
-    "Passive": [
-      {
-      }
-    ]
+    "Passive": [{}]
   },
   {
     "ID": "Mage",
-    "Faction_1": "Arcane",
-    "Allowed_Equipment_1": "Ranged",
+    "Allowed_Faction": [
+      "Arcane"
+    ],
+    "Allowed_Equipment": [
+      "Ranged"
+    ],
     "Hand_Size": 6,
     "Stamina_Pool": 10,
-    "Passive": [
-      {
-      }
-    ]
+    "Passive": [{}]
   },
   {
     "ID": "Arbalest",
-    "Faction_1": "Martial",
-    "Allowed_Equipment_1": "Ranged",
-    "Allowed_Equipment_2": "Armor",
-    "Allowed_Equipment_3": "Shield",
+    "Allowed_Faction": [
+      "Martial"
+    ],
+    "Allowed_Equipment": [
+      "Ranged",
+      "Armor",
+      "Shield"
+    ],
     "Hand_Size": 5,
     "Stamina_Pool": 10,
-    "Passive": [
-      {
-      }
-    ]
+    "Passive": [{}]
   },
   {
     "ID": "Knight",
-    "Faction_1": "Martial",
-    "Allowed_Equipment_1": "Melee",
-    "Allowed_Equipment_2": "Armor",
-    "Allowed_Equipment_3": "Shield",
+    "Allowed_Faction": [
+      "Martial"
+    ],
+    "Allowed_Equipment": [
+      "Melee",
+      "Armor",
+      "Shield"
+    ],
     "Hand_Size": 5,
     "Stamina_Pool": 10,
-    "Passive": [
-      {
-      }
-    ]
+    "Passive": [{}]
   },
   {
     "ID": "Zealot",
-    "Faction_1": "Divine",
-    "Faction_2": "Martial",
-    "Allowed_Equipment_1": "Melee",
+    "Allowed_Faction": [
+      "Divine",
+      "Martial"
+    ],
+    "Allowed_Equipment": [
+      "Melee"
+    ],
     "Hand_Size": 4,
     "Stamina_Pool": 10,
-    "Passive": [
-      {
-      }
-    ]
+    "Passive": [{}]
   },
   {
     "ID": "Monk",
-    "Faction_1": "Divine",
-    "Faction_2": "Martial",
-    "Allowed_Equipment_1": "Melee",
+    "Allowed_Faction": [
+      "Divine",
+      "Martial"
+    ],
+    "Allowed_Equipment": [
+      "Melee"
+    ],
     "Hand_Size": 5,
     "Stamina_Pool": 10,
-    "Passive": [
-      {
-      }
-    ]
+    "Passive": [{}]
   }
 ]

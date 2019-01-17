@@ -1,11 +1,13 @@
 import json
 import os
 
-class ReadJSONList():
-    """Generic class for reading JSON list, then either returning the entire list or a single item as a dict."""
+class ReadJSONList(object):
+    """
+    Generic class for reading JSON list.
+    Either returns the entire list or a single item as a dict.
+    """
 
 
-    #Base function which allows the class to know which json file to use
     def __init__(self, jsonFile):
         self.listFileName = jsonFile
 
@@ -19,7 +21,7 @@ class ReadJSONList():
         with open(self.listFileName) as jsonList:
             data = json.load(jsonList)
 
-        return data # returns a 'dict' type
+        return data
 
     def get_item(self, item):
         data = self._read_file()

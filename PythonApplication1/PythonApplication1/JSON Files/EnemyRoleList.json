@@ -1,6 +1,6 @@
 [
   {
-    "Enemy_Role": "Grunt",
+    "ID": "Grunt",
     "Bonus_Health": 0,
     "Bonus_Armor": 0,
     "Bonus_SP": 0,
@@ -12,7 +12,7 @@
     ]
   },
   {
-    "Enemy_Role": "Champion",
+    "ID": "Champion",
     "Bonus_Health": 4,
     "Bonus_Armor": 2,
     "Bonus_SP": 0,
@@ -24,7 +24,7 @@
     ]
   },
   {
-    "Enemy_Role": "Executioner",
+    "ID": "Executioner",
     "Bonus_Health": 10,
     "Bonus_Armor": 0,
     "Bonus_SP": 1,
@@ -36,7 +36,7 @@
     ]
   },
   {
-    "Enemy_Role": "Caster",
+    "ID": "Caster",
     "Bonus_Health": 8,
     "Bonus_Armor": 0,
     "Bonus_SP": 1,
@@ -48,7 +48,7 @@
     ]
   },
   {
-    "Enemy_Role": "Assassin",
+    "ID": "Assassin",
     "Bonus_Health": 6,
     "Bonus_Armor": 0,
     "Bonus_SP": 1,
