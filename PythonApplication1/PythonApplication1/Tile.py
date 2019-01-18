@@ -5,7 +5,7 @@ class Tile(object):
     """Tile Object containing all relevant information for a tile"""
        
     
-    terrainList = ReadJSONList('MapTerrain.json') # temporary for now
+    terrainList = ReadJSONList.ReadJSONList('MapTerrain.json') # temporary for now
 
     def __init__(self, X, Y, terraintype):
         self.X = X #X coordinate

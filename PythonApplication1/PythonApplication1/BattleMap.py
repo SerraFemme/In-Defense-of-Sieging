@@ -14,7 +14,7 @@ class BattleMap(object):
             self.SubList = [] #List of Tiles
             MainList.append(SubList)
             for j in range(X):
-                SubList.append(Tile(X, Y, terrainType))
+                SubList.append(Tile.Tile(X, Y, terrainType))
 
     
     #Getter functnions for the X and Y sizes of the map

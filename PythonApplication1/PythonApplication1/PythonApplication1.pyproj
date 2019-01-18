@@ -31,15 +31,6 @@
     <Compile Include="Stamina.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Factory Classes\Card_Factory.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Factory Classes\Enemy_Factory.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Factory Classes\Equipment_Factory.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Judge Classes\Combat_Judge.py">
       <SubType>Code</SubType>
     </Compile>
@@ -57,10 +48,10 @@
     <Compile Include="Diamond.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Queue.py">
+    <Compile Include="Temp Classes\TempQueue.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Stack.py">
+    <Compile Include="Temp Classes\TempStack.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tile.py">
@@ -74,16 +65,16 @@
     <Folder Include="JSON Files\" />
     <Folder Include="Keyword Library\" />
     <Folder Include="Judge Classes\" />
-    <Folder Include="Factory Classes\" />
+    <Folder Include="Temp Classes\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="JSON Files\CardLibrary.json" />
-    <Content Include="JSON Files\ClassList.json" />
-    <Content Include="JSON Files\EnemyRaces.json" />
-    <Content Include="JSON Files\EnemyRoleList.json" />
+    <Content Include="JSON Files\ClassLibrary.json" />
+    <Content Include="JSON Files\EnemyRaceLibrary.json" />
+    <Content Include="JSON Files\EnemyRoleLibrary.json" />
     <Content Include="JSON Files\EquipmentLibrary.json" />
     <Content Include="JSON Files\MapTerrain.json" />
-    <Content Include="JSON Files\StartingEquipmentList.json" />
+    <Content Include="JSON Files\StartingEquipmentLibrary.json" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
