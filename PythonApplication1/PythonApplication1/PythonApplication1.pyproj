@@ -22,6 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Combat.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Player.py">
       <SubType>Code</SubType>
     </Compile>
@@ -52,6 +55,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Temp Classes\TempStack.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Temp Classes\TicTacToe.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tile.py">

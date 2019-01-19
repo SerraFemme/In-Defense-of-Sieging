@@ -1,3 +1,5 @@
+from Combat import * # Valid?
+
 class Combat_Judge(object):
     """Resolves Combat between an Attacker and a Defender"""
 
