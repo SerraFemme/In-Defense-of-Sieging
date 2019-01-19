@@ -9,18 +9,16 @@ class MapInator(object):
     """
 
 
-    terrainType = 'Grass' # replace with map terrain generator
-
     #used to create an X by Y sized Map
     def __init__(self, X=12, Y=12):
         self.X = X #Size in X Tiles on the X-axis
         self.Y = Y #Size in Y Tiles on the Y-axis
         self.MainList = [] #"List of rows"
         for i in range(Y):
-            self.SubList = [] #List of Tiles
+            sub_list = [] #List of Tiles
             MainList.append(SubList)
             for j in range(X):
-                SubList.append(Tile(X, Y, terrainType))
+                SubList.append(Tile(j, i, 'Grass'))
 
     
     #Getter functnions for the X and Y sizes of the map
@@ -39,15 +37,15 @@ class MapInator(object):
 
     def print_map(self):
         print('*' * self.X)
-        for i in self.MainList:
+        for Sub_List in self.MainList:
             print('*', end='')
-            for j in self.MainList[i]:
-                print(self._print_tile(SubList[j]), end='') # Fix
+            for tile in self.Sub_List:
+                print(self._print_tile(tile), end='') # Fix
             print('*')
         print('*' * self.X)
 
-    def _print_tile(self, space): # Fix
-        if space.is_unoccupied():
+    def _print_tile(self, tile): # Fix
+        if tile.is_unoccupied():
             print('.') # make dynamic based on terrain
         else:
             print('P') # make dynamic based on Unit
