@@ -16,9 +16,9 @@ class MapInator(object):
         self.MainList = [] #"List of rows"
         for i in range(Y):
             sub_list = [] #List of Tiles
-            MainList.append(SubList)
+            self.MainList.append(sub_list)
             for j in range(X):
-                SubList.append(Tile(j, i, 'Grass'))
+                sub_list.append(Tile(j, i, 'Grass'))
 
     
     #Getter functnions for the X and Y sizes of the map
@@ -31,7 +31,7 @@ class MapInator(object):
 
     #Getter function to get a tile
     def get_tile(self, X, Y):
-        Y_List = self.MainList(Y) # find the Y value
+        Y_List = self.MainList[Y] # find the Y value
         X_Tile = Y_List(X) # find the X value
         return X_Tile # return the tile
 
@@ -65,7 +65,7 @@ class Tile(object):
         self.X = X #X coordinate
         self.Y = Y #Y coordinate
         #function for selecting the terrain type
-        self.terrain = terrainList.get_item('Grass')
+        self.terrain = self.terrainList.get_item('Grass')
         self.tileEffects = []
         self.unit = None
 
