@@ -145,7 +145,7 @@ class Movement(object):
     #def swap_units(self): # swaps the position of 2 units, may be unneeded
 
 
-class RangeInator(Object):
+class RangeInator(object):
     """
     Calculates the valid tiles for targeting
     """
