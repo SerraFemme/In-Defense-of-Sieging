@@ -1,4 +1,5 @@
-[
+{
+"Enemy Role": [
   {
     "ID": "Grunt",
     "Bonus_Health": 0,
@@ -60,3 +61,4 @@
     ]
   }
 ]
+}

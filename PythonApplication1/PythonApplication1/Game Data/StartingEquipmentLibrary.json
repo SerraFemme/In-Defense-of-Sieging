@@ -1,4 +1,5 @@
-[
+{
+"Starting Equipment": [
   {
     "ID": "Paladin",
     "Starting_Equipment": [
@@ -62,3 +63,4 @@
     ]
   }
 ]
+}

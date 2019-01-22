@@ -22,7 +22,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Combat.py">
+    <Compile Include="Judge Classes\Combat.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Player.py">
@@ -60,12 +60,10 @@
     <Compile Include="Temp Classes\TicTacToe.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tile.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="UnitStat.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="__init__.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JSON Files\" />

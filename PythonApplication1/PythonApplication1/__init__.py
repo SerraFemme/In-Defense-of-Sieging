@@ -1,9 +1,11 @@
 from BattleMap import MapInator
-from ReadJSONList import ReadJSONList
+import ReadGameData
 
 
 def main():
-    r = ReadJSONList('MapTerrain.json')
+    # Call MasterListManager()
+
+    r = ReadGameData()
 
     l = r.TEST_LIST_1
     l2 = r.get_list()
@@ -32,9 +34,7 @@ def main():
     print(l3)
     print()
 
-
-
-    battle_map = MapInator()
+    battle_map = MapInator(r.get_list('Terrain'))
 
     tile = battle_map.get_tile(0, 0)
     print(tile.get_terrain_type())

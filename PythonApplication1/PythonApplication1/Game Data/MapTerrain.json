@@ -1,0 +1,23 @@
+{
+  "Terrain": [
+    {
+      "ID": "Grass",
+      "Movement_Cost": 1
+    },
+    {
+      "ID": "Hill",
+      "Movement_Cost": 2,
+      "Special": [
+        {
+        }
+      ]
+    },
+    {
+      "ID": "Mountain",
+      "Special": [
+        {
+        }
+      ]
+    }
+  ]
+}
