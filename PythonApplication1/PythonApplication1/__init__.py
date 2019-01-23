@@ -44,7 +44,7 @@ def main():
 
     battle_map.print_map()
 
-    battle_map.set_unit(5, 0, 1)
+    battle_map.set_unit(5, 0, 2)
     battle_map.set_unit(6, 11, 1)
 
     battle_map.print_map()

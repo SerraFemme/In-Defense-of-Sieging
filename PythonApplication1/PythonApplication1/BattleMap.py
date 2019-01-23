@@ -50,10 +50,17 @@ class MapInator(object):
         print('*' * (self.X+2))
 
     def _print_tile(self, tile):  # Fix
+        terrain_character = {"Grass":".", "Hill":"~", "":"&"}
+        unit_character = {1: "P", 2: "E"}
+
         if tile.is_unoccupied():
-            print('.', end='')  # make dynamic based on terrain
+            for i in terrain_character:
+                if i == tile.get_terrain_type():
+                    print(terrain_character[i], end='')  # make dynamic based on terrain
         else:
-            print('P', end='')  # make dynamic based on Unit
+            for i in unit_character:
+                if i == tile.get_unit():
+                    print(unit_character[i], end='')  # make dynamic based on terrain
 
     # Find Unit Function
 
@@ -114,6 +121,10 @@ class Tile(object):
 
     def is_unoccupied(self):
         return self.unit is None
+
+
+class TerrainGenerator(object):
+    pass
 
 
 class Movement(object):
