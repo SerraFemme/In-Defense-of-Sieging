@@ -41,8 +41,10 @@ class MapInator(object):
         tile.set_unit(unit)
 
     def print_map(self):
+        print('')
+        print('Map:')
         print('*' * (self.X+2))
-        for self.Sub_List in self.MainList:
+        for self.Sub_List in reversed(self.MainList):
             print('*', end='')
             for tile in self.Sub_List:
                 self._print_tile(tile)

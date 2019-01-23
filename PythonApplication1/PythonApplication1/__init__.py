@@ -3,9 +3,14 @@ from ReadGameData import *
 
 
 def main():
-    # Call MasterListManager()
+    """
+    Runs the Game.  Battle Map only for now.
+    """
 
-    # keep_playing = True
+    keep_playing = True
+
+
+
     r = MasterListManager()
 
     # l = r.TEST_LIST_1
@@ -44,17 +49,37 @@ def main():
 
     battle_map.print_map()
 
-    battle_map.set_unit(5, 0, 2)
-    battle_map.set_unit(6, 11, 1)
-
-    battle_map.print_map()
-
-    # while keep_playing:
-    #     battle_map.print_map()
+    # battle_map.set_unit(5, 0, 2)
+    # battle_map.set_unit(6, 11, 1)
     #
-    #     value = input("Keep Playing? Y or N")
-    #     if value != 'Y':
-    #         keep_playing = False
+    # battle_map.print_map()
+
+    place_unit(battle_map)
+
+    while keep_playing:
+        battle_map.print_map()
+        keep_playing = continue_playing(keep_playing)
+
+
+def continue_playing(value):
+    v = True
+    value = input("Keep Playing? 1 or 0: ")
+    print('')
+    if value != '1':
+        v = False
+    return v
+
+
+def place_unit(battle_map):
+    x_place = int(input('Enter a value 0 to 11 for X: '))
+    while x_place < 0 or x_place > 11:
+        print(x_place, 'is invalid for X')
+        x_place = int(input('Enter a value 0 to 11 for X: '))
+    y_place = int(input('Enter a value 0 to 11 for Y: '))
+    while y_place < 0 or y_place > 11:
+        print(y_place, 'is invalid for Y')
+        y_place = int(input('Enter a value 0 to 11 for Y: '))
+    battle_map.set_unit(x_place, y_place, 1)
 
 
 if __name__ == "__main__":
