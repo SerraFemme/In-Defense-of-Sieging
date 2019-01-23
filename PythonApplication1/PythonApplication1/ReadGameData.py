@@ -23,21 +23,21 @@ class MasterListManager(object):
     MASTER_LIST = []
 
     def __init__(self):
-        global MASTER_DICT
+        # global MASTER_DICT
+        # print()
 
-        if self.MASTER_LIST is None:
-            for i in MASTER_DICT.values():
-                self.MASTER_LIST.append(self._read_file(i))
-        else:
-            print('MASTER_LIST already created.')
+        for i in MASTER_DICT.values():
+            self.MASTER_LIST.append(self._read_file(i))
 
     # @property?
     def _read_file(self, filename):
         try:
             path = os.path.abspath('Game Data')
-            os.chdir(path)
-        except:
-            print("Can't change the Current Working Directory")
+            if os.path.exists(path):
+                os.chdir(path)
+
+        except OSError:
+            print("Can't change the Current Working Directory to:", path)
 
         with open(filename) as jsonList:
             data = json.load(jsonList)
@@ -45,18 +45,19 @@ class MasterListManager(object):
         return data
 
     def get_list(self, item):
+        itemblock = None
         for i in self.MASTER_LIST:
-            if i == item:  # fix?
-                itemblock = i
-                break
+            for j in i:
+                if j == item:
+                    itemblock = i
 
         return itemblock
 
-    def get_list(self):
-        return self.TEST_LIST_1
-
-    def get_list_from_dict(self):
-        return self.TEST_DICT['one']
+    # def get_list(self):
+    #     return self.TEST_LIST_1
+    #
+    # def get_list_from_dict(self):
+    #     return self.TEST_DICT['one']
 
 
 class SubListManager(object):
@@ -69,10 +70,10 @@ class SubListManager(object):
         self.sublist = listname
 
     def get_item(self, item):
-        for i in self.sublist.values(): # fix?
-            if i['ID'] == item:
-                itemblock = i['ID']
-                break  # valid?
+        for i in self.sublist.values():  # fix?
+            for j in i:
+                if j['ID'] == item:
+                    itemblock = j
 
         return itemblock
 

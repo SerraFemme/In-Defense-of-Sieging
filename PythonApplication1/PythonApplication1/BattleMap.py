@@ -10,7 +10,7 @@ class MapInator(object):
 
     # used to create an X by Y sized Map
     def __init__(self, terrainlist, X=12, Y=12):
-        self.terrain_list = terrainlist
+        self.terrain_list = SubListManager(terrainlist)
         self.X = X  # Size in X Tiles on the X-axis
         self.Y = Y  # Size in Y Tiles on the Y-axis
         self.MainList = []  # "List of rows"
@@ -33,23 +33,27 @@ class MapInator(object):
     # Getter function to get a tile
     def get_tile(self, X, Y):
         Y_List = self.MainList[Y]  # find the Y value
-        X_Tile = Y_List(X)  # find the X value
+        X_Tile = Y_List[X]  # find the X value
         return X_Tile  # return the tile
 
+    def set_unit(self, X, Y, unit):
+        tile = self.get_tile(X, Y)
+        tile.set_unit(unit)
+
     def print_map(self):
-        print('*' * self.X+2)
+        print('*' * (self.X+2))
         for self.Sub_List in self.MainList:
             print('*', end='')
             for tile in self.Sub_List:
-                print(self._print_tile(tile), end='')  # Fix
+                self._print_tile(tile)
             print('*')
-        print('*' * self.X+2)
+        print('*' * (self.X+2))
 
     def _print_tile(self, tile):  # Fix
         if tile.is_unoccupied():
-            print('.')  # make dynamic based on terrain
+            print('.', end='')  # make dynamic based on terrain
         else:
-            print('P')  # make dynamic based on Unit
+            print('P', end='')  # make dynamic based on Unit
 
     # Find Unit Function
 
@@ -109,7 +113,7 @@ class Tile(object):
         self.unit = None
 
     def is_unoccupied(self):
-        return self.unit == None
+        return self.unit is None
 
 
 class Movement(object):
