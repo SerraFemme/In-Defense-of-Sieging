@@ -9,59 +9,25 @@ def main():
 
     keep_playing = True
 
-
-
     r = MasterListManager()
-
-    # l = r.TEST_LIST_1
-    # l2 = r.get_list()
-    # l3 = r.get_list_from_dict()
-    #
-    # print(l)
-    # print(l2)
-    # print(l3)
-    # print()
-    #
-    # l[0] = 'test'
-    # print(l)
-    # print(l2)
-    # print(l3)
-    # print()
-    #
-    # l2[1] = 'asdf'
-    # print(l)
-    # print(l2)
-    # print(l3)
-    # print()
-    #
-    # l3[2] = 'blah'
-    # print(l)
-    # print(l2)
-    # print(l3)
-    # print()
 
     terrainlist = r.get_list('Terrain')
 
     battle_map = MapInator(terrainlist)
 
-    # tile = battle_map.get_tile(0, 0)
-    # print(tile.get_terrain_type())
-
+    battle_map.set_unit(6, 11, 2)
     battle_map.print_map()
 
-    # battle_map.set_unit(5, 0, 2)
-    # battle_map.set_unit(6, 11, 1)
-    #
-    # battle_map.print_map()
-
-    place_unit(battle_map)
+    player_position = place_starting_unit(battle_map)
 
     while keep_playing:
         battle_map.print_map()
-        keep_playing = continue_playing(keep_playing)
+        player_position = move_unit(battle_map, player_position)
+        battle_map.print_map()
+        keep_playing = continue_playing()
 
 
-def continue_playing(value):
+def continue_playing():
     v = True
     value = input("Keep Playing? 1 or 0: ")
     print('')
@@ -70,16 +36,50 @@ def continue_playing(value):
     return v
 
 
-def place_unit(battle_map):
+def place_starting_unit(battle_map):
+    print('')
+    print('Choose starting position in the bottom 3 rows:')
     x_place = int(input('Enter a value 0 to 11 for X: '))
     while x_place < 0 or x_place > 11:
         print(x_place, 'is invalid for X')
         x_place = int(input('Enter a value 0 to 11 for X: '))
-    y_place = int(input('Enter a value 0 to 11 for Y: '))
-    while y_place < 0 or y_place > 11:
+    y_place = int(input('Enter a value 0 to 2 for Y: '))
+    while y_place < 0 or y_place > 2:
         print(y_place, 'is invalid for Y')
+        y_place = int(input('Enter a value 0 to 2 for Y: '))
+    if battle_map.is_tile_unoccupied(x_place, y_place):
+        battle_map.set_unit(x_place, y_place, 1)
+    else:
+        print(x_place, ',', y_place, 'is occupied.')
+    return x_place, y_place
+
+
+def place_unit(battle_map):
+    value = True
+    print('')
+    print('Choose a new unoccupied position:')
+    while value:
+        x_place = int(input('Enter a value 0 to 11 for X: '))
+        while x_place < 0 or x_place > 11:
+            print(x_place, 'is invalid for X')
+            x_place = int(input('Enter a value 0 to 11 for X: '))
         y_place = int(input('Enter a value 0 to 11 for Y: '))
-    battle_map.set_unit(x_place, y_place, 1)
+        while y_place < 0 or y_place > 11:
+            print(y_place, 'is invalid for Y')
+            y_place = int(input('Enter a value 0 to 11 for Y: '))
+        if battle_map.is_tile_unoccupied(x_place, y_place):
+            battle_map.set_unit(x_place, y_place, 1)
+            value = False
+        else:
+            print(x_place, ',', y_place, 'is occupied.')
+            value = True
+    return x_place, y_place
+
+
+def move_unit(battle_map, player_position):
+    battle_map.set_tile_unoccupied(player_position[0], player_position[1])  # fix
+    new_position = place_unit(battle_map)
+    return new_position[0], new_position[1]
 
 
 if __name__ == "__main__":

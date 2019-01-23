@@ -36,9 +36,21 @@ class MapInator(object):
         X_Tile = Y_List[X]  # find the X value
         return X_Tile  # return the tile
 
+    def is_tile_unoccupied(self, X, Y):
+        tile = self.get_tile(X, Y)
+        return tile.is_unoccupied()
+
+    def get_unit(self, X, Y):
+        tile = self.get_tile(X, Y)
+        return tile.get_unit()
+
     def set_unit(self, X, Y, unit):
         tile = self.get_tile(X, Y)
         tile.set_unit(unit)
+
+    def set_tile_unoccupied(self, X, Y):
+        tile = self.get_tile(X, Y)
+        tile.set_unit(None)
 
     def print_map(self):
         print('')
