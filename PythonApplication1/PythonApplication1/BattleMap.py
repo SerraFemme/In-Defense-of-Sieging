@@ -1,3 +1,4 @@
+from random import randrange
 from ReadGameData import SubListManager
 
 
@@ -18,14 +19,18 @@ class MapInator(object):
             sub_list = []  # List of Tiles
             self.MainList.append(sub_list)
             for j in range(X):
-                sub_list.append(Tile(j, i, self.terrain_list.get_item('Grass')))
+                sub_list.append(Tile(j, i, self.terrain_list.get_item(self.map_generator())))
 
-    # Getter functions for the X and Y sizes of the map
-    def get_X(self):  # redundant?
-        return self.X
-
-    def get_Y(self):  # redundant?
-        return self.Y
+    def map_generator(self):
+        basic_map_list = ['Grass', 'Hill', 'Mountain']
+        r = randrange(1, 20)
+        if 19 <=r <= 20:
+            value = 2
+        elif 17 <= r <= 18:
+            value = 1
+        else:
+            value = 0
+        return basic_map_list[value]
 
     def get_map_size(self):
         return self.X, self.Y  # should return Tuple
@@ -64,7 +69,7 @@ class MapInator(object):
         print('*' * (self.X+2))
 
     def _print_tile(self, tile):  # Fix
-        terrain_character = {"Grass":".", "Hill":"~", "":"&"}
+        terrain_character = {"Grass": ".", "Hill": "~", "Mountain": "&"}
         unit_character = {1: "P", 2: "E"}
 
         if tile.is_unoccupied():
