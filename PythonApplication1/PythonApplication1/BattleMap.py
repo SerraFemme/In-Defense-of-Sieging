@@ -24,7 +24,7 @@ class MapInator(object):
     def map_generator(self):
         basic_map_list = ['Grass', 'Hill', 'Mountain']
         r = randrange(1, 20)
-        if 19 <=r <= 20:
+        if 19 <= r <= 20:
             value = 2
         elif 17 <= r <= 18:
             value = 1
@@ -151,22 +151,79 @@ class Movement(object):
     Calculates then performs ALL movement of units
     """
 
-    # def move_unit(self, unit): # Basic movement, adjacent orthogonal tiles only
-    # get X,Y of unit moving
-    # get X,Y of destination
-    # tempUnit = unit
-    # remove unit from starting position
-    # set unit to destination
-    # subtract stamina
+    def __init__(self, map_given):
+        self.battle_map = map_given
 
-    # def place_unit(self, unit): # no movement restriction, used by cards/effects
-    # get X,Y of unit moving
-    # get X,Y of destination
-    # tempUnit = unit
-    # remove unit from starting position
-    # set unit to destination
+    def place_enemy(self):
+        value = True
+        while value:
+            x = randrange(0, 11)
+            y = randrange(9, 11)
+            if self.battle_map.is_tile_unoccupied(x, y):
+                self.battle_map.set_unit(x, y, 2)
+                value = False
 
-    # def swap_units(self): # swaps the position of 2 units, may be unneeded
+    def place_starting_unit(self):
+        print('')
+        print('Choose starting position in the bottom 3 rows:')
+        x_place = int(input('Enter a value 0 to 11 for X: '))
+        while x_place < 0 or x_place > 11:
+            print(x_place, 'is invalid for X')
+            x_place = int(input('Enter a value 0 to 11 for X: '))
+        y_place = int(input('Enter a value 0 to 2 for Y: '))
+        while y_place < 0 or y_place > 2:
+            print(y_place, 'is invalid for Y')
+            y_place = int(input('Enter a value 0 to 2 for Y: '))
+        if self.battle_map.is_tile_unoccupied(x_place, y_place):
+            self.battle_map.set_unit(x_place, y_place, 1)
+        else:
+            print(x_place, ',', y_place, 'is occupied.')
+        return x_place, y_place
+
+    def place_unit(self):
+        value = True
+        print('')
+        print('Choose a new unoccupied position:')
+        while value:
+            x_place = int(input('Enter a value 0 to 11 for X: '))
+            while x_place < 0 or x_place > 11:
+                print(x_place, 'is invalid for X')
+                x_place = int(input('Enter a value 0 to 11 for X: '))
+            y_place = int(input('Enter a value 0 to 11 for Y: '))
+            while y_place < 0 or y_place > 11:
+                print(y_place, 'is invalid for Y')
+                y_place = int(input('Enter a value 0 to 11 for Y: '))
+            if self.battle_map.is_tile_unoccupied(x_place, y_place):
+                self.battle_map.set_unit(x_place, y_place, 1)
+                value = False
+            else:
+                print(x_place, ',', y_place, 'is occupied.')
+                value = True
+        return x_place, y_place
+
+    def move_unit(self, player_position):
+        new_position = self.place_unit()
+        self.battle_map.set_tile_unoccupied(player_position[0], player_position[1])  # fix
+        return new_position[0], new_position[1]
+
+    def can_move(self, player_position):  # optimize
+        map_size = self.battle_map.get_map_size()
+        x = player_position[0]
+        y = player_position[1]
+        value = False
+        if 0 <= x < map_size[0] and 0 <= y + 1 < map_size[1]:
+            if self.battle_map.is_tile_unoccupied(x, y + 1):
+                value = True
+        if 0 <= x + 1 < map_size[0] and 0 <= y < map_size[1]:
+            if self.battle_map.is_tile_unoccupied(x + 1, y):
+                value = True
+        if 0 <= x < map_size[0] and 0 <= y - 1 < map_size[1]:
+            if self.battle_map.is_tile_unoccupied(x, y - 1):
+                value = True
+        if 0 <= x - 1 < map_size[0] and 0 <= y < map_size[1]:
+            if self.battle_map.is_tile_unoccupied(x + 1, y):
+                value = True
+        return value
 
 
 class RangeInator(object):
