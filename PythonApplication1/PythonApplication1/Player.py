@@ -1,4 +1,5 @@
 from ReadGameData import SubListManager
+from UnitStat import *
 
 
 class Player(object):
@@ -11,12 +12,24 @@ class Player(object):
         self.classinfo = self.classlist.get_item(selectedClass)
         self.className = self.classinfo['ID']
         self.position = None
-        # self.Stamina = Stamina(self.classinfo['Stamina_Pool'])
-        # self.WeaponDamage = WeaponDamage() # Starts at 0, then Starting Equipment affects it
-        # self.Armor = Armor() # Starts at 0, then Starting Equipment affects it
-        # self.HandSize = HandSize(PlayerClass['Hand_Size'])
+        self.Stamina = Stamina(self.classinfo['Stamina_Pool'])
+        # self.WeaponDamage = StatTracker()
+        # self.Armor = StatTracker()
+        # self.HandSize = StatTracker(PlayerClass['Hand_Size'])
         # self.PlayerDeck = Starting Deck
         # self.Equipment = Starting Equipment
+
+    def turn_beginning(self):
+        self.Stamina.reset_stamina_points()
+        # mulligan phase
+        # upkeep
+
+    def print_info(self):
+        print('Position:', self.get_position())
+        print('Remaining Stamina:', self.Stamina.get_stamina_points())
+        # print('Weapon Damage:', WeaponDamage.get_value())
+        # print('Armor:', Armor.get_value())
+        # print('Hand Size:', HandSize.get_value())
 
     def get_class_name(self):
         return self.className
