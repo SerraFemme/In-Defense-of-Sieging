@@ -73,9 +73,9 @@ class MapInator(object):
         unit_character = {1: "P", 2: "E"}
 
         if tile.is_unoccupied():
-            for i in terrain_character:
-                if i == tile.get_terrain_type():
-                    print(terrain_character[i], end='')  # make dynamic based on terrain
+            print(tile.get_terrain_char(), end='')  # make dynamic based on terrain
+        elif tile.get_unit() == 'Invalid':
+            print(tile.get_terrain_char(), end='')  # make dynamic based on terrain
         else:
             for i in unit_character:
                 if i == tile.get_unit():
@@ -88,20 +88,22 @@ class Tile(object):
     """Contains all relevant information for a tile"""
 
     def __init__(self, X, Y, terraintype):
-        self.X = X  # X coordinate
-        self.Y = Y  # Y coordinate
+        self.coordinate = (X, Y)
         self.terrain = terraintype
         self.tileEffects = []
         self.unit = None
+        if 'Unit' in self.terrain:
+            self.unit = self.terrain['Unit']
 
     # Getter functions for the X and Y coordinates
-    def get_X(self):
-        return self.X
 
-    def get_Y(self):
-        return self.Y
+    def get_coordinate(self):
+        return self.coordinate
 
     # Terrain Info and Effects
+    def get_terrain_char(self):
+        return self.terrain['Char']
+
     def get_terrain_type(self):
         return self.terrain['ID']
 
@@ -129,8 +131,7 @@ class Tile(object):
     def get_unit(self):
         return self.unit
 
-    # Intention: point to the unit, never create a new one
-    def set_unit(self, unit):  # ONLY EVER 1 UNIT
+    def set_unit(self, unit):
         self.unit = unit
 
     def set_unit_empty(self):
@@ -162,19 +163,22 @@ class Movement(object):
                 value = False
 
     def place_starting_unit(self):
-        print('Choose starting position in the bottom 3 rows:')
-        x_place = int(input('Enter a value 0 to 11 for X: '))
-        while x_place < 0 or x_place > 11:
-            print(x_place, 'is invalid for X')
+        value = True
+        while value:
+            print('Choose starting position in the bottom 3 rows:')
             x_place = int(input('Enter a value 0 to 11 for X: '))
-        y_place = int(input('Enter a value 0 to 2 for Y: '))
-        while y_place < 0 or y_place > 2:
-            print(y_place, 'is invalid for Y')
+            while x_place < 0 or x_place > 11:
+                print(x_place, 'is invalid for X')
+                x_place = int(input('Enter a value 0 to 11 for X: '))
             y_place = int(input('Enter a value 0 to 2 for Y: '))
-        if self.battle_map.is_tile_unoccupied(x_place, y_place):
-            self.battle_map.set_unit(x_place, y_place, 1)
-        else:
-            print(x_place, ',', y_place, 'is occupied.')
+            while y_place < 0 or y_place > 2:
+                print(y_place, 'is invalid for Y')
+                y_place = int(input('Enter a value 0 to 2 for Y: '))
+            if self.battle_map.is_tile_unoccupied(x_place, y_place):
+                self.battle_map.set_unit(x_place, y_place, 1)
+                value = False
+            else:
+                print(x_place, ',', y_place, 'is occupied.')
         return x_place, y_place
 
     def place_unit(self):

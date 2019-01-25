@@ -2,10 +2,12 @@
   "Terrain": [
     {
       "ID": "Grass",
+      "Char": ".",
       "Movement_Cost": 1
     },
     {
       "ID": "Hill",
+      "Char": "~",
       "Movement_Cost": 2,
       "Special": [
         {
@@ -14,7 +16,8 @@
     },
     {
       "ID": "Mountain",
-      "Unit": "Mountain",
+      "Char": "&",
+      "Unit": "Invalid",
       "Special": [
         {
         }

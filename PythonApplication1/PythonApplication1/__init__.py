@@ -38,7 +38,8 @@ def main():
 def print_player_menu():
     print('0: Exit')
     print('1: Move')
-    print('2: Print terrain key')
+    print('2: Action')
+    print('3: Print Tile Icon List')
     value = input("Input: ")
     return value
 
@@ -50,6 +51,8 @@ def process_menu_selection(value, movement, player):
     elif value == '1':
         player.set_position(movement.move_unit(player.get_position()))
     elif value == '2':
+        pass
+    elif value == '3':
         pass
     return v
 
