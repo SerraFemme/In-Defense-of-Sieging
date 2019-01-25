@@ -1,6 +1,6 @@
-from random import randrange
-from BattleMap import MapInator, Movement
 from ReadGameData import *
+from BattleMap import MapInator, Movement
+from Player import Player
 
 
 def main():
@@ -11,8 +11,10 @@ def main():
     keep_playing = True
 
     r = MasterListManager()
-
     terrainlist = r.get_list('Terrain')
+    classlist = r.get_list('Class')
+
+    player_1 = Player(classlist, 'Paladin')
 
     battle_map = MapInator(terrainlist)
     movement = Movement(battle_map)
@@ -21,24 +23,34 @@ def main():
 
     battle_map.print_map()
 
-    player_position = movement.place_starting_unit()
+    print('')
+    print(player_1.get_class_name())
+    player_1.set_position(movement.place_starting_unit())
 
     while keep_playing:
         battle_map.print_map()
-        if movement.can_move(player_position):
-            player_position = movement.move_unit(player_position)
-        else:
-            print('Player is trapped.')
-        battle_map.print_map()
-        keep_playing = continue_playing()
+        print('')
+        print(player_1.get_class_name(), 'turn:')
+        value = print_player_menu()
+        keep_playing = process_menu_selection(value, movement, player_1)
 
 
-def continue_playing():
+def print_player_menu():
+    print('0: Exit')
+    print('1: Move')
+    print('2: Print terrain key')
+    value = input("Input: ")
+    return value
+
+
+def process_menu_selection(value, movement, player):
     v = True
-    value = input("Keep Playing? 1 or 0: ")
-    print('')
-    if value != '1':
+    if value == '0':
         v = False
+    elif value == '1':
+        player.set_position(movement.move_unit(player.get_position()))
+    elif value == '2':
+        pass
     return v
 
 

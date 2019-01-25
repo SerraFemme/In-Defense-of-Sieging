@@ -87,8 +87,6 @@ class MapInator(object):
 class Tile(object):
     """Contains all relevant information for a tile"""
 
-    terrainList = SubListManager('MapTerrain.json')  # temporary for now
-
     def __init__(self, X, Y, terraintype):
         self.X = X  # X coordinate
         self.Y = Y  # Y coordinate
@@ -164,7 +162,6 @@ class Movement(object):
                 value = False
 
     def place_starting_unit(self):
-        print('')
         print('Choose starting position in the bottom 3 rows:')
         x_place = int(input('Enter a value 0 to 11 for X: '))
         while x_place < 0 or x_place > 11:
@@ -202,9 +199,12 @@ class Movement(object):
         return x_place, y_place
 
     def move_unit(self, player_position):
-        new_position = self.place_unit()
-        self.battle_map.set_tile_unoccupied(player_position[0], player_position[1])  # fix
-        return new_position[0], new_position[1]
+        if self.can_move(player_position):
+            new_position = self.place_unit()
+            self.battle_map.set_tile_unoccupied(player_position[0], player_position[1])  # fix
+            return new_position[0], new_position[1]
+        else:
+            return player_position
 
     def can_move(self, player_position):  # optimize
         map_size = self.battle_map.get_map_size()
