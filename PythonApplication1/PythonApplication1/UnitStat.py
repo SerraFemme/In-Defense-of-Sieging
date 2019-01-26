@@ -71,7 +71,7 @@ class Stamina(object):
             self.points = 0  # may need to change later
 
     def reset_stamina_points(self):
-        self.points = self.pool
+        self.points = self.pool.get_value()
 
     def can_spend(self, value):
         if value > self.points:
