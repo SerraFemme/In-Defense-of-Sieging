@@ -27,21 +27,21 @@ class PlayerTurn(object):
         keep_playing = True
         for person in self.player_team:
             person.turn_beginning()
-            # global turn
             turn = True
-            while turn:
-                self.battle_map.print_map()
-                print('')
-                print(person.get_class_name(), 'turn:')
-                keep_playing = self.print_player_menu()
-                if keep_playing is False:
-                    turn = False
-                else:
+            self.battle_map.print_map()
+            keep_playing = self.print_player_menu(person)
+            if keep_playing is not False:
+                while turn:
+                    self.battle_map.print_map()
+                    print('')
+                    print(person.get_class_name(), 'turn:')
                     value = self.print_action_menu(person, self.movement)
                     turn = self.process_player_selection(value, self.movement, person)
         return keep_playing
 
-    def print_player_menu(self):
+    def print_player_menu(self, player):
+        print('')
+        print('Player Menu:', player.get_class_name())
         print('0: Exit Game')
         print('1: Player Turn')
         value = input("Input: ")

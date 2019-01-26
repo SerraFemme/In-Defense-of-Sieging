@@ -14,6 +14,7 @@ def main():
     r = MasterListManager()
     terrainlist = r.get_list('Terrain')
     classlist = r.get_list('Class')
+    equipmentlist = r.get_list('Equipment')
     battle_map = MapInator(terrainlist)
     movement = Movement(battle_map)
 
@@ -21,6 +22,8 @@ def main():
     # enemy_team = []
 
     player_1 = Player(classlist, 'Paladin')
+    # give player starting equipment
+    # give player starting deck
 
     player_team.append(player_1)
 
