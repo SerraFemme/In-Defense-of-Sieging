@@ -61,19 +61,19 @@ class MapInator(object):
     def print_map(self):
         print('')
         print('Map:')
-        print('*' * (self.X+2))
+        print('*' * (self.X + 2))
         for self.Sub_List in reversed(self.MainList):
             print('*', end='')
             for tile in self.Sub_List:
                 self._print_tile(tile)
             print('*')
-        print('*' * (self.X+2))
+        print('*' * (self.X + 2))
 
     def _print_tile(self, tile):  # Fix
         if tile.is_unoccupied():
-            print(tile.get_terrain_char(), end='')  # make dynamic based on terrain
+            print(tile.get_terrain_char(), end='')
         elif tile.get_unit() == 'Invalid':
-            print(tile.get_terrain_char(), end='')  # make dynamic based on terrain
+            print(tile.get_terrain_char(), end='')
         elif tile.get_unit() == 2:
             print('E', end='')
         else:
@@ -239,8 +239,9 @@ class Movement(object):
     def move_onto_tile(self, unit, x, y):
         coordinate = unit.get_position()
         if self.can_move(unit):
-            new_position = (coordinate[0]+x, coordinate[1]+y)
-            destination = self.battle_map.get_tile(new_position[0], new_position[1])
+            new_position = (coordinate[0] + x, coordinate[1] + y)
+            destination = self.battle_map.get_tile(new_position[0],
+                                                   new_position[1])
             if destination.is_unoccupied():
                 # check if tile has a move cost, else don't move
                 destination_cost = destination.get_terrain_movement_cost()
@@ -274,12 +275,13 @@ class Movement(object):
                 if self.battle_map.is_tile_unoccupied(x + 1, y):
                     value = True
         else:
-            print(unit.get_class_name(), 'has', unit.Stamina.get_stamina_points(), 'and cannot move.')
+            print(unit.get_class_name(), 'has',
+                  unit.Stamina.get_stamina_points(), 'and cannot move.')
         return value
 
     def can_move_onto_tile(self, unit, x, y):
         coordinate = unit.get_position()
-        destination = self.battle_map.get_tile(coordinate[0]+x, coordinate[1]+y)
+        destination = self.battle_map.get_tile(coordinate[0] + x, coordinate[1] + y)
         if unit.Stamina.get_stamina_points() >= destination.get_terrain_movement_cost():
             return True
         else:
