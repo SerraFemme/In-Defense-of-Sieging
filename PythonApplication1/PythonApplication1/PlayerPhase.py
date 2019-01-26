@@ -1,6 +1,3 @@
-from BattleMap import MapInator, Movement
-from Player import Player
-
 """
 Contains all functions needed for the individuals of the player team to take
 their turn and complete the player phase.

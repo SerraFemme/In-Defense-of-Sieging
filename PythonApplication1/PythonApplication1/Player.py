@@ -11,7 +11,7 @@ class Player(object):
         self.classlist = SubListManager(classitem)
         self.classinfo = self.classlist.get_item(selectedClass)
         self.className = self.classinfo['ID']
-        self.position = None
+        self.Position = None
         self.FactionRestriction = self.classinfo['Allowed_Faction']
         self.EquipmentRestriction = self.classinfo['Allowed_Equipment']
         self.Stamina = Stamina(self.classinfo['Stamina_Pool'])
@@ -28,7 +28,7 @@ class Player(object):
         # mulligan phase
         # upkeep
 
-    def print_info(self):
+    def print_info(self):  # fix: prints None at end
         print('')
         print('Class:', self.get_class_name())
         print('Position:', self.get_position())
@@ -42,10 +42,10 @@ class Player(object):
         return self.className
 
     def get_position(self):
-        return self.position
+        return self.Position
 
     def set_position(self, coordinates):
-        self.position = coordinates
+        self.Position = coordinates
 
     # Faction Restrictions
 

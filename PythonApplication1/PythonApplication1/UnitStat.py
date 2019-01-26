@@ -1,7 +1,7 @@
 class StatTracker(object):
     """
     Class used for keeping track of a list of effects and their values.
-    Used primarily by Stamina, Armor, and Hand Size.
+    Used primarily by Stamina, Weapon Damage, Armor, and Hand Size.
     """
 
     def __init__(self, value=0):
