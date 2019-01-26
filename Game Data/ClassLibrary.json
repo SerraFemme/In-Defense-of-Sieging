@@ -11,10 +11,7 @@
         "Armor"
       ],
       "Hand_Size": 4,
-      "Stamina_Pool": 10,
-      "Passive": [
-        {}
-      ]
+      "Stamina_Pool": 10
     },
     {
       "ID": "Cleric",
@@ -28,10 +25,7 @@
         "Shield"
       ],
       "Hand_Size": 5,
-      "Stamina_Pool": 10,
-      "Passive": [
-        {}
-      ]
+      "Stamina_Pool": 10
     },
     {
       "ID": "Barbarian",
@@ -42,10 +36,7 @@
         "Melee"
       ],
       "Hand_Size": 3,
-      "Stamina_Pool": 10,
-      "Passive": [
-        {}
-      ]
+      "Stamina_Pool": 10
     },
     {
       "ID": "Ranger",
@@ -57,10 +48,7 @@
         "Armor"
       ],
       "Hand_Size": 4,
-      "Stamina_Pool": 10,
-      "Passive": [
-        {}
-      ]
+      "Stamina_Pool": 10
     },
     {
       "ID": "Mage",
@@ -71,10 +59,7 @@
         "Ranged"
       ],
       "Hand_Size": 6,
-      "Stamina_Pool": 10,
-      "Passive": [
-        {}
-      ]
+      "Stamina_Pool": 10
     },
     {
       "ID": "Arbalest",
@@ -87,10 +72,7 @@
         "Shield"
       ],
       "Hand_Size": 5,
-      "Stamina_Pool": 10,
-      "Passive": [
-        {}
-      ]
+      "Stamina_Pool": 10
     },
     {
       "ID": "Knight",
@@ -103,10 +85,7 @@
         "Shield"
       ],
       "Hand_Size": 5,
-      "Stamina_Pool": 10,
-      "Passive": [
-        {}
-      ]
+      "Stamina_Pool": 10
     },
     {
       "ID": "Zealot",
@@ -118,10 +97,7 @@
         "Melee"
       ],
       "Hand_Size": 4,
-      "Stamina_Pool": 10,
-      "Passive": [
-        {}
-      ]
+      "Stamina_Pool": 10
     },
     {
       "ID": "Monk",
@@ -133,10 +109,7 @@
         "Melee"
       ],
       "Hand_Size": 5,
-      "Stamina_Pool": 10,
-      "Passive": [
-        {}
-      ]
+      "Stamina_Pool": 10
     }
   ]
 }

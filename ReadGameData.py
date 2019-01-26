@@ -16,16 +16,9 @@ class MasterListManager(object):
     Returns a specific list when needed
     """
 
-    TEST_LIST_1 = [1, 2, 3]
-
-    TEST_DICT = {'one': TEST_LIST_1}
-
     MASTER_LIST = []
 
     def __init__(self):
-        # global MASTER_DICT
-        # print()
-
         for i in MASTER_DICT.values():
             self.MASTER_LIST.append(self._read_file(i))
 
@@ -52,12 +45,6 @@ class MasterListManager(object):
                     itemblock = i
 
         return itemblock
-
-    # def get_list(self):
-    #     return self.TEST_LIST_1
-    #
-    # def get_list_from_dict(self):
-    #     return self.TEST_DICT['one']
 
 
 class SubListManager(object):

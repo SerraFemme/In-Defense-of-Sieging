@@ -10,7 +10,9 @@ class Player(object):
     def __init__(self, classitem, selectedClass):
         self.classlist = SubListManager(classitem)
         self.classinfo = self.classlist.get_item(selectedClass)
-        self.className = self.classinfo['ID']
+        # self.Player_Name =
+        # self.Player_Number =
+        self.Class_Name = self.classinfo['ID']
         self.Position = None
         self.FactionRestriction = self.classinfo['Allowed_Faction']
         self.EquipmentRestriction = self.classinfo['Allowed_Equipment']
@@ -39,7 +41,7 @@ class Player(object):
         print('Hand Size:', self.HandSize.get_value())
 
     def get_class_name(self):
-        return self.className
+        return self.Class_Name
 
     def get_position(self):
         return self.Position

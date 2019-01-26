@@ -11,18 +11,18 @@ class MapInator(object):
     """
 
     # used to create an X by Y sized Map
-    def __init__(self, terrainlist, X=12, Y=12):
-        self.terrain_list = SubListManager(terrainlist)
-        self.X = X  # Size in X Tiles on the X-axis
-        self.Y = Y  # Size in Y Tiles on the Y-axis
-        self.MainList = []  # "List of rows"
-        for i in range(Y):
+    def __init__(self, t, x=12, y=12):
+        self.terrain_list = SubListManager(t)
+        self.X = x  # Size in X Tiles on the X-axis
+        self.Y = y  # Size in Y Tiles on the Y-axis
+        self.main_list = []  # "List of rows"
+        for i in range(y):
             sub_list = []  # List of Tiles
-            self.MainList.append(sub_list)
-            for j in range(X):
-                sub_list.append(Tile(j, i, self.terrain_list.get_item(self.map_generator())))
+            self.main_list.append(sub_list)
+            for j in range(x):
+                sub_list.append(Tile(j, i, self.terrain_list.get_item(self.basic_map_generator())))
 
-    def map_generator(self):
+    def basic_map_generator(self):
         basic_map_list = ['Grass', 'Hill', 'Mountain']
         r = randrange(1, 20)
         if 19 <= r <= 20:
@@ -38,7 +38,7 @@ class MapInator(object):
 
     # Getter function to get a tile
     def get_tile(self, X, Y):
-        Y_List = self.MainList[Y]  # find the Y value
+        Y_List = self.main_list[Y]  # find the Y value
         X_Tile = Y_List[X]  # find the X value
         return X_Tile  # return the tile
 
@@ -62,14 +62,14 @@ class MapInator(object):
         print('')
         print('Map:')
         print('*' * (self.X + 2))
-        for self.Sub_List in reversed(self.MainList):
+        for self.Sub_List in reversed(self.main_list):
             print('*', end='')
             for tile in self.Sub_List:
-                self._print_tile(tile)
+                self.__print_tile(tile)
             print('*')
         print('*' * (self.X + 2))
 
-    def _print_tile(self, tile):  # Fix
+    def __print_tile(self, tile):  # Fix
         if tile.is_unoccupied():
             print(tile.get_terrain_char(), end='')
         elif tile.get_unit() == 'Invalid':
@@ -87,9 +87,9 @@ class MapInator(object):
 class Tile(object):
     """Contains all relevant information for a tile"""
 
-    def __init__(self, X, Y, terraintype):
+    def __init__(self, X, Y, t):
         self.coordinate = (X, Y)
-        self.terrain = terraintype
+        self.terrain = t
         self.tileEffects = []
         self.unit = None
         if 'Unit' in self.terrain:
