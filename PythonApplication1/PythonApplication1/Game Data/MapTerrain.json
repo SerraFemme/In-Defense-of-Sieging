@@ -17,11 +17,7 @@
     {
       "ID": "Mountain",
       "Char": "&",
-      "Unit": "Invalid",
-      "Special": [
-        {
-        }
-      ]
+      "Unit": "Invalid"
     }
   ]
 }

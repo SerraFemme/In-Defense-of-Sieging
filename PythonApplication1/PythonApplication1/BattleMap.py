@@ -74,10 +74,12 @@ class MapInator(object):
             print(tile.get_terrain_char(), end='')
         elif tile.get_unit() == 'Invalid':
             print(tile.get_terrain_char(), end='')
+        elif isinstance(tile.get_unit(), Player):
+            print('P', end='')
         elif tile.get_unit() == 2:
             print('E', end='')
         else:
-            print('P', end='')
+            print('Q', end='')
 
     # Find Unit Function
 
