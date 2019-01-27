@@ -38,13 +38,13 @@ class MasterListManager(object):
         return data
 
     def get_list(self, item):
-        itemblock = None
+        item_block = None
         for i in self.MASTER_LIST:
             for j in i:
                 if j == item:
-                    itemblock = i
+                    item_block = i
 
-        return itemblock
+        return item_block
 
 
 class SubListManager(object):
@@ -53,16 +53,16 @@ class SubListManager(object):
     Either checks and returns a boolean or searches and returns a specific set of data
     """
 
-    def __init__(self, listname):
-        self.sublist = listname
+    def __init__(self, list_name):
+        self.sublist = list_name
 
     def get_item(self, item):
         for i in self.sublist.values():
             for j in i:
                 if j['ID'] == item:
-                    itemblock = j
+                    item_block = j
 
-        return itemblock
+        return item_block
 
     def has_item(self, item):
         for i in self.sublist.values():
@@ -70,3 +70,10 @@ class SubListManager(object):
                 return True
 
         return False
+
+    def get_list(self):
+        item_list = []
+        for i in self.sublist.values():
+            for j in i:
+                item_list.append(j)
+        return item_list

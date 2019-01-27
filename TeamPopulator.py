@@ -14,7 +14,17 @@ class TeamMaker(object):
         self.player_list = []
 
     def team_init(self):
-        for i in range(1):
+        global value
+        value = True
+        while value:
+            print('')
+            v = int(input('Enter number of Players (1-4): '))
+            if 0 < v <= 4:
+                value = False
+            else:
+                print(v, 'is not a valid number')
+
+        for i in range(v):
             print('')
             name = input('Enter Player Name: ')
             selected_class = self.__select_class()
@@ -26,8 +36,11 @@ class TeamMaker(object):
         return self.player_list
 
     def __select_class(self):
-        selection = 'Paladin'
-        # print list of classes
-        # ask for selection as int
-        # get class name as string
-        return selection
+        item_list = self.class_list.get_list()
+        print('')
+        print('Select Class:')
+        for i, item in enumerate(item_list):
+            print(i, item['ID'], sep=': ')
+        v = int(input('Enter digit of class: '))
+        selection = item_list[v]
+        return selection['ID']

@@ -15,8 +15,8 @@ class PlayerTurn(object):
 
     def setup_players(self):
         print('')
-        print('Player Team: Choose starting positions')
-        print('')
+        print('Player Team:')
+        print('Choose starting positions')
         for person in self.player_team:
             self.battle_map.print_map()
             print('')
