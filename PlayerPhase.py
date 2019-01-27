@@ -14,10 +14,13 @@ class PlayerTurn(object):
         self.movement = move
 
     def setup_players(self):
+        print('')
+        print('Player Team: Choose starting positions')
+        print('')
         for person in self.player_team:
             self.battle_map.print_map()
             print('')
-            print(person.get_class_name())
+            print(person.Player_Name, person.Class_Name, sep=': ')
             self.movement.place_starting_player(person)
 
     def player_turn_loop(self):
@@ -31,14 +34,14 @@ class PlayerTurn(object):
                 while turn:
                     self.battle_map.print_map()
                     print('')
-                    print(person.get_class_name(), 'turn:')
+                    print(person.Player_Name, 'turn:')
                     value = self.print_action_menu(person, self.movement)
                     turn = self.process_player_selection(value, self.movement, person)
         return keep_playing
 
     def print_player_menu(self, player):
         print('')
-        print('Player Menu:', player.get_class_name())
+        print('Player Menu:', player.Player_Name)
         print('0: Exit Game')
         print('1: Player Turn')
         value = input("Input: ")

@@ -13,8 +13,7 @@ class MapInator(object):
     # used to create an X by Y sized Map
     def __init__(self, t, x=12, y=12):
         self.terrain_list = SubListManager(t)
-        self.X = x  # Size in X Tiles on the X-axis
-        self.Y = y  # Size in Y Tiles on the Y-axis
+        self.map_size = (x, y)
         self.main_list = []  # "List of rows"
         for i in range(y):
             sub_list = []  # List of Tiles
@@ -33,9 +32,6 @@ class MapInator(object):
             value = 0
         return basic_map_list[value]
 
-    def get_map_size(self):
-        return self.X, self.Y  # should return Tuple
-
     # Getter function to get a tile
     def get_tile(self, X, Y):
         Y_List = self.main_list[Y]  # find the Y value
@@ -48,35 +44,36 @@ class MapInator(object):
 
     def get_unit(self, X, Y):
         tile = self.get_tile(X, Y)
-        return tile.get_unit()
+        return tile.unit
 
     def set_unit(self, X, Y, unit):
         tile = self.get_tile(X, Y)
-        tile.set_unit(unit)
+        tile.unit = unit
 
     def set_tile_unoccupied(self, X, Y):
         tile = self.get_tile(X, Y)
-        tile.set_unit(None)
+        tile.set_unit_empty()
 
     def print_map(self):
+        x = self.map_size[0]
         print('')
         print('Map:')
-        print('*' * (self.X + 2))
-        for self.Sub_List in reversed(self.main_list):
+        print('*' * (x + 2))
+        for self.sub_list in reversed(self.main_list):
             print('*', end='')
-            for tile in self.Sub_List:
+            for tile in self.sub_list:
                 self.__print_tile(tile)
             print('*')
-        print('*' * (self.X + 2))
+        print('*' * (x + 2))
 
     def __print_tile(self, tile):  # Fix
         if tile.is_unoccupied():
             print(tile.get_terrain_char(), end='')
-        elif tile.get_unit() == 'Invalid':
+        elif tile.unit == 'Invalid':
             print(tile.get_terrain_char(), end='')
-        elif isinstance(tile.get_unit(), Player):
+        elif isinstance(tile.unit, Player):
             print('P', end='')
-        elif tile.get_unit() == 2:
+        elif tile.unit == 2:
             print('E', end='')
         else:
             print('Q', end='')
@@ -94,11 +91,6 @@ class Tile(object):
         self.unit = None
         if 'Unit' in self.terrain:
             self.unit = self.terrain['Unit']
-
-    # Getter functions for the X and Y coordinates
-
-    def get_coordinate(self):
-        return self.coordinate
 
     # Terrain Info and Effects
     def get_terrain_char(self):
@@ -126,13 +118,6 @@ class Tile(object):
     # if tileEffects[i]==effect:
     # return true
     # return false
-
-    # Unit: Getter and Setter
-    def get_unit(self):
-        return self.unit
-
-    def set_unit(self, unit):
-        self.unit = unit
 
     def set_unit_empty(self):
         self.unit = None
@@ -249,13 +234,13 @@ class Movement(object):
                 destination_cost = destination.get_terrain_movement_cost()
                 if unit.Stamina.can_spend(destination_cost):
                     unit.set_position(new_position)
-                    destination.set_unit(unit)
+                    destination.unit = unit
                     unit.Stamina.spend_stamina_points(destination_cost)
                     self.battle_map.set_tile_unoccupied(coordinate[0], coordinate[1])
                 else:
                     print('Insufficient Stamina')
             else:
-                print(destination.get_coordinate(), 'is occupied.')
+                print(destination.coordinate, 'is occupied.')
 
     def can_move(self, unit):  # optimize
         coordinate = unit.get_position()
@@ -263,7 +248,7 @@ class Movement(object):
         y = coordinate[1]
         value = False
         if unit.Stamina.get_stamina_points() > 0:
-            map_size = self.battle_map.get_map_size()
+            map_size = self.battle_map.map_size
             if 0 <= x < map_size[0] and 0 <= y + 1 < map_size[1]:
                 if self.battle_map.is_tile_unoccupied(x, y + 1):
                     value = True

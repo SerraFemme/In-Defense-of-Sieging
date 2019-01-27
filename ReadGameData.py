@@ -57,7 +57,7 @@ class SubListManager(object):
         self.sublist = listname
 
     def get_item(self, item):
-        for i in self.sublist.values():  # fix?
+        for i in self.sublist.values():
             for j in i:
                 if j['ID'] == item:
                     itemblock = j

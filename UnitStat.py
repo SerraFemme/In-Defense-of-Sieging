@@ -15,14 +15,14 @@ class StatTracker(object):
         else:
             return self.value
 
-    def set_value(self, newValue):
-        self.value = newValue
+    def set_value(self, new_value):
+        self.value = new_value
 
-    def add_value(self, newValue):
-        self.value += newValue
+    def add_value(self, new_value):
+        self.value += new_value
 
-    def subtract_value(self, newValue):
-        self.value -= newValue
+    def subtract_value(self, new_value):
+        self.value -= new_value
 
     # EffectList functions
     def get_effect_list(self):
@@ -35,9 +35,12 @@ class StatTracker(object):
 
     def add_effect(self, effect_name, value):
         self.EffectList.append((effect_name, value))
+        self.add_value(value)
 
     def remove_effect(self, effect_name):
-        self.EffectList.remove(self.get_effect(effect_name))
+        deleted = self.get_effect(effect_name)
+        self.subtract_value(deleted[1])
+        self.EffectList.remove(deleted)
 
     def has_effect(self, effect_name):
         v = False

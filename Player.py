@@ -1,4 +1,3 @@
-from ReadGameData import SubListManager
 from UnitStat import *
 
 
@@ -7,20 +6,18 @@ class Player(object):
     Primary class that stores and calculates all Player info
     """
 
-    def __init__(self, classitem, selectedClass):
-        self.classlist = SubListManager(classitem)
-        self.classinfo = self.classlist.get_item(selectedClass)
-        # self.Player_Name =
-        # self.Player_Number =
-        self.Class_Name = self.classinfo['ID']
+    def __init__(self, selected_class, name):
+        self.class_info = selected_class
+        self.Player_Name = name
+        self.Class_Name = self.class_info['ID']
         self.Position = None
-        self.FactionRestriction = self.classinfo['Allowed_Faction']
-        self.EquipmentRestriction = self.classinfo['Allowed_Equipment']
-        self.Stamina = Stamina(self.classinfo['Stamina_Pool'])
-        self.WeaponDamage = StatTracker()
+        self.Faction_Restriction = self.class_info['Allowed_Faction']
+        self.Equipment_Restriction = self.class_info['Allowed_Equipment']
+        self.Stamina = Stamina(self.class_info['Stamina_Pool'])
+        self.Weapon_Damage = StatTracker()
         self.Armor = StatTracker()
         self.Range_Bonus = StatTracker()
-        self.HandSize = StatTracker(self.classinfo['Hand_Size'])
+        self.HandSize = StatTracker(self.class_info['Hand_Size'])
         # self.PlayerDeck = Starting Deck
         self.Equipment = []  # Starting Equipment
         # self.Passive
@@ -32,13 +29,13 @@ class Player(object):
 
     def print_info(self):  # fix: prints None at end
         print('')
-        print('Class:', self.get_class_name())
-        print('Position:', self.get_position())
+        print('Class:', self.Class_Name)
+        print('Position:', self.Position)
         print('Stamina Pool:', self.Stamina.get_pool_size())
         print('Remaining Stamina:', self.Stamina.get_stamina_points())
-        print('Weapon Damage:', self.WeaponDamage.get_value())
-        print('Armor:', self.Armor.get_value())
-        print('Hand Size:', self.HandSize.get_value())
+        print('Weapon Damage:', self.Weapon_Damage.value)
+        print('Armor:', self.Armor.value)
+        print('Hand Size:', self.HandSize.value)
 
     def get_class_name(self):
         return self.Class_Name
