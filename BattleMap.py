@@ -301,8 +301,11 @@ class Movement(object):
         coordinate = unit.get_position()
         if 0 <= coordinate[0] + x < self.battle_map.map_size[0] and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
             destination = self.battle_map.get_tile(coordinate[0] + x, coordinate[1] + y)
-            if unit.Stamina.get_stamina_points() >= destination.get_terrain_movement_cost():
-                return True
+            if destination.is_unoccupied():
+                if unit.Stamina.get_stamina_points() >= destination.get_terrain_movement_cost():
+                    return True
+                else:
+                    return False
             else:
                 return False
         else:
