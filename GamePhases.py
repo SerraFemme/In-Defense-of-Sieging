@@ -14,11 +14,14 @@ class BattlePhase(object):
     def loop(self):
         global keep_playing
         keep_playing = True
+        global i
+        i = 1
         while keep_playing:
+            print('\n' + 'Turn', i, '\n' + 'Player Phase')
             keep_playing = self.player_phase.player_turn_loop()
             if keep_playing is False:
                 break
 
-            print('')
-            print('Enemy Turn: N/A')
-            print('')
+            print('\n' + 'Enemy Phase: N/A' + '\n')
+
+            i += 1

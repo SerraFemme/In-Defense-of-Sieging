@@ -14,13 +14,11 @@ class PlayerTurn(object):
         self.movement = move
 
     def setup_players(self):
-        print('')
-        print('Player Team:')
+        print('\n' + 'Player Team:')
         print('Choose starting positions')
         for person in self.player_team:
             self.battle_map.print_map()
-            print('')
-            print(person.Player_Name, person.Class_Name, sep=': ')
+            print('\n' + person.Player_Name, person.Class_Name, sep=': ')
             self.movement.place_starting_player(person)
 
     def player_turn_loop(self):
@@ -33,31 +31,34 @@ class PlayerTurn(object):
             if keep_playing is not False:
                 while turn:
                     self.battle_map.print_map()
-                    print('')
-                    print(person.Player_Name, 'turn:')
+                    print('\n' + 'Turn:', person.Player_Name)
                     value = self.print_action_menu(person, self.movement)
                     turn = self.process_player_selection(value, self.movement, person)
         return keep_playing
 
     def print_player_menu(self, player):
-        print('')
-        print('Player Menu:', player.Player_Name)
+        print('\n' + 'Player Menu:', player.Player_Name)
         print('0: Exit Game')
         print('1: Player Turn')
-        value = input("Input: ")
-        if value == '0':
-            return False
-        else:
-            return value
+        while True:
+            try:
+                value = input("Input: ")
+            except ValueError:
+                print('Invalid input, try again')
+            else:
+                if value == '0':
+                    return False
+                else:
+                    return value
 
     def print_action_menu(self, player, movement):
+        global i, action
         i = True
         while i:
             i = False
             s = []
             s.clear()
-            print('')
-            print(player.get_class_name(), end='')
+            print('\n' + player.get_class_name(), end='')
             print(': Remaining Stamina:', player.Stamina.get_stamina_points())
             print('0: Pass Turn')
             if player.Stamina.get_stamina_points() > 0:
@@ -71,12 +72,18 @@ class PlayerTurn(object):
                 s.append('1')
             print('2: Action')
             print('3: Print Player Info')
-            value = input("Input: ")
-            if value in s:
-                print('Improper selection')
-                print('')
-                i = True
-        return value
+            while True:
+                try:
+                    action = input("Input: ")
+                except ValueError:
+                    print('Improper input, try again')
+                else:
+                    if action in s:
+                        print('Improper selection' + '\n')
+                        i = True
+                    break
+
+        return action
 
     def process_player_selection(self, value, movement, player):
         v = True

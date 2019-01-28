@@ -8,6 +8,7 @@ class Player(object):
 
     def __init__(self, selected_class, name):
         self.class_info = selected_class
+        self.conscious = True
         self.Player_Name = name
         self.Class_Name = self.class_info['ID']
         self.Position = None
@@ -28,8 +29,7 @@ class Player(object):
         # upkeep
 
     def print_info(self):  # fix: prints None at end
-        print('')
-        print('Class:', self.Class_Name)
+        print('\n' + 'Class:', self.Class_Name)
         print('Position:', self.Position)
         print('Stamina Pool:', self.Stamina.get_pool_size())
         print('Remaining Stamina:', self.Stamina.get_stamina_points())

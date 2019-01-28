@@ -7,13 +7,13 @@ from TeamPopulator import TeamMaker
 
 def main():
     """
+    Copyright 2019, Russell Buckner, All rights reserved.
     Runs the Game.
     Battle Map only for now.
     """
 
     print('IN DEFENSE OF SIEGING')
-    print('By: Russell Buckner')
-    print('')
+    print('By: Russell Buckner' + '\n')
 
     r = MasterListManager()
     terrain_list = r.get_list('Terrain')

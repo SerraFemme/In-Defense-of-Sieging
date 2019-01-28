@@ -33,10 +33,10 @@ class MapInator(object):
         return basic_map_list[value]
 
     # Getter function to get a tile
-    def get_tile(self, X, Y):
-        Y_List = self.main_list[Y]  # find the Y value
-        X_Tile = Y_List[X]  # find the X value
-        return X_Tile  # return the tile
+    def get_tile(self, x, y):
+        y_list = self.main_list[y]  # find the Y value
+        x_tile = y_list[x]  # find the X value
+        return x_tile  # return the tile
 
     def is_tile_unoccupied(self, X, Y):
         tile = self.get_tile(X, Y)
@@ -56,8 +56,7 @@ class MapInator(object):
 
     def print_map(self):
         x = self.map_size[0]
-        print('')
-        print('Map:')
+        print('\n' + 'Map:')
         print('*' * (x + 2))
         for self.sub_list in reversed(self.main_list):
             print('*', end='')
@@ -148,17 +147,35 @@ class Movement(object):
                 value = False
 
     def place_starting_player(self, player):
+        x = self.battle_map.map_size[0]
+        y = self.battle_map.map_size[1]
         value = True
         while value:
             print('Choose starting position in the bottom 3 rows:')
-            x_place = int(input('Enter a value 0 to 11 for X: '))
-            while x_place < 0 or x_place > 11:
-                print(x_place, 'is invalid for X')
-                x_place = int(input('Enter a value 0 to 11 for X: '))
-            y_place = int(input('Enter a value 0 to 2 for Y: '))
-            while y_place < 0 or y_place > 2:
-                print(y_place, 'is invalid for Y')
-                y_place = int(input('Enter a value 0 to 2 for Y: '))
+
+            while True:
+                try:
+                    print('Enter a value 0 to', x - 1, end='')
+                    x_place = int(input(' for X: '))
+                except ValueError:
+                    print('Invalid input, try again' + '\n')
+                else:
+                    if 0 <= x_place < x:
+                        break
+                    else:
+                        print(x_place, 'is invalid for X')
+
+            while True:
+                try:
+                    y_place = int(input('Enter a value 0 to 2 for Y: '))
+                except ValueError:
+                    print('Invalid input, try again' + '\n')
+                else:
+                    if 0 <= y_place < 2:
+                        break
+                    else:
+                        print(x_place, 'is invalid for y')
+
             if self.battle_map.is_tile_unoccupied(x_place, y_place):
                 self.battle_map.set_unit(x_place, y_place, player)
                 player.set_position((x_place, y_place))
@@ -166,26 +183,25 @@ class Movement(object):
             else:
                 print(x_place, ',', y_place, 'is occupied.')
 
-    def place_unit(self):
-        value = True
-        print('')
-        print('Choose a new unoccupied position:')
-        while value:
-            x_place = int(input('Enter a value 0 to 11 for X: '))
-            while x_place < 0 or x_place > 11:
-                print(x_place, 'is invalid for X')
-                x_place = int(input('Enter a value 0 to 11 for X: '))
-            y_place = int(input('Enter a value 0 to 11 for Y: '))
-            while y_place < 0 or y_place > 11:
-                print(y_place, 'is invalid for Y')
-                y_place = int(input('Enter a value 0 to 11 for Y: '))
-            if self.battle_map.is_tile_unoccupied(x_place, y_place):
-                self.battle_map.set_unit(x_place, y_place, 1)
-                value = False
-            else:
-                print(x_place, ',', y_place, 'is occupied.')
-                value = True
-        return x_place, y_place
+    # def place_unit(self):  # teleports unit
+    #     value = True
+    #     print('\n' + 'Choose a new unoccupied position:')
+    #     while value:
+    #         x_place = int(input('Enter a value 0 to 11 for X: '))
+    #         while x_place < 0 or x_place > 11:
+    #             print(x_place, 'is invalid for X')
+    #             x_place = int(input('Enter a value 0 to 11 for X: '))
+    #         y_place = int(input('Enter a value 0 to 11 for Y: '))
+    #         while y_place < 0 or y_place > 11:
+    #             print(y_place, 'is invalid for Y')
+    #             y_place = int(input('Enter a value 0 to 11 for Y: '))
+    #         if self.battle_map.is_tile_unoccupied(x_place, y_place):
+    #             self.battle_map.set_unit(x_place, y_place, 1)
+    #             value = False
+    #         else:
+    #             print(x_place, ',', y_place, 'is occupied.')
+    #             value = True
+    #     return x_place, y_place
 
     def move_player(self, player):
         print('Which direction would you like to go?')
@@ -193,8 +209,23 @@ class Movement(object):
         print('2: Right')
         print('3: Down')
         print('4: Left')
-        direction = int(input('Select Direction: '))
-        distance = int(input('Enter distance: '))
+        while True:
+            try:
+                direction = int(input('Select Direction: '))
+            except ValueError:
+                print('Invalid input, try again' + '\n')
+            else:
+                if 0 < direction <= 4:
+                    break
+                else:
+                    print(direction, 'is not a valid selection, try again' + '\n')
+        while True:
+            try:
+                distance = int(input('Enter distance: '))
+            except ValueError:
+                print('Invalid input, try again')
+            else:
+                break
         self.move_unit(player, direction, distance)
 
     def move_unit(self, unit, direction, distance):
@@ -259,7 +290,7 @@ class Movement(object):
                 if self.battle_map.is_tile_unoccupied(x, y - 1):
                     value = True
             if 0 <= x - 1 < map_size[0] and 0 <= y < map_size[1]:
-                if self.battle_map.is_tile_unoccupied(x + 1, y):
+                if self.battle_map.is_tile_unoccupied(x - 1, y):
                     value = True
         else:
             print(unit.get_class_name(), 'has',
@@ -268,9 +299,12 @@ class Movement(object):
 
     def can_move_onto_tile(self, unit, x, y):
         coordinate = unit.get_position()
-        destination = self.battle_map.get_tile(coordinate[0] + x, coordinate[1] + y)
-        if unit.Stamina.get_stamina_points() >= destination.get_terrain_movement_cost():
-            return True
+        if 0 <= coordinate[0] + x < self.battle_map.map_size[0] and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
+            destination = self.battle_map.get_tile(coordinate[0] + x, coordinate[1] + y)
+            if unit.Stamina.get_stamina_points() >= destination.get_terrain_movement_cost():
+                return True
+            else:
+                return False
         else:
             return False
 
