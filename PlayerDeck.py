@@ -15,7 +15,7 @@ Permanents are the Buffs and Debuffs owned by the Player that are active
 
 # Wounds Pile
 
-# Scar Deck
+# Scars Pile
 
 # Hand
 

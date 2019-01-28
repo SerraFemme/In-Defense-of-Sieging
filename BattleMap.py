@@ -171,10 +171,10 @@ class Movement(object):
                 except ValueError:
                     print('Invalid input, try again' + '\n')
                 else:
-                    if 0 <= y_place < 2:
+                    if 0 <= y_place <= 2:
                         break
                     else:
-                        print(x_place, 'is invalid for y')
+                        print(y_place, 'is invalid for y')
 
             if self.battle_map.is_tile_unoccupied(x_place, y_place):
                 self.battle_map.set_unit(x_place, y_place, player)

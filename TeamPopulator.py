@@ -18,6 +18,7 @@ class TeamMaker(object):
         value = True
         while value:
             try:
+                print('Create your team:')
                 v = int(input('\n' + 'Enter number of Players (1-4): '))
                 if 0 < v <= 4:
                     value = False
@@ -28,9 +29,11 @@ class TeamMaker(object):
             else:
                 break
 
+        available_classes = self.__available_classes()
         for i in range(v):
             name = input('\n' + 'Enter Player Name: ')
-            selected_class = self.__select_class()
+            selected_class = self.__select_class(available_classes)
+            print(name, selected_class, sep=': ')
             class_info = self.class_list.get_item(selected_class)
             player = Player(class_info, name)
             # give player starting equipment
@@ -38,8 +41,7 @@ class TeamMaker(object):
             self.player_list.append(player)
         return self.player_list
 
-    def __select_class(self):
-        item_list = self.class_list.get_list()
+    def __select_class(self, item_list):
         print('\n' + 'Select Class:')
         for i, item in enumerate(item_list):
             print(i, item['ID'], sep=': ')
@@ -51,5 +53,10 @@ class TeamMaker(object):
             else:
                 break
 
-        selection = item_list[v]
+        selection = item_list.pop(v)
         return selection['ID']
+
+    def __available_classes(self):
+        item_list = self.class_list.get_list()
+        return item_list
+

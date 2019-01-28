@@ -24,16 +24,19 @@ class PlayerTurn(object):
     def player_turn_loop(self):
         keep_playing = True
         for person in self.player_team:
-            person.turn_beginning()
-            turn = True
-            self.battle_map.print_map()
-            keep_playing = self.print_player_menu(person)
-            if keep_playing is not False:
-                while turn:
-                    self.battle_map.print_map()
-                    print('\n' + 'Turn:', person.Player_Name)
-                    value = self.print_action_menu(person, self.movement)
-                    turn = self.process_player_selection(value, self.movement, person)
+            if person.conscious is True:
+                person.turn_beginning()
+                turn = True
+                self.battle_map.print_map()
+                keep_playing = self.print_player_menu(person)
+                if keep_playing is not False:
+                    while turn:
+                        self.battle_map.print_map()
+                        print('\n' + 'Turn:', person.Player_Name)
+                        value = self.print_action_menu(person, self.movement)
+                        turn = self.process_player_selection(value, self.movement, person)
+            else:
+                print(person.Player_Name, 'is unconscious. Passing Turn' + '\n')
         return keep_playing
 
     def print_player_menu(self, player):
