@@ -6,7 +6,8 @@
       "Equipment_Type": "Melee",
       "Reward_Type": "Equipment",
       "Name": "Dagger",
-      "Damage": 2
+      "Damage": 2,
+      "Stamina": 1
     },
     {
       "ID": "MartialMelee2",
@@ -30,7 +31,8 @@
       "Equipment_Type": "Melee",
       "Reward_Type": "Equipment",
       "Name": "Greatsword",
-      "Damage": 5
+      "Damage": 5,
+      "Stamina": -1
     },
     {
       "ID": "MartialMelee5",
@@ -67,11 +69,7 @@
       "Name": "Duelist’s Cane",
       "Damage": 1,
       "Armor": 1,
-      "Stamina": -1,
-      "Special": [
-        {
-        }
-      ]
+      "Stamina": -1
     },
     {
       "ID": "MartialRanged1",
@@ -96,7 +94,7 @@
       "Faction_Type": "Martial",
       "Equipment_Type": "Ranged",
       "Reward_Type": "Equipment",
-      "Name": "Long Bow",
+      "Name": "Crossbow",
       "Damage": 4,
       "Range": 2,
       "Stamina": -1
@@ -119,12 +117,7 @@
       "Name": "Arbalest",
       "Damage": 6,
       "Range": 2,
-      "Stamina": -2,
-      "Special": [
-        {
-          "Range_Restriction": "In-Line"
-        }
-      ]
+      "Stamina": -2
     },
     {
       "ID": "MartialRanged6",
@@ -275,8 +268,7 @@
       "Equipment_Type": "Armor",
       "Reward_Type": "Equipment",
       "Name": "Leather Armor",
-      "Armor": 1,
-      "Stamina": -1
+      "Armor": 1
     },
     {
       "ID": "MartialArmor2",
@@ -285,7 +277,7 @@
       "Reward_Type": "Equipment",
       "Name": "Chain Mail",
       "Armor": 2,
-      "Stamina": -2
+      "Stamina": -1
     },
     {
       "ID": "MartialArmor3",
@@ -294,7 +286,7 @@
       "Reward_Type": "Equipment",
       "Name": "Full Plate",
       "Armor": 3,
-      "Stamina": -3
+      "Stamina": -2
     }
   ]
 }

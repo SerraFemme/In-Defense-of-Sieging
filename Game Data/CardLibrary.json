@@ -406,7 +406,7 @@
       "Card_Type": "Debuff",
       "Deck_Type": "Skill",
       "Name": "Mark",
-      "Text": "Increase incoming damage by 1",
+      "Text": "Take an additional 1 damage from attack cards",
       "Stamina_Cost": 1,
       "Effects": [
         {

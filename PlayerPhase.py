@@ -153,7 +153,7 @@ class PlayerTurn(object):
                 except ValueError:
                     print('Invalid input, try again')
                 else:
-                    if action in s:
+                    if action in s:  # fix
                         print('Improper selection' + '\n')
                         b = True
                     break
