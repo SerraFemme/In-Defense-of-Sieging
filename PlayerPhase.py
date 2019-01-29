@@ -145,11 +145,12 @@ class PlayerTurn(object):
             print('2: Action')
             print('3: Print Player Info')
             print('4: Print Equipment Info')
+            print('5: Print your current tile info')
             while True:
                 try:
-                    action = input("Input: ")
+                    action = int(input("Input: "))
                 except ValueError:
-                    print('Improper input, try again')
+                    print('Invalid input, try again')
                 else:
                     if action in s:
                         print('Improper selection' + '\n')
@@ -160,17 +161,21 @@ class PlayerTurn(object):
 
     def process_player_selection(self, value, movement, player):
         b = True
-        if value == '0':
+        if value == 0:
             b = False
-        elif value == '1':
+        elif value == 1:
             movement.move_player(player)
-        elif value == '2':
+        elif value == 2:
             print('No actions yet')
-        elif value == '3':
+        elif value == 3:
             print(player.print_info())
-        elif value == '4':
+        elif value == 4:
             print('')
             for k in player.Equipment:
                 k.print_info()
                 print('')
+        elif value == 5:
+            print('')
+            tile = self.battle_map.get_tile(player.Position[0], player.Position[1])
+            tile.print_info()
         return b

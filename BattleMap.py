@@ -124,6 +124,18 @@ class Tile(object):
     def is_unoccupied(self):
         return self.unit is None
 
+    def print_info(self):
+        print('Type:', self.terrain['ID'])
+        print('Icon: [' + self.terrain['Char'] + ']')
+        if 'Movement_Cost' in self.terrain:
+            print('Movement Cost:', self.terrain['Movement_Cost'])
+        else:
+            print('Cannot be moved onto')
+        if self.unit == 'Invalid':
+            print('Cannot be occupied')
+        else:
+            print('Occupied:', type(self.unit))
+
 
 class TerrainGenerator(object):
     pass

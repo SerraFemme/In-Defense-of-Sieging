@@ -6,11 +6,12 @@ class Enemy(object):
     Primary class that stores and calculates all Player info
     """
 
-    def __init__(self, race, role):
+    def __init__(self, race, role, number):
         self.race_info = race
         self.role_info = role
         self.Race_Name = self.race_info['ID']
         self.Role_Name = self.race_info['ID']
+        self.Enemy_Number = number
         self.Position = None
         self.Health_Points = self.race_info['Base_Health'] + self.role_info['Bonus_Health']
         self.Stamina = Stamina(self.race_info['Stamina_Pool'] + self.role_info['Bonus_SP'])
@@ -25,7 +26,7 @@ class Enemy(object):
         # mulligan phase
         # upkeep
 
-    def print_info(self):  # fix: prints None at end
+    def print_info(self):  # fix: prints None at end?
         print('\n' + self.Race_Name, self.Role_Name)
         print('Position:', self.Position)
         print('Health:', self.Health_Points)
@@ -36,7 +37,7 @@ class Enemy(object):
         print('Armor:', self.Armor.value)
 
     def get_enemy_name(self):
-        return self.Race_Name + self.Role_Name
+        return self.Race_Name + ' ' + self.Role_Name
 
     # Equipment Stuff
     def get_equipped_list(self):
