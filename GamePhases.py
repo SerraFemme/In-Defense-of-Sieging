@@ -10,11 +10,12 @@ class BattlePhase(object):
     """
     def __init__(self, player_phase):
         self.player_phase = player_phase
+        # self.enemy_phase = enemy_phase
 
     def loop(self):
         global keep_playing
         keep_playing = True
-        global i
+        global i  # turn counter
         i = 1
         while keep_playing:
             print('\n' + 'Turn', i, '\n' + 'Player Phase')

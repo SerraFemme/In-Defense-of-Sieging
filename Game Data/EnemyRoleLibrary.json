@@ -2,6 +2,7 @@
   "Enemy Role": [
     {
       "ID": "Grunt",
+      "Char": "G",
       "Bonus_Health": 0,
       "Bonus_Armor": 0,
       "Bonus_SP": 0,
@@ -15,6 +16,7 @@
     },
     {
       "ID": "Champion",
+      "Char": "C",
       "Bonus_Health": 4,
       "Bonus_Armor": 2,
       "Bonus_SP": 0,
@@ -28,6 +30,7 @@
     },
     {
       "ID": "Executioner",
+      "Char": "E",
       "Bonus_Health": 10,
       "Bonus_Armor": 0,
       "Bonus_SP": 1,
@@ -41,6 +44,7 @@
     },
     {
       "ID": "Caster",
+      "Char": "M",
       "Bonus_Health": 8,
       "Bonus_Armor": 0,
       "Bonus_SP": 1,
@@ -54,6 +58,7 @@
     },
     {
       "ID": "Assassin",
+      "Char": "A",
       "Bonus_Health": 6,
       "Bonus_Armor": 0,
       "Bonus_SP": 1,

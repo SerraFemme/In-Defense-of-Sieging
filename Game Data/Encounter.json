@@ -2,6 +2,7 @@
   "Encounter": [
     {
       "ID": "Encounter0",
+      "Name": "Goblin Scouting Party",
       "Tribe": "Goblin",
       "Difficulty": "Easy",
       "Enemies": [
@@ -10,7 +11,7 @@
           "Race": "Goblin",
           "Role": "Caster",
           "Equipment": [
-            "ArcaneRanged2"
+            "ArcaneRanged1"
           ]
         },
         {

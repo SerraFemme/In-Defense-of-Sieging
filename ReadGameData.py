@@ -58,6 +58,7 @@ class SubListManager(object):
         self.sublist = list_name
 
     def get_item(self, item):
+        item_block = None
         for i in self.sublist.values():
             for j in i:
                 if j['ID'] == item:

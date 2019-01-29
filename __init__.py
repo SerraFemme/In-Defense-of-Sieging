@@ -29,14 +29,13 @@ def main():
     t = TeamMaker(class_list, starting_equipment, equipment_list)
     player_team = t.team_init()
 
-    # horde = HordeMaker(encounter_list, races, roles, equipment_list)
-    # enemy_team = horde
+    horde = HordeMaker(battle_map, movement, encounter_list, races, roles, equipment_list, len(player_team))
+    enemy_team = horde.create_enemy_horde()
 
     player_phase = PlayerTurn(player_team, battle_map, movement)
 
     # enemy_phase = EnemyTurn(enemy_team, battle_map, movement)
 
-    movement.place_enemy_random(2)
 
     player_phase.setup_players()
 

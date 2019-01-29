@@ -1,6 +1,7 @@
 from random import randrange
 from ReadGameData import SubListManager
 from Player import Player
+from Enemy import Enemy
 
 
 class MapInator(object):
@@ -72,8 +73,8 @@ class MapInator(object):
             print(tile.get_terrain_char(), end='')
         elif isinstance(tile.unit, Player):
             print(tile.unit.Player_Number, end='')
-        elif tile.unit == 2:  # Enemy char
-            print('E', end='')
+        elif isinstance(tile.unit, Enemy):
+            print(tile.unit.Char, end='')
         else:  # something completely different
             print('Q', end='')
 
@@ -156,6 +157,7 @@ class Movement(object):
             y = randrange(9, 11)
             if self.battle_map.is_tile_unoccupied(x, y):
                 self.battle_map.set_unit(x, y, enemy)
+                enemy.Position = (x, y)
                 value = False
 
     def place_starting_player(self, player):

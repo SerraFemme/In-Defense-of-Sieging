@@ -11,6 +11,7 @@ class Enemy(object):
         self.role_info = role
         self.Race_Name = self.race_info['ID']
         self.Role_Name = self.race_info['ID']
+        self.Char = self.role_info['Char']
         self.Enemy_Number = number
         self.Position = None
         self.Health_Points = self.race_info['Base_Health'] + self.role_info['Bonus_Health']
