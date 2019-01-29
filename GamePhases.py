@@ -22,6 +22,7 @@ class BattlePhase(object):
             if keep_playing is False:
                 break
 
-            print('\n' + 'Enemy Phase: N/A' + '\n')
+            print('\n' + 'Turn', i, '\n' + 'Enemy Phase')
+            print('N/A')
 
             i += 1

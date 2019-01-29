@@ -75,6 +75,7 @@ class PlayerTurn(object):
                 s.append('1')
             print('2: Action')
             print('3: Print Player Info')
+            print('4: Print Equipment Info')
             while True:
                 try:
                     action = input("Input: ")
@@ -98,4 +99,9 @@ class PlayerTurn(object):
             print('No actions yet')
         elif value == '3':
             print(player.print_info())
+        elif value == '4':
+            print('')
+            for k in player.Equipment:
+                k.print_info()
+                print('')
         return v

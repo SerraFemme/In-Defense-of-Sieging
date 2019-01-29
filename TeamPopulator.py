@@ -1,5 +1,6 @@
 from ReadGameData import SubListManager
 from Player import Player
+from Equipment import Equipment
 
 """
 Module that asks the Player to enter their name, then select which class they would
@@ -8,8 +9,9 @@ Module that asks the Player to enter their name, then select which class they wo
 
 
 class TeamMaker(object):
-    def __init__(self, c, e):
+    def __init__(self, c, s, e):
         self.class_list = SubListManager(c)
+        self.starting_equipment = SubListManager(s)
         self.equipment_list = SubListManager(e)
         self.player_list = []
 
@@ -36,7 +38,7 @@ class TeamMaker(object):
             print(name, selected_class, sep=': ')
             class_info = self.class_list.get_item(selected_class)
             player = Player(class_info, name)
-            # give player starting equipment
+            self.equip_starting_equipment(player, self.starting_equipment.get_item(selected_class), self.equipment_list)
             # give player starting deck
             self.player_list.append(player)
         return self.player_list
@@ -60,3 +62,8 @@ class TeamMaker(object):
         item_list = self.class_list.get_list()
         return item_list
 
+    def equip_starting_equipment(self, player, s_equip, equip_list):
+        s_list = s_equip['Starting_Equipment']
+        for i in s_list:
+            e = Equipment(equip_list.get_item(i))
+            player.add_equipment(e)

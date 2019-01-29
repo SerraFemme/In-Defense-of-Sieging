@@ -1,339 +1,300 @@
 {
-"Equipment": [
-  {
-    "ID": "MartialMelee1",
-    "Faction_Type": "Martial",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Dagger",
-    "Base_Damage": 2
-  },
-  {
-    "ID": "MartialMelee2",
-    "Faction_Type": "Martial",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Shortsword",
-    "Base_Damage": 3
-  },
-  {
-    "ID": "MartialMelee3",
-    "Faction_Type": "Martial",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Longsword",
-    "Base_Damage": 4
-  },
-  {
-    "ID": "MartialMelee4",
-    "Faction_Type": "Martial",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Greatsword",
-    "Base_Damage": 5
-  },
-  {
-    "ID": "MartialMelee5",
-    "Faction_Type": "Martial",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Great Hammer",
-    "Base_Damage": 4,
-    "Bonus_SP": -1,
-    "Special": [
-      {
-        "Bludgeon": 2
-      }
-    ]
-  },
-  {
-    "ID": "MartialMelee6",
-    "Faction_Type": "Martial",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Great Axe",
-    "Base_Damage": 6,
-    "Bonus_SP": -1
-  },
-  {
-    "ID": "MartialMelee7",
-    "Faction_Type": "Martial",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Great Club",
-    "Base_Damage": 8,
-    "Bonus_SP": -2
-  },
-  {
-    "ID": "MartialMelee8",
-    "Faction_Type": "Martial",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Duelist’s Cane",
-    "Base_Damage": 1,
-    "Bonus_Armor": 1,
-    "Bonus_SP": -1,
-    "Special": [
-      {
-      }
-    ]
-  },
-  {
-    "ID": "MartialRanged1",
-    "Faction_Type": "Martial",
-    "Card_Type": "Ranged",
-    "Deck_Type": "Equipment",
-    "name": "Short Bow",
-    "Base_Damage": 2,
-    "Bonus_SP": 2
-  },
-  {
-    "ID": "MartialRanged2",
-    "Faction_Type": "Martial",
-    "Card_Type": "Ranged",
-    "Deck_Type": "Equipment",
-    "Name": "Long Bow",
-    "Base_Damage": 3,
-    "Bonus_Range": 3
-  },
-  {
-    "ID": "MartialRanged3",
-    "Faction_Type": "Martial",
-    "Card_Type": "Ranged",
-    "Deck_Type": "Equipment",
-    "Name": "Long Bow",
-    "Base_Damage": 4,
-    "Bonus_Range": 2,
-    "Bonus_SP": -1
-  },
-  {
-    "ID": "MartialRanged4",
-    "Faction_Type": "Martial",
-    "Card_Type": "Ranged",
-    "Deck_Type": "Equipment",
-    "name": "Great Bow",
-    "Base_Damage": 5,
-    "Bonus_Range": 4,
-    "Bonus_SP": -3
-  },
-  {
-    "ID": "MartialRanged5",
-    "Faction_Type": "Martial",
-    "Card_Type": "Ranged",
-    "Deck_Type": "Equipment",
-    "Name": "Arbalest",
-    "Base_Damage": 6,
-    "Bonus_Range": 2,
-    "Bonus_SP": -2,
-    "Special": [
-      {
-        "Range_Restriction": "In-Line"
-      }
-    ]
-  },
-  {
-    "ID": "MartialRanged6",
-    "Faction_Type": "Martial",
-    "Card_Type": "Ranged",
-    "Deck_Type": "Equipment",
-    "Name": "Mortar Launcher",
-    "Base_Damage": 6,
-    "Bonus_Range": 4,
-    "Bonus_SP": -2,
-    "Special": [
-      {
-
-      }
-    ]
-  },
-  {
-    "ID": "MartialRanged7",
-    "Faction_Type": "Martial",
-    "Card_Type": "Ranged",
-    "Deck_Type": "Equipment",
-    "Name": "Blunderbuss",
-    "Base_Damage": 7,
-    "Bonus_SP": -2,
-    "Special": [
-      {
-        "Range_Restriction": "Close"
-      }
-    ]
-  },
-  {
-    "ID": "ArcaneMelee1",
-    "Faction_Type": "Arcane",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Spellblade’s Sidesword",
-    "Base_Damage": 4,
-    "Special": [
-      {
-        "Range_Restriction": "In-Line"
-      }
-    ]
-  },
-  {
-    "ID": "ArcaneMelee2",
-    "Faction_Type": "Arcane",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Arcane Scythe",
-    "Base_Damage": 4,
-    "Bonus_Range": 1,
-    "Bonus_SP": -1
-  },
-  {
-    "ID": "ArcaneMelee3",
-    "Faction_Type": "Arcane",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Arcane Pike",
-    "Base_Damage": 5,
-    "Bonus_Range": 1,
-    "Bonus_SP": -1,
-    "Special": [
-      {
-      }
-    ]
-  },
-  {
-    "ID": "ArcaneRanged1",
-    "Faction_Type": "Arcane",
-    "Card_Type": "Ranged",
-    "Deck_Type": "Equipment",
-    "Name": "Wand",
-    "Base_Damage": 3,
-    "Bonus_Range": 3
-  },
-  {
-    "ID": "ArcaneRanged2",
-    "Faction_Type": "Arcane",
-    "Card_Type": "Ranged",
-    "Deck_Type": "Equipment",
-    "Name": "Wizard’s Staff",
-    "Base_Damage": 4,
-    "Bonus_Range": 2
-  },
-  {
-    "ID": "DivineMelee1",
-    "Faction_Type": "Divine",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Holy Dagger",
-    "Base_Damage": 2
-  },
-  {
-    "ID": "DivineMelee2",
-    "Faction_Type": "Divine",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Holy Mace",
-    "Base_Damage": 3,
-    "Special": [
-      {
-        "Bludgeon": 1
-      }
-    ]
-  },
-  {
-    "ID": "DivineMelee3",
-    "Faction_Type": "Divine",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Holy Flail",
-    "Base_Damage": 4,
-    "Bonus_Range": 1,
-    "Bonus_SP": -1,
-    "Special": [
-      {
-        "Bludgeon": 1
-      }
-    ]
-  },
-  {
-    "ID": "DivineMelee4",
-    "Faction_Type": "Divine",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Holy Greatsword",
-    "Base_Damage": 5
-  },
-  {
-    "ID": "DivineMelee5",
-    "Faction_Type": "Divine",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Holy Great Hammer",
-    "Base_Damage": 4,
-    "Bonus_SP": -1,
-    "Special": [
-      {
-        "Bludgeon": 2
-      }
-    ]
-  },
-  {
-    "ID": "DivineMelee6",
-    "Faction_Type": "Divine",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Holy Fists",
-    "Base_Damage": 0,
-    "Bonus_SP": 6
-  },
-  {
-    "ID": "DivineRanged1",
-    "Faction_Type": "Arcane",
-    "Card_Type": "Melee",
-    "Deck_Type": "Equipment",
-    "Name": "Holy Staff",
-    "Base_Damage": 4,
-    "Bonus_Range": 2,
-    "Bonus_SP": -1
-  },
-  {
-    "ID": "MartialShield1",
-    "Faction_Type": "Martial",
-    "Card_Type": "Shield",
-    "Deck_Type": "Equipment",
-    "Name": "Shield"
-  },
-  {
-    "ID": "MartialShield2",
-    "Faction_Type": "Martial",
-    "Card_Type": "Shield",
-    "Deck_Type": "Equipment",
-    "Name": "Tower Shield",
-    "Bonus_Armor": 1,
-    "Bonus_SP": -1
-  },
-  {
-    "ID": "MartialArmor1",
-    "Faction_Type": "Martial",
-    "Card_Type": "Armor",
-    "Deck_Type": "Equipment",
-    "Name": "Leather Armor",
-    "Bonus_Armor": 1,
-    "Bonus_SP": -1
-  },
-  {
-    "ID": "MartialArmor2",
-    "Faction_Type": "Martial",
-    "Card_Type": "Armor",
-    "Deck_Type": "Equipment",
-    "Name": "Chain Mail",
-    "Bonus_Armor": 2,
-    "Bonus_SP": -2
-  },
-  {
-    "ID": "MartialArmor3",
-    "Faction_Type": "Martial",
-    "Card_Type": "Armor",
-    "Deck_Type": "Equipment",
-    "Name": "Full Plate",
-    "Bonus_Armor": 3,
-    "Bonus_SP": -3
-  }
-]
+  "Equipment": [
+    {
+      "ID": "MartialMelee1",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Dagger",
+      "Damage": 2
+    },
+    {
+      "ID": "MartialMelee2",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Shortsword",
+      "Damage": 3
+    },
+    {
+      "ID": "MartialMelee3",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Longsword",
+      "Damage": 4
+    },
+    {
+      "ID": "MartialMelee4",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Greatsword",
+      "Damage": 5
+    },
+    {
+      "ID": "MartialMelee5",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Great Hammer",
+      "Damage": 4,
+      "Stamina": -1
+    },
+    {
+      "ID": "MartialMelee6",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Great Axe",
+      "Damage": 6,
+      "Stamina": -1
+    },
+    {
+      "ID": "MartialMelee7",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Great Club",
+      "Damage": 8,
+      "Stamina": -2
+    },
+    {
+      "ID": "MartialMelee8",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Duelist’s Cane",
+      "Damage": 1,
+      "Armor": 1,
+      "Stamina": -1,
+      "Special": [
+        {
+        }
+      ]
+    },
+    {
+      "ID": "MartialRanged1",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Ranged",
+      "Reward_Type": "Equipment",
+      "name": "Short Bow",
+      "Damage": 2,
+      "Stamina": 2
+    },
+    {
+      "ID": "MartialRanged2",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Ranged",
+      "Reward_Type": "Equipment",
+      "Name": "Long Bow",
+      "Damage": 3,
+      "Range": 3
+    },
+    {
+      "ID": "MartialRanged3",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Ranged",
+      "Reward_Type": "Equipment",
+      "Name": "Long Bow",
+      "Damage": 4,
+      "Range": 2,
+      "Stamina": -1
+    },
+    {
+      "ID": "MartialRanged4",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Ranged",
+      "Reward_Type": "Equipment",
+      "name": "Great Bow",
+      "Damage": 5,
+      "Range": 4,
+      "Stamina": -3
+    },
+    {
+      "ID": "MartialRanged5",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Ranged",
+      "Reward_Type": "Equipment",
+      "Name": "Arbalest",
+      "Damage": 6,
+      "Range": 2,
+      "Stamina": -2,
+      "Special": [
+        {
+          "Range_Restriction": "In-Line"
+        }
+      ]
+    },
+    {
+      "ID": "MartialRanged6",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Ranged",
+      "Reward_Type": "Equipment",
+      "Name": "Mortar Launcher",
+      "Damage": 6,
+      "Range": 4,
+      "Stamina": -2
+    },
+    {
+      "ID": "MartialRanged7",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Ranged",
+      "Reward_Type": "Equipment",
+      "Name": "Blunderbuss",
+      "Damage": 7,
+      "Stamina": -2
+    },
+    {
+      "ID": "ArcaneMelee1",
+      "Faction_Type": "Arcane",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Spellblade’s Sidesword",
+      "Damage": 4
+    },
+    {
+      "ID": "ArcaneMelee2",
+      "Faction_Type": "Arcane",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Arcane Scythe",
+      "Damage": 4,
+      "Range": 1,
+      "Stamina": -1
+    },
+    {
+      "ID": "ArcaneMelee3",
+      "Faction_Type": "Arcane",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Arcane Pike",
+      "Damage": 5,
+      "Range": 1,
+      "Stamina": -1
+    },
+    {
+      "ID": "ArcaneRanged1",
+      "Faction_Type": "Arcane",
+      "Equipment_Type": "Ranged",
+      "Reward_Type": "Equipment",
+      "Name": "Wand",
+      "Damage": 3,
+      "Range": 3
+    },
+    {
+      "ID": "ArcaneRanged2",
+      "Faction_Type": "Arcane",
+      "Equipment_Type": "Ranged",
+      "Reward_Type": "Equipment",
+      "Name": "Wizard’s Staff",
+      "Damage": 4,
+      "Range": 2
+    },
+    {
+      "ID": "DivineMelee1",
+      "Faction_Type": "Divine",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Holy Dagger",
+      "Damage": 2
+    },
+    {
+      "ID": "DivineMelee2",
+      "Faction_Type": "Divine",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Holy Mace",
+      "Damage": 3
+    },
+    {
+      "ID": "DivineMelee3",
+      "Faction_Type": "Divine",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Holy Flail",
+      "Damage": 4,
+      "Range": 1,
+      "Stamina": -1
+    },
+    {
+      "ID": "DivineMelee4",
+      "Faction_Type": "Divine",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Holy Greatsword",
+      "Damage": 5
+    },
+    {
+      "ID": "DivineMelee5",
+      "Faction_Type": "Divine",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Holy Great Hammer",
+      "Damage": 4,
+      "Stamina": -1
+    },
+    {
+      "ID": "DivineMelee6",
+      "Faction_Type": "Divine",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Holy Fists",
+      "Damage": 0,
+      "Stamina": 6
+    },
+    {
+      "ID": "DivineRanged1",
+      "Faction_Type": "Arcane",
+      "Equipment_Type": "Melee",
+      "Reward_Type": "Equipment",
+      "Name": "Holy Staff",
+      "Damage": 4,
+      "Range": 2,
+      "Stamina": -1
+    },
+    {
+      "ID": "MartialShield1",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Shield",
+      "Reward_Type": "Equipment",
+      "Name": "Shield"
+    },
+    {
+      "ID": "MartialShield2",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Shield",
+      "Reward_Type": "Equipment",
+      "Name": "Tower Shield",
+      "Armor": 1,
+      "Stamina": -1
+    },
+    {
+      "ID": "MartialArmor1",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Armor",
+      "Reward_Type": "Equipment",
+      "Name": "Leather Armor",
+      "Armor": 1,
+      "Stamina": -1
+    },
+    {
+      "ID": "MartialArmor2",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Armor",
+      "Reward_Type": "Equipment",
+      "Name": "Chain Mail",
+      "Armor": 2,
+      "Stamina": -2
+    },
+    {
+      "ID": "MartialArmor3",
+      "Faction_Type": "Martial",
+      "Equipment_Type": "Armor",
+      "Reward_Type": "Equipment",
+      "Name": "Full Plate",
+      "Armor": 3,
+      "Stamina": -3
+    }
+  ]
 }

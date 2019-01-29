@@ -17,7 +17,7 @@ class Player(object):
         self.Stamina = Stamina(self.class_info['Stamina_Pool'])
         self.Weapon_Damage = StatTracker()
         self.Armor = StatTracker()
-        self.Range_Bonus = StatTracker()
+        self.Bonus_Range = StatTracker()
         self.HandSize = StatTracker(self.class_info['Hand_Size'])
         # self.PlayerDeck = Starting Deck
         self.Equipment = []  # Starting Equipment
@@ -34,6 +34,7 @@ class Player(object):
         print('Stamina Pool:', self.Stamina.get_pool_size())
         print('Remaining Stamina:', self.Stamina.get_stamina_points())
         print('Weapon Damage:', self.Weapon_Damage.value)
+        print('Bonus Range:', self.Bonus_Range.value)
         print('Armor:', self.Armor.value)
         print('Hand Size:', self.HandSize.value)
 
@@ -61,15 +62,28 @@ class Player(object):
     # Player Deck Stuff
 
     # Equipment Stuff
-    # def get_all_equipped(self):
-    #     return self.Equipment
+    def get_equipped_list(self):
+        return self.Equipment
 
-    # def get_equipped_item(self, item):
+    def get_equipped_item(self, item):
+        for i in self.Equipment:
+            if i.Name == item:
+                return i
 
-    # def add_equipment(self, item):
+    def add_equipment(self, item):
+        self.Equipment.append(item)
+        if 'Damage' in item.Equipment_Stats:
+            self.Weapon_Damage.add_effect(item.Name, item.Equipment_Stats['Damage'])
+        if 'Armor' in item.Equipment_Stats:
+            self.Armor.add_effect(item.Name, item.Equipment_Stats['Armor'])
+        if 'Range' in item.Equipment_Stats:
+            self.Bonus_Range.add_effect(item.Name, item.Equipment_Stats['Range'])
+        if 'Stamina' in item.Equipment_Stats:
+            self.Stamina.add_pool_effect(item.Name, item.Equipment_Stats['Stamina'])
 
     # def remove_equipment(self, item):
-
-    # def has_equipped(self, item):
+    #     pass
+    #
+    # def has_equipped(self, item_name):
     #     for i in self.Equipment:
     #         pass

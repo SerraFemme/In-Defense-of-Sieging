@@ -15,13 +15,13 @@ class StatTracker(object):
         else:
             return self.value
 
-    def set_value(self, new_value):
+    def __set_value(self, new_value):
         self.value = new_value
 
-    def add_value(self, new_value):
+    def __add_value(self, new_value):
         self.value += new_value
 
-    def subtract_value(self, new_value):
+    def __subtract_value(self, new_value):
         self.value -= new_value
 
     # EffectList functions
@@ -35,11 +35,11 @@ class StatTracker(object):
 
     def add_effect(self, effect_name, value):
         self.EffectList.append((effect_name, value))
-        self.add_value(value)
+        self.__add_value(value)
 
     def remove_effect(self, effect_name):
         deleted = self.get_effect(effect_name)
-        self.subtract_value(deleted[1])
+        self.__subtract_value(deleted[1])
         self.EffectList.remove(deleted)
 
     def has_effect(self, effect_name):
@@ -88,12 +88,10 @@ class Stamina(object):
 
     def add_pool_effect(self, effect_name, value):
         self.pool.add_effect(effect_name, value)
-        self.pool.add_value(value)
 
     def remove_pool_effect(self, effect):
         if self.pool.has_effect(effect):
             value = self.pool.get_effect(effect)
             self.pool.remove_effect(effect)
-            self.pool.subtract_value(value[1])
         else:
             print(effect, 'is not listed')

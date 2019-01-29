@@ -3,6 +3,7 @@ from BattleMap import MapInator, Movement
 from GamePhases import BattlePhase
 from PlayerPhase import PlayerTurn
 from TeamPopulator import TeamMaker
+from Equipment import *
 
 
 def main():
@@ -19,10 +20,13 @@ def main():
     terrain_list = r.get_list('Terrain')
     class_list = r.get_list('Class')
     equipment_list = r.get_list('Equipment')
+    starting_equipment = r.get_list('Starting Equipment')
     battle_map = MapInator(terrain_list)
     movement = Movement(battle_map)
 
-    t = TeamMaker(class_list, equipment_list)
+    # armory = Armory(equipment_list)
+
+    t = TeamMaker(class_list, starting_equipment, equipment_list)
     player_team = t.team_init()
     # enemy_team = []
 
