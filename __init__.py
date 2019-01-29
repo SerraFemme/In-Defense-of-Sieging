@@ -1,9 +1,8 @@
 from ReadGameData import *
 from BattleMap import MapInator, Movement
 from GamePhases import BattlePhase
-from PlayerPhase import PlayerTurn
-from TeamPopulator import TeamMaker
-from Equipment import *
+from PlayerPhase import TeamMaker, PlayerTurn
+from HordePhase import HordeMaker, EnemyTurn
 
 
 def main():
@@ -21,18 +20,23 @@ def main():
     class_list = r.get_list('Class')
     equipment_list = r.get_list('Equipment')
     starting_equipment = r.get_list('Starting Equipment')
+    encounter_list = r.get_list('Encounter')
+    races = r.get_list('Enemy Race')
+    roles = r.get_list('Enemy Role')
     battle_map = MapInator(terrain_list)
     movement = Movement(battle_map)
 
-    # armory = Armory(equipment_list)
-
     t = TeamMaker(class_list, starting_equipment, equipment_list)
     player_team = t.team_init()
-    # enemy_team = []
+
+    # horde = HordeMaker(encounter_list, races, roles, equipment_list)
+    # enemy_team = horde
 
     player_phase = PlayerTurn(player_team, battle_map, movement)
 
-    movement.place_enemy()
+    # enemy_phase = EnemyTurn(enemy_team, battle_map, movement)
+
+    movement.place_enemy_random(2)
 
     player_phase.setup_players()
 

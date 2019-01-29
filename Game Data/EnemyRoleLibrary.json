@@ -1,64 +1,69 @@
 {
-"Enemy Role": [
-  {
-    "ID": "Grunt",
-    "Bonus_Health": 0,
-    "Bonus_Armor": 0,
-    "Bonus_SP": 0,
-    "Targeting": [
-      {}
-    ],
-    "Special": [
-      {}
-    ]
-  },
-  {
-    "ID": "Champion",
-    "Bonus_Health": 4,
-    "Bonus_Armor": 2,
-    "Bonus_SP": 0,
-    "Targeting": [
-      {}
-    ],
-    "Special": [
-      {}
-    ]
-  },
-  {
-    "ID": "Executioner",
-    "Bonus_Health": 10,
-    "Bonus_Armor": 0,
-    "Bonus_SP": 1,
-    "Targeting": [
-      {}
-    ],
-    "Special": [
-      {}
-    ]
-  },
-  {
-    "ID": "Caster",
-    "Bonus_Health": 8,
-    "Bonus_Armor": 0,
-    "Bonus_SP": 1,
-    "Targeting": [
-      {}
-    ],
-    "Special": [
-      {}
-    ]
-  },
-  {
-    "ID": "Assassin",
-    "Bonus_Health": 6,
-    "Bonus_Armor": 0,
-    "Bonus_SP": 1,
-    "Targeting": [
-      {}
-    ],
-    "Special": [
-      {}
-    ]
-  }
-]
+  "Enemy Role": [
+    {
+      "ID": "Grunt",
+      "Bonus_Health": 0,
+      "Bonus_Armor": 0,
+      "Bonus_SP": 0,
+      "Bonus_Damage": 0,
+      "Targeting": [
+        {}
+      ],
+      "Special": [
+        {}
+      ]
+    },
+    {
+      "ID": "Champion",
+      "Bonus_Health": 4,
+      "Bonus_Armor": 2,
+      "Bonus_SP": 0,
+      "Bonus_Damage": 0,
+      "Targeting": [
+        {}
+      ],
+      "Special": [
+        {}
+      ]
+    },
+    {
+      "ID": "Executioner",
+      "Bonus_Health": 10,
+      "Bonus_Armor": 0,
+      "Bonus_SP": 1,
+      "Bonus_Damage": 0,
+      "Targeting": [
+        {}
+      ],
+      "Special": [
+        {}
+      ]
+    },
+    {
+      "ID": "Caster",
+      "Bonus_Health": 8,
+      "Bonus_Armor": 0,
+      "Bonus_SP": 1,
+      "Bonus_Damage": 1,
+      "Targeting": [
+        {}
+      ],
+      "Special": [
+        {}
+      ]
+    },
+    {
+      "ID": "Assassin",
+      "Bonus_Health": 6,
+      "Bonus_Armor": 0,
+      "Bonus_SP": 1,
+      "Bonus_Damage": 1,
+      "Targeting": [
+        {}
+      ],
+      "Special": [
+        {}
+      ]
+    }
+  ]
 }

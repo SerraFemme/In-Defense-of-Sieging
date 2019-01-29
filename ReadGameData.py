@@ -7,7 +7,8 @@ MASTER_DICT = {'Card': 'CardLibrary.json',
                'Enemy Role': 'EnemyRoleLibrary.json',
                'Equipment': 'EquipmentLibrary.json',
                'Terrain': 'MapTerrain.json',
-               'Starting Equipment': 'StartingEquipmentLibrary.json'}
+               'Starting Equipment': 'StartingEquipmentLibrary.json',
+               'Encounter': 'Encounter.json'}
 
 
 class MasterListManager(object):

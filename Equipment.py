@@ -1,21 +1,6 @@
-from ReadGameData import SubListManager
-
 """
 Module that makes equipment
 """
-
-
-# class Armory(object):
-#     """
-#     Deals with the master list of equipment
-#     """
-#     def __init__(self, e):
-#         self.equipment_list = SubListManager(e)
-#
-#     def get_equipment(self, item):
-#         e = self.equipment_list.get_item(item)
-#         equipment = Equipment(e)
-#         return equipment
 
 
 class Equipment(object):

@@ -71,10 +71,10 @@ class MapInator(object):
         elif tile.unit == 'Invalid':
             print(tile.get_terrain_char(), end='')
         elif isinstance(tile.unit, Player):
-            print('P', end='')
-        elif tile.unit == 2:
+            print(tile.unit.Player_Number, end='')
+        elif tile.unit == 2:  # Enemy char
             print('E', end='')
-        else:
+        else:  # something completely different
             print('Q', end='')
 
     # Find Unit Function
@@ -137,13 +137,13 @@ class Movement(object):
     def __init__(self, map_given):
         self.battle_map = map_given
 
-    def place_enemy(self):
+    def place_enemy_random(self, enemy):
         value = True
         while value:
             x = randrange(0, 11)
             y = randrange(9, 11)
             if self.battle_map.is_tile_unoccupied(x, y):
-                self.battle_map.set_unit(x, y, 2)
+                self.battle_map.set_unit(x, y, enemy)
                 value = False
 
     def place_starting_player(self, player):
@@ -178,12 +178,12 @@ class Movement(object):
 
             if self.battle_map.is_tile_unoccupied(x_place, y_place):
                 self.battle_map.set_unit(x_place, y_place, player)
-                player.set_position((x_place, y_place))
+                player.Position = (x_place, y_place)
                 value = False
             else:
                 print(x_place, ',', y_place, 'is occupied.')
 
-    # def place_unit(self):  # teleports unit
+    # def teleport_unit(self):  # teleports unit
     #     value = True
     #     print('\n' + 'Choose a new unoccupied position:')
     #     while value:
@@ -255,7 +255,7 @@ class Movement(object):
                     break
 
     def move_onto_tile(self, unit, x, y):
-        coordinate = unit.get_position()
+        coordinate = unit.Position
         if self.can_move(unit):
             new_position = (coordinate[0] + x, coordinate[1] + y)
             destination = self.battle_map.get_tile(new_position[0],
@@ -264,7 +264,7 @@ class Movement(object):
                 # check if tile has a move cost, else don't move
                 destination_cost = destination.get_terrain_movement_cost()
                 if unit.Stamina.can_spend(destination_cost):
-                    unit.set_position(new_position)
+                    unit.Position = new_position
                     destination.unit = unit
                     unit.Stamina.spend_stamina_points(destination_cost)
                     self.battle_map.set_tile_unoccupied(coordinate[0], coordinate[1])
@@ -273,8 +273,8 @@ class Movement(object):
             else:
                 print(destination.coordinate, 'is occupied.')
 
-    def can_move(self, unit):  # optimize
-        coordinate = unit.get_position()
+    def can_move(self, unit):
+        coordinate = unit.Position
         x = coordinate[0]
         y = coordinate[1]
         value = False
@@ -298,7 +298,7 @@ class Movement(object):
         return value
 
     def can_move_onto_tile(self, unit, x, y):
-        coordinate = unit.get_position()
+        coordinate = unit.Position
         if 0 <= coordinate[0] + x < self.battle_map.map_size[0] and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
             destination = self.battle_map.get_tile(coordinate[0] + x, coordinate[1] + y)
             if destination.is_unoccupied():

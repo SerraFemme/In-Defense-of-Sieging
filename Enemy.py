@@ -1,26 +1,22 @@
 from UnitStat import *
 
 
-class Player(object):
+class Enemy(object):
     """
     Primary class that stores and calculates all Player info
     """
 
-    def __init__(self, selected_class, name, number):
-        self.class_info = selected_class
-        self.conscious = True
-        self.Player_Name = name
-        self.Player_Number = number
-        self.Class_Name = self.class_info['ID']
+    def __init__(self, race, role):
+        self.race_info = race
+        self.role_info = role
+        self.Race_Name = self.race_info['ID']
+        self.Role_Name = self.race_info['ID']
         self.Position = None
-        self.Faction_Restriction = self.class_info['Allowed_Faction']
-        self.Equipment_Restriction = self.class_info['Allowed_Equipment']
-        self.Stamina = Stamina(self.class_info['Stamina_Pool'])
-        self.Weapon_Damage = StatTracker()
-        self.Armor = StatTracker()
+        self.Health_Points = self.race_info['Base_Health'] + self.role_info['Bonus_Health']
+        self.Stamina = Stamina(self.race_info['Stamina_Pool'] + self.role_info['Bonus_SP'])
+        self.Weapon_Damage = StatTracker(self.role_info['Bonus_Damage'])
+        self.Armor = StatTracker(self.race_info['Base_Armor'] + self.role_info['Bonus_Armor'])
         self.Bonus_Range = StatTracker()
-        self.HandSize = StatTracker(self.class_info['Hand_Size'])
-        # self.PlayerDeck = Starting Deck
         self.Equipment = []  # Starting Equipment
         # self.Passive
 
@@ -30,31 +26,17 @@ class Player(object):
         # upkeep
 
     def print_info(self):  # fix: prints None at end
-        print('\n' + 'Class:', self.Class_Name)
+        print('\n' + self.Race_Name, self.Role_Name)
         print('Position:', self.Position)
+        print('Health:', self.Health_Points)
         print('Stamina Pool:', self.Stamina.get_pool_size())
         print('Remaining Stamina:', self.Stamina.get_stamina_points())
         print('Weapon Damage:', self.Weapon_Damage.value)
         print('Bonus Range:', self.Bonus_Range.value)
         print('Armor:', self.Armor.value)
-        print('Hand Size:', self.HandSize.value)
 
-    def get_class_name(self):
-        return self.Class_Name
-
-    # Faction Restrictions
-
-    # Equipment Restrictions
-
-    # Stamina stuff
-
-    # Weapon Stuff
-
-    # Armor Stuff
-
-    # Hand Size Stuff
-
-    # Player Deck Stuff
+    def get_enemy_name(self):
+        return self.Race_Name + self.Role_Name
 
     # Equipment Stuff
     def get_equipped_list(self):
@@ -75,10 +57,3 @@ class Player(object):
             self.Bonus_Range.add_effect(item.Name, item.Equipment_Stats['Range'])
         if 'Stamina' in item.Equipment_Stats:
             self.Stamina.add_pool_effect(item.Name, item.Equipment_Stats['Stamina'])
-
-    # def remove_equipment(self, item):
-    #     pass
-    #
-    # def has_equipped(self, item_name):
-    #     for i in self.Equipment:
-    #         pass

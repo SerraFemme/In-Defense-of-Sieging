@@ -1,0 +1,36 @@
+{
+  "Encounter": [
+    {
+      "ID": "Encounter0",
+      "Tribe": "Goblin",
+      "Difficulty": "Easy",
+      "Enemies": [
+        {
+          "Number": 1,
+          "Race": "Goblin",
+          "Role": "Caster",
+          "Equipment": [
+            "ArcaneRanged2"
+          ]
+        },
+        {
+          "Number": 2,
+          "Race": "Goblin",
+          "Role": "Grunt",
+          "Equipment": [
+            "MartialRanged3"
+          ]
+        },
+        {
+          "Number": "N",
+          "Race": "Kobold",
+          "Role": "Grunt",
+          "Equipment": [
+            "MartialMelee2",
+            "MartialShield1"
+          ]
+        }
+      ]
+    }
+  ]
+}
