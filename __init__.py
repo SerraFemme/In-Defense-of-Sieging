@@ -34,8 +34,7 @@ def main():
 
     player_phase = PlayerTurn(player_team, battle_map, movement)
 
-    # enemy_phase = EnemyTurn(enemy_team, battle_map, movement)
-
+    # enemy_phase = EnemyTurn(enemy_team, battle_map, movement, player_team)
 
     player_phase.setup_players()
 

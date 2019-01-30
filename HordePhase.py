@@ -99,6 +99,31 @@ class EnemyTurn(object):
     """
     Controls the enemy during their phase
     """
+
+    def __init__(self, enemy_horde, battle_map, movement, player_team):
+        self.enemy_horde = enemy_horde
+        self.battle_map = battle_map
+        self.movement = movement
+        self.player_team = player_team
+
     def enemy_turn_loop(self):
+        for enemy in self.enemy_horde:
+            if enemy.Role_Name == 'Grunt':
+                # find nearest player
+                pass
+            else:
+                # if enemy has Aggression Token
+                # go after selected player
+                # else:
+                # apply Aggression Token then go after selected player
+                pass
+
+    def find_nearest_player(self):  # Move into separate module?
+        nearest_coordinates = None
+        for i in self.player_team:
+            #  compare i.Position
+            pass
+
+    def find_player_with_stat(self, stat, value):  # Move into separate module?
         pass
 
