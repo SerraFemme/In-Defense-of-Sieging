@@ -14,13 +14,14 @@ class MapInator(object):
     # used to create an X by Y sized Map
     def __init__(self, t, x=12, y=12):
         self.terrain_list = SubListManager(t)
+        mg = self.basic_map_generator()
         self.map_size = (x, y)
         self.main_list = []  # "List of rows"
         for i in range(y):
             sub_list = []  # List of Tiles
             self.main_list.append(sub_list)
             for j in range(x):
-                sub_list.append(Tile(j, i, self.terrain_list.get_item(self.basic_map_generator())))
+                sub_list.append(Tile(j, i, self.terrain_list.get_item(mg)))
 
     def basic_map_generator(self):
         basic_map_list = ['Grass', 'Hill', 'Mountain']
@@ -75,7 +76,7 @@ class MapInator(object):
             print(tile.unit.Player_Number, end='')
         elif isinstance(tile.unit, Enemy):
             print(tile.unit.Char, end='')
-        else:  # something completely different
+        else:  # something unexpected
             print('Q', end='')
 
     # Find Unit Function
@@ -151,20 +152,18 @@ class Movement(object):
         self.battle_map = map_given
 
     def place_enemy_random(self, enemy):
-        value = True
-        while value:
+        while True:
             x = randrange(0, 11)
             y = randrange(9, 11)
             if self.battle_map.is_tile_unoccupied(x, y):
                 self.battle_map.set_unit(x, y, enemy)
                 enemy.Position = (x, y)
-                value = False
+                break
 
     def place_starting_player(self, player):
         x = self.battle_map.map_size[0]
-        y = self.battle_map.map_size[1]
-        value = True
-        while value:
+        # y = self.battle_map.map_size[1]
+        while True:
             print('Choose starting position in the bottom 3 rows:')
 
             while True:
@@ -193,7 +192,7 @@ class Movement(object):
             if self.battle_map.is_tile_unoccupied(x_place, y_place):
                 self.battle_map.set_unit(x_place, y_place, player)
                 player.Position = (x_place, y_place)
-                value = False
+                break
             else:
                 print(x_place, ',', y_place, 'is occupied.')
 
@@ -268,7 +267,7 @@ class Movement(object):
                 else:
                     break
 
-    def move_onto_tile(self, unit, x, y):
+    def move_onto_tile(self, unit, x, y):  # clean up?
         coordinate = unit.Position
         if self.can_move(unit):
             new_position = (coordinate[0] + x, coordinate[1] + y)
@@ -287,7 +286,7 @@ class Movement(object):
             else:
                 print(destination.coordinate, 'is occupied.')
 
-    def can_move(self, unit):
+    def can_move(self, unit):  # clean up?
         coordinate = unit.Position
         x = coordinate[0]
         y = coordinate[1]
@@ -311,19 +310,15 @@ class Movement(object):
                   unit.Stamina.get_stamina_points(), 'and cannot move.')
         return value
 
-    def can_move_onto_tile(self, unit, x, y):
+    def can_move_onto_tile(self, unit, x, y):  # clean up
         coordinate = unit.Position
         if 0 <= coordinate[0] + x < self.battle_map.map_size[0] and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
             destination = self.battle_map.get_tile(coordinate[0] + x, coordinate[1] + y)
             if destination.is_unoccupied():
                 if unit.Stamina.get_stamina_points() >= destination.get_terrain_movement_cost():
                     return True
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
+
+        return False
 
 
 class RangeInator(object):

@@ -8,7 +8,7 @@ class Player(object):
 
     def __init__(self, selected_class, name, number):
         self.class_info = selected_class
-        self.conscious = True
+        self.Conscious = True
         self.Player_Name = name
         self.Player_Number = number
         self.Class_Name = self.class_info['ID']
@@ -46,16 +46,6 @@ class Player(object):
 
     # Equipment Restrictions
 
-    # Stamina stuff
-
-    # Weapon Stuff
-
-    # Armor Stuff
-
-    # Hand Size Stuff
-
-    # Player Deck Stuff
-
     # Equipment Stuff
     def get_equipped_list(self):
         return self.Equipment
@@ -75,10 +65,3 @@ class Player(object):
             self.Bonus_Range.add_effect(item.Name, item.Equipment_Stats['Range'])
         if 'Stamina' in item.Equipment_Stats:
             self.Stamina.add_pool_effect(item.Name, item.Equipment_Stats['Stamina'])
-
-    # def remove_equipment(self, item):
-    #     pass
-    #
-    # def has_equipped(self, item_name):
-    #     for i in self.Equipment:
-    #         pass

@@ -5,6 +5,7 @@ class DamageDealt(object):
     """
     print('ATTACK!')
 
+
 class DamageReceived(object):
     """
     Takes the information of the Defender and the incoming damage and

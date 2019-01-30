@@ -20,20 +20,18 @@ class TeamMaker(object):
         self.player_list = []
 
     def team_init(self):
-        global value  # needed for checking for the proper number of players
-        value = True
-        while value:
+        while True:
             try:
                 print('Create your team:')
                 v = int(input('\n' + 'Enter number of Players (1-4): '))
-                if 0 < v <= 4:
-                    value = False
-                else:
-                    print(v, 'is not a valid number')
+
             except ValueError:
                 print('Invalid input, try again')
             else:
-                break
+                if 0 < v <= 4:
+                    break
+                else:
+                    print(v, 'is not a valid number')
 
         available_classes = self.__available_classes()
         for i in range(v):
@@ -42,14 +40,15 @@ class TeamMaker(object):
             print(name, selected_class, sep=': ')
             class_info = self.class_list.get_item(selected_class)
             player = Player(class_info, name, len(self.player_list)+1)
-            self.equip_starting_equipment(player, self.starting_equipment.get_item(selected_class), self.equipment_list)
+            self.equip_starting_equipment(player,  # shorten
+                                          self.starting_equipment.get_item(selected_class), self.equipment_list)
             # give player starting deck
             self.player_list.append(player)
         return self.player_list
 
-    def __select_class(self, item_list):
+    def __select_class(self, class_list):
         print('\n' + 'Select Class:')
-        for i, item in enumerate(item_list):
+        for i, item in enumerate(class_list):
             print(i, item['ID'], sep=': ')
         while True:
             try:
@@ -57,9 +56,12 @@ class TeamMaker(object):
             except ValueError:
                 print('Invalid input, try again', '\n')
             else:
-                break
+                if 0 <= v < len(class_list):
+                    break
+                else:
+                    print(v, 'is not a valid class selection')
 
-        selection = item_list.pop(v)
+        selection = class_list.pop(v)
         return selection['ID']
 
     def __available_classes(self):
@@ -93,7 +95,7 @@ class PlayerTurn(object):
     def player_turn_loop(self):
         keep_playing = True
         for person in self.player_team:
-            if person.conscious is True:
+            if person.Conscious is True:
                 person.turn_beginning()
                 turn = True
                 self.battle_map.print_map()
@@ -124,7 +126,7 @@ class PlayerTurn(object):
                 else:
                     return v
 
-    def print_action_menu(self, player, movement):
+    def print_action_menu(self, player, movement):  # clean up
         global b, action
         b = True
         while b:
@@ -139,10 +141,10 @@ class PlayerTurn(object):
                     print('1: Move')
                 else:
                     print('Cannot Move, Player trapped')
-                    s.append('1')
+                    s.append(1)
             else:
                 print('Cannot Move, insufficient stamina')
-                s.append('1')
+                s.append(1)
             print('2: Action')
             print('3: Print Player Info')
             print('4: Print Equipment Info')
@@ -153,17 +155,16 @@ class PlayerTurn(object):
                 except ValueError:
                     print('Invalid input, try again')
                 else:
-                    if action in s:  # fix
-                        print('Improper selection' + '\n')
+                    if action in s:
+                        print('Unavailable action' + '\n')
                         b = True
                     break
 
         return action
 
     def process_player_selection(self, value, movement, player):
-        b = True
         if value == 0:
-            b = False
+            return False
         elif value == 1:
             movement.move_player(player)
         elif value == 2:
@@ -179,4 +180,4 @@ class PlayerTurn(object):
             print('')
             tile = self.battle_map.get_tile(player.Position[0], player.Position[1])
             tile.print_info()
-        return b
+        return True
