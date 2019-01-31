@@ -28,10 +28,7 @@ class TargetNearest(object):
             elif shortest_distance == self.__get_distance(self.grunt, player):
                 nearest_player.append(player)
 
-        if len(nearest_player) > 1:
-            i = randrange(len(nearest_player))
-        else:
-            i = 1
+        i = randrange(len(nearest_player))
         target = nearest_player[i]
         return target
 
@@ -132,11 +129,9 @@ class TargetAT(object):
                         shortest_distance = self.__get_distance(self.enemy, player)
                     elif shortest_distance == self.__get_distance(self.enemy, player):
                         closest_target.append(player)
-                if len(closest_target) == 1:
-                    return closest_target[0]
-                else:
-                    i = randrange(len(closest_target))
-                    return closest_target[i]
+
+                i = randrange(len(closest_target))
+                return closest_target[i]
 
     def __get_distance(self, enemy, player):
         x = abs(enemy.Position[0] - player.Position[0])
