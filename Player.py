@@ -23,7 +23,7 @@ class Player(object):
         self.HandSize = StatTracker(self.class_info['Hand_Size'])
         # self.PlayerDeck = Starting Deck
         self.Equipment = []  # Starting Equipment
-        # self.Passive
+        self.Passive = None
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()

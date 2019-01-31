@@ -22,7 +22,7 @@ class Enemy(object):
         self.Armor = StatTracker(self.race_info['Base_Armor'] + self.role_info['Bonus_Armor'])
         self.Bonus_Range = StatTracker()
         self.Equipment = []
-        # self.Passive
+        self.Passive = None
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()

@@ -142,6 +142,7 @@ class EnemyTurn(object):
         if distance > 1:
             print('Target out of range!')
         elif enemy.Stamina.points >= 2:
-            print('Attack!')
+            print('Dealing', enemy.Weapon_Damage.value, 'to',
+                  target.Player_Name, target.Class_Name)
         else:
             print(enemy.Stamina.points, 'is not enough points for an action')
