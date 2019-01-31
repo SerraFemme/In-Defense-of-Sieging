@@ -319,62 +319,24 @@ class Movement(object):
 
         return False
 
-    def move_enemy(self, enemy, destination):  # Must Fix
-        if self.can_move(enemy):
-            cant_move_x = False
-            cant_move_y = False
-            i = 0
-            while i <= enemy.Stamina.get_pool_size():
-                x_distance = abs(enemy.Position[0] - destination[0])
-                y_distance = abs(enemy.Position[1] - destination[1])
-                if x_distance >= y_distance:  # Move on Y First
-                    if y_distance > 0:
-                        # Move Down
-                        if enemy.Position[1] > destination[1]:
-                            if self.can_move_onto_tile(enemy, 0, -1):
-                                self.move_unit(enemy, 3, abs(y_distance))
-                            else:
-                                cant_move_y = True
-                        # Move Up
-                        elif enemy.Position[1] < destination[1] and self.can_move_onto_tile(enemy, 0, 1):
-                            self.move_unit(enemy, 1, abs(y_distance))
-                        else:
-                            cant_move_y = True
-                    else:
-                        cant_move_y = True
-
-                y_distance = abs(enemy.Position[1] - destination[1])
-
-                if y_distance > x_distance:  # Move on X First
-                    if x_distance > 0:
-                        # Move Right
-                        if enemy.Position[0] < destination[0] and self.can_move_onto_tile(enemy, 1, 0):
-                            self.move_unit(enemy, 2, abs(x_distance))
-                        # Move Left
-                        elif enemy.Position[0] > destination[0] and self.can_move_onto_tile(enemy, -1, 0):
-                            self.move_unit(enemy, 4, abs(x_distance))
-                        else:
-                            cant_move_x = True
-                    else:
-                        cant_move_x = True
-
-                x_distance = abs(enemy.Position[0] - destination[0])
-
-                if x_distance == 0 and y_distance == 1:
-                    break
-
-                if y_distance == 0 and x_distance == 1:
-                    break
-
-                if enemy.Stamina.points == 0:
-                    break
-
-                if cant_move_x and cant_move_y:
-                    break
-
-                i += 1
-                if i == enemy.Stamina.get_pool_size():
-                    print(enemy.get_enemy_name(), 'has run out of time')
+    def move_enemy(self, enemy, destination):  # Must Improve
+        x_distance = abs(enemy.Position[0] - destination[0])
+        y_distance = abs(enemy.Position[1] - destination[1])
+        i = 0
+        while i <= enemy.Stamina.get_pool_size():
+            if x_distance != 0:
+                if enemy.Position[0] < destination[0] and self.can_move_onto_tile(enemy, 1, 0):
+                    self.move_unit(enemy, 2, 1)
+                elif enemy.Position[0] > destination[0] and self.can_move_onto_tile(enemy, -1, 0):
+                    self.move_unit(enemy, 4, 1)
+            if y_distance != 0:
+                if enemy.Position[1] < destination[1] and self.can_move_onto_tile(enemy, 0, 1):
+                    self.move_unit(enemy, 1, 1)
+                elif enemy.Position[1] > destination[1] and self.can_move_onto_tile(enemy, 0, -1):
+                    self.move_unit(enemy, 3, 1)
+            if enemy.Stamina.points == 0:
+                break
+            i += 1
 
 
 class RangeInator(object):
