@@ -10,21 +10,22 @@ class Enemy(object):
         self.race_info = race
         self.role_info = role
         self.Race_Name = self.race_info['ID']
-        self.Role_Name = self.race_info['ID']
+        self.Role_Name = self.role_info['ID']
         self.Char = self.role_info['Char']
         self.Enemy_Number = number
         self.Position = None
+        self.Alive = True
+        self.AT = None  # Aggression Token, only used by Elites
         self.Health_Points = self.race_info['Base_Health'] + self.role_info['Bonus_Health']
         self.Stamina = Stamina(self.race_info['Stamina_Pool'] + self.role_info['Bonus_SP'])
         self.Weapon_Damage = StatTracker(self.role_info['Bonus_Damage'])
         self.Armor = StatTracker(self.race_info['Base_Armor'] + self.role_info['Bonus_Armor'])
         self.Bonus_Range = StatTracker()
-        self.Equipment = []  # Starting Equipment
+        self.Equipment = []
         # self.Passive
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()
-        # mulligan phase
         # upkeep
 
     def print_info(self):  # fix: prints None at end?

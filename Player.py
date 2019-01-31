@@ -8,11 +8,12 @@ class Player(object):
 
     def __init__(self, selected_class, name, number):
         self.class_info = selected_class
-        self.Conscious = True
         self.Player_Name = name
         self.Player_Number = number
-        self.Class_Name = self.class_info['ID']
+        self.Conscious = True
         self.Position = None
+        self.AT = []  # Aggression Tokens
+        self.Class_Name = self.class_info['ID']
         self.Faction_Restriction = self.class_info['Allowed_Faction']
         self.Equipment_Restriction = self.class_info['Allowed_Equipment']
         self.Stamina = Stamina(self.class_info['Stamina_Pool'])

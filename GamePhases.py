@@ -8,9 +8,9 @@ class BattlePhase(object):
     """
     Creates the Battle Map, populates it with enemies then players, then starts the battle
     """
-    def __init__(self, player_phase):
+    def __init__(self, player_phase, enemy_phase):
         self.player_phase = player_phase
-        # self.enemy_phase = enemy_phase
+        self.enemy_phase = enemy_phase
 
     def loop(self):
         global keep_playing
@@ -24,6 +24,6 @@ class BattlePhase(object):
                 break
 
             print('\n' + 'Turn', i, '\n' + 'Enemy Phase')
-            print('N/A')
+            self.enemy_phase.enemy_turn_loop()
 
             i += 1

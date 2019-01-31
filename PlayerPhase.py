@@ -134,9 +134,9 @@ class PlayerTurn(object):
             s = []
             s.clear()
             print('\n' + player.get_class_name(), end='')
-            print(': Remaining Stamina:', player.Stamina.get_stamina_points())
+            print(': Remaining Stamina:', player.Stamina.points)
             print('0: Pass Turn')
-            if player.Stamina.get_stamina_points() > 0:
+            if player.Stamina.points > 0:
                 if movement.can_move(player):
                     print('1: Move')
                 else:

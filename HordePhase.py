@@ -5,6 +5,7 @@ Module that sets up the enemy horde and controls their turn
 from ReadGameData import SubListManager
 from Enemy import Enemy
 from Equipment import Equipment
+from EnemyTargeting import *
 
 
 class HordeMaker(object):
@@ -108,22 +109,28 @@ class EnemyTurn(object):
 
     def enemy_turn_loop(self):
         for enemy in self.enemy_horde:
-            if enemy.Role_Name == 'Grunt':
-                # find nearest player
-                pass
-            else:
-                # if enemy has Aggression Token
-                # go after selected player
-                # else:
-                # apply Aggression Token then go after selected player
-                pass
+            print('\n' + 'Turn:', enemy.get_enemy_name(), enemy.Enemy_Number)
+            enemy.turn_beginning()
+            if enemy.Stamina.points > 0:
+                target = self.find_target(enemy)
+                print('Targeting:', target.Player_Name, ',', target.Class_Name)
+                self.move_into_range(enemy, target)
 
-    def find_nearest_player(self):  # Move into separate module?
-        nearest_coordinates = None
-        for i in self.player_team:
-            #  compare i.Position
-            pass
+    def find_target(self, enemy):
+        if enemy.Role_Name == 'Grunt':
+            target = TargetNearest(enemy, self.player_team).find_nearest_player()
+        else:
+            target = TargetAT(enemy, self.player_team).find_AT_target()
+        return target
 
-    def find_player_with_stat(self, stat, value):  # Move into separate module?
-        pass
+    def move_into_range(self, enemy, target):
+        self.movement.move_enemy(enemy, target.Position)
+        # check available actions
+        # move into range of the best action to take
+        if enemy.Stamina.points > 0:
+            self.take_selected_action()
+        else:
+            print(enemy.get_enemy_name(), 'is out of Stamina!')
 
+    def take_selected_action(self):
+        print('Attack!')

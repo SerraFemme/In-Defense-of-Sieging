@@ -32,6 +32,40 @@
           ]
         }
       ]
+    },
+    {
+      "ID": "Encounter1",
+      "Name": "Goblin Infantry Squad",
+      "Tribe": "Goblin",
+      "Difficulty": "Easy",
+      "Enemies": [
+        {
+          "Number": 1,
+          "Race": "Goblin",
+          "Role": "Champion",
+          "Equipment": [
+            "MartialMelee4"
+          ]
+        },
+        {
+          "Number": "N",
+          "Race": "Goblin",
+          "Role": "Grunt",
+          "Equipment": [
+            "MartialMelee3",
+            "MartialShield1"
+          ]
+        },
+        {
+          "Number": "N",
+          "Race": "Kobold",
+          "Role": "Grunt",
+          "Equipment": [
+            "MartialMelee2",
+            "MartialShield1"
+          ]
+        }
+      ]
     }
   ]
 }

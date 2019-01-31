@@ -216,7 +216,8 @@
       "Equipment_Type": "Melee",
       "Reward_Type": "Equipment",
       "Name": "Holy Greatsword",
-      "Damage": 5
+      "Damage": 5,
+      "Stamina": -1
     },
     {
       "ID": "DivineMelee5",

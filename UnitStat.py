@@ -61,9 +61,6 @@ class Stamina(object):
         # self.PoolEffects = [] # List of effects affecting Pool Capacity
 
     # Stamina Point Functions
-    def get_stamina_points(self):
-        return self.points
-
     def gain_stamina_points(self, value):
         self.points += value
 
@@ -74,7 +71,7 @@ class Stamina(object):
             self.points = 0  # may need to change later
 
     def reset_stamina_points(self):
-        self.points = self.pool.get_value()
+        self.points = self.pool.value
 
     def can_spend(self, value):
         if value > self.points:
@@ -84,7 +81,7 @@ class Stamina(object):
 
     # Stamina Pool Functions
     def get_pool_size(self):
-        return self.pool.get_value()
+        return self.pool.value
 
     def add_pool_effect(self, effect_name, value):
         self.pool.add_effect(effect_name, value)
