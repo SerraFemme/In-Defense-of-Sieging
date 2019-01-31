@@ -294,25 +294,25 @@ class Movement(object):
             if 0 <= x < map_size[0] and 0 <= y + 1 < map_size[1]:
                 if self.battle_map.is_tile_unoccupied(x, y + 1):
                     return True
-            elif 0 <= x + 1 < map_size[0] and 0 <= y < map_size[1]:
+            if 0 <= x + 1 < map_size[0] and 0 <= y < map_size[1]:
                 if self.battle_map.is_tile_unoccupied(x + 1, y):
                     return True
-            elif 0 <= x < map_size[0] and 0 <= y - 1 < map_size[1]:
+            if 0 <= x < map_size[0] and 0 <= y - 1 < map_size[1]:
                 if self.battle_map.is_tile_unoccupied(x, y - 1):
                     return True
-            elif 0 <= x - 1 < map_size[0] and 0 <= y < map_size[1]:
+            if 0 <= x - 1 < map_size[0] and 0 <= y < map_size[1]:
                 if self.battle_map.is_tile_unoccupied(x - 1, y):
                     return True
         else:
-            print(unit.get_class_name(), 'has',
-                  unit.Stamina.points, 'and cannot move.')
+            print('Unit has', unit.Stamina.points, 'and cannot move.')
         return False
 
     def can_move_onto_tile(self, unit, x, y):  # clean up
         coordinate = unit.Position
         if 0 <= coordinate[0] + x < self.battle_map.map_size[0]\
                 and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
-            destination = self.battle_map.get_tile(coordinate[0] + x, coordinate[1] + y)
+            destination = self.battle_map.get_tile(coordinate[0] + x,
+                                                   coordinate[1] + y)
             if destination.is_unoccupied():
                 if unit.Stamina.points >= destination.get_terrain_movement_cost():
                     return True
@@ -336,6 +336,10 @@ class Movement(object):
                     self.move_unit(enemy, 3, 1)
             if enemy.Stamina.points == 0:
                 break
+
+            x_distance = abs(enemy.Position[0] - destination[0])
+            y_distance = abs(enemy.Position[1] - destination[1])
+
             i += 1
 
 

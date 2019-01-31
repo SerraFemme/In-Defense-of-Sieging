@@ -108,6 +108,7 @@ class TargetAT(object):
             highest_armor = None
             for player in self.player_list:
                 if highest_armor is None:
+                    valid_target.append(player)
                     highest_armor = player.Armor.value
                 elif highest_armor < player.Armor.value:
                     valid_target.clear()

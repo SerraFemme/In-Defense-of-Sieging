@@ -113,7 +113,8 @@ class EnemyTurn(object):
             enemy.turn_beginning()
             if enemy.Stamina.points > 0:
                 target = self.find_target(enemy)
-                print('Targeting:', target.Player_Name, ',', target.Class_Name)
+                print('Targeting:', target.Player_Name + ',', target.Class_Name)
+                print('Moving from', enemy.Position, 'to ', end='')
                 self.move_into_range(enemy, target)
 
     def find_target(self, enemy):
@@ -125,12 +126,22 @@ class EnemyTurn(object):
 
     def move_into_range(self, enemy, target):
         self.movement.move_enemy(enemy, target.Position)
+        print(enemy.Position)
         # check available actions
         # move into range of the best action to take
         if enemy.Stamina.points > 0:
-            self.take_selected_action()
+            print('Remaining Stamina:', enemy.Stamina.points)
+            self.take_selected_action(enemy, target)
         else:
             print(enemy.get_enemy_name(), 'is out of Stamina!')
 
-    def take_selected_action(self):
-        print('Attack!')
+    def take_selected_action(self, enemy, target):
+        x = abs(enemy.Position[0] - target.Position[0])
+        y = abs(enemy.Position[1] - target.Position[1])
+        distance = x + y
+        if distance > 1:
+            print('Target out of range!')
+        elif enemy.Stamina.points >= 2:
+            print('Attack!')
+        else:
+            print(enemy.Stamina.points, 'is not enough points for an action')
