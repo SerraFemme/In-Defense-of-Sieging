@@ -122,7 +122,6 @@
       "Name": "Brace Yourself",
       "Text": "+1 Armor. When you play an Attack Card, remove this buff then gain +1 weapon damage until the end of your turn",
       "Trigger_Text": "An attack is made against you",
-      "Requirement": "Shield",
       "Stamina_Cost": 2,
       "Effects": [
         {
