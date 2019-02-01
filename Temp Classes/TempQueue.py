@@ -2,16 +2,15 @@ class Queue(object):
     """Example Queue implementation. decomission later"""
 
     def __init__(self):
-        self.queue = list() #May need changing
+        self.queue = list()  # May need changing
 
     def addtoq(self,dataval):
-    # Insert method to add element
+        # Insert method to add element
         if dataval not in self.queue:
-            self.queue.insert(0,dataval)
+            self.queue.insert(0, dataval)
             return True
         else:
             return False
-
 
     # Pop method to remove element
     def removefromq(self):
