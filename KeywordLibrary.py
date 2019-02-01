@@ -17,3 +17,33 @@ class Close(object):
     If the nearest target in a given direction is not within the given range of
     a card or effect, then the target is invalid.
     """
+
+
+class Heal(object):
+    """
+
+    """
+
+
+class Regen(object):
+    """
+
+    """
+
+
+class Push(object):
+    """
+
+    """
+
+
+class Pull(object):
+    """
+
+    """
+
+
+class Recoil(object):
+    """
+
+    """

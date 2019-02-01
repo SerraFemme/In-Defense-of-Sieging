@@ -13,10 +13,12 @@ class TeamMaker(object):
     For each player, asks them to enter their name, then select which class they would
         like to play, then creates a Player object with the proper info.
     """
-    def __init__(self, c, s, e):
+    def __init__(self, c, se, e, sd, card):
         self.class_list = SubListManager(c)
-        self.starting_equipment = SubListManager(s)
+        self.starting_equipment = SubListManager(se)
         self.equipment_list = SubListManager(e)
+        self.starting_deck = SubListManager(sd)
+        self.card_library = SubListManager(card)
         self.player_list = []
 
     def team_init(self):
@@ -43,6 +45,8 @@ class TeamMaker(object):
             self.equip_starting_equipment(player,  # shorten
                                           self.starting_equipment.get_item(selected_class), self.equipment_list)
             # give player starting deck
+            # self.add_starting_deck(player, self.starting_deck.get_item(selected_class, self.card_library)
+            # self.add_starting_deck(player, self.starting_deck.get_item("Test", self.card_library)
             self.player_list.append(player)
         return self.player_list
 
@@ -73,6 +77,14 @@ class TeamMaker(object):
         for i in s_list:
             e = Equipment(equip_list.get_item(i))
             player.add_equipment(e)
+
+    # def add_starting_deck(self, player, s_deck, card_list):
+    #     deck = []
+    #     deck_list = s_deck['Starting_Deck']
+    #     for i in deck_list:
+    #         card = CardMaker(card_list.get_item(i))
+    #         deck.append(card)
+    #     player.PlayerDeck = deck
 
 
 class PlayerTurn(object):

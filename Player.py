@@ -22,7 +22,7 @@ class Player(object):
         self.Bonus_Range = StatTracker()
         self.HandSize = StatTracker(self.class_info['Hand_Size'])
         # self.PlayerDeck = Starting Deck
-        self.Equipment = []  # Starting Equipment
+        self.Equipment = []
         self.Passive = None
 
     def turn_beginning(self):
@@ -34,7 +34,7 @@ class Player(object):
         print('\n' + 'Class:', self.Class_Name)
         print('Position:', self.Position)
         print('Stamina Pool:', self.Stamina.get_pool_size())
-        print('Remaining Stamina:', self.Stamina.get_stamina_points())
+        print('Remaining Stamina:', self.Stamina.points)
         print('Weapon Damage:', self.Weapon_Damage.value)
         print('Bonus Range:', self.Bonus_Range.value)
         print('Armor:', self.Armor.value)
@@ -66,3 +66,9 @@ class Player(object):
             self.Bonus_Range.add_effect(item.Name, item.Equipment_Stats['Range'])
         if 'Stamina' in item.Equipment_Stats:
             self.Stamina.add_pool_effect(item.Name, item.Equipment_Stats['Stamina'])
+
+    def take_damage(self):
+        pass
+
+    def heal(self):
+        pass

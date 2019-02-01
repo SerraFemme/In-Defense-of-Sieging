@@ -20,13 +20,16 @@ def main():
     class_list = r.get_list('Class')
     equipment_list = r.get_list('Equipment')
     starting_equipment = r.get_list('Starting Equipment')
+    starting_deck = r.get_list('Starting Deck')
+    card_library = r.get_list('Card')
     encounter_list = r.get_list('Encounter')
     races = r.get_list('Enemy Race')
     roles = r.get_list('Enemy Role')
     battle_map = MapInator(terrain_list)
     movement = Movement(battle_map)
 
-    t = TeamMaker(class_list, starting_equipment, equipment_list)
+    t = TeamMaker(class_list, starting_equipment, equipment_list,
+                  starting_deck, card_library)
     player_team = t.team_init()
 
     horde = HordeMaker(battle_map, movement, encounter_list, races, roles, equipment_list, len(player_team))

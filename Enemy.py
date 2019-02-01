@@ -33,7 +33,7 @@ class Enemy(object):
         print('Position:', self.Position)
         print('Health:', self.Health_Points)
         print('Stamina Pool:', self.Stamina.get_pool_size())
-        print('Remaining Stamina:', self.Stamina.get_stamina_points())
+        print('Remaining Stamina:', self.Stamina.points)
         print('Weapon Damage:', self.Weapon_Damage.value)
         print('Bonus Range:', self.Bonus_Range.value)
         print('Armor:', self.Armor.value)
@@ -60,3 +60,14 @@ class Enemy(object):
             self.Bonus_Range.add_effect(item.Name, item.Equipment_Stats['Range'])
         if 'Stamina' in item.Equipment_Stats:
             self.Stamina.add_pool_effect(item.Name, item.Equipment_Stats['Stamina'])
+
+    def heal(self, value):
+        self.Health_Points += value
+
+    def take_damage(self, value):
+        if value >= self.Health_Points:
+            self.Health_Points = 0
+            self.Alive = False
+        else:
+            self.Health_Points -= value
+

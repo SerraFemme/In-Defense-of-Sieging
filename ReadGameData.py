@@ -1,20 +1,22 @@
 import json
 import os
 
-MASTER_DICT = {'Card': 'CardLibrary.json',
+MASTER_DICT = {'Terrain': 'MapTerrain.json',
                'Class': 'ClassLibrary.json',
                'Enemy Race': 'EnemyRaceLibrary.json',
                'Enemy Role': 'EnemyRoleLibrary.json',
+               'Encounter': 'Encounter.json',
                'Equipment': 'EquipmentLibrary.json',
-               'Terrain': 'MapTerrain.json',
                'Starting Equipment': 'StartingEquipmentLibrary.json',
-               'Encounter': 'Encounter.json'}
+               'Card': 'CardLibrary.json',
+               'Starting Deck': 'StartingDeck.json'}
 
 
 class MasterListManager(object):
     """
-    Reads all valid files in Game Data then stores into MASTER_LIST
-    Returns a specific list when needed
+    Reads all listed files in MASTER_DICT from the Game Data folder then stores
+    into MASTER_LIST.
+    Returns a specific list when needed.
     """
 
     MASTER_LIST = []

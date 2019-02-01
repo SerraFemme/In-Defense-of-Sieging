@@ -12,7 +12,6 @@ class Equipment(object):
         self.ID = self.equipment_info['ID']
         self.Faction_Type = self.equipment_info['Faction_Type']
         self.Equipment_Type = self.equipment_info['Equipment_Type']
-        self.Reward_Type = self.equipment_info['Reward_Type']
         self.Name = self.equipment_info['Name']
         self.Equipment_Stats = {}
         if 'Damage' in self.equipment_info:
