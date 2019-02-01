@@ -8,9 +8,14 @@
       "Name": "Strike",
       "Text": "Deal weapon damage to a target",
       "Stamina_Cost": 2,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Inline",
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Inline"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -25,9 +30,14 @@
       "Name": "Charge",
       "Text": "Move to the nearest unoccupied tile beside a target, deal double weapon damage to it, then Push 1",
       "Stamina_Cost": 4,
-      "Range_Min": 2,
-      "Range_Max": 5,
-      "Range_Restriction": "Close",
+      "Range": {
+        "Min": 2,
+        "Max": 5,
+        "Restriction": "Close"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -43,9 +53,14 @@
       "Text": "Deal weapon damage to a target, then take 1 true damage",
       "Stamina_Cost": 3,
       "Scar_Cost": 2,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Inline",
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Inline"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -60,9 +75,14 @@
       "Name": "Backstab",
       "Text": "Deal weapon damage as true damage",
       "Stamina_Cost": 4,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Inline",
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Close"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -77,12 +97,17 @@
       "Name": "Power Shot",
       "Text": "Deal double weapon damage to a target, then Push 1",
       "Stamina_Cost": 3,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Close",
-      "Recoil": 1,
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Close"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
+          "Recoil": 1
         }
       ]
     },
@@ -95,8 +120,13 @@
       "Name": "Sniper Shot",
       "Text": "Deal triple weapon damage to a target",
       "Stamina_Cost": 4,
-      "Range_Min": 4,
-      "Range_Max": 4,
+      "Range": {
+        "Min": 4,
+        "Max": 4
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -112,12 +142,17 @@
       "Text": "Deal weapon damage to a target",
       "Stamina_Cost": 4,
       "Scar_Cost": 3,
-      "Range_Min": 2,
-      "Range_Max": 2,
-      "Range_Restriction": "Inline",
-      "Splash": 1,
+      "Range": {
+        "Min": 2,
+        "Max": 2,
+        "Restriction": "Inline"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
+          "Splash": 1
         }
       ]
     },
@@ -130,73 +165,14 @@
       "Name": "Side Swipe",
       "Text": "Deal double weapon damage to a target, then move to an adjacent unoccupied tile",
       "Stamina_Cost": 4,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Close",
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "MartialAttack8",
-      "Faction_Type": "Martial",
-      "Card_Type": "Attack",
-      "Deck_Type": "Skill",
-      "Requirement": "Melee",
-      "Name": "Cleaving Vortex",
-      "Text": "Deal weapon damage to each adjacent tile",
-      "Stamina_Cost": 5,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "MartialDefense1",
-      "Faction_Type": "Martial",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Parry",
-      "Trigger_Text": "Enemy makes a Martial Attack in range",
-      "Text": "Interrupt that attack",
-      "Stamina_Cost": 1,
-      "Regen": 1,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Inline",
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "MartialDefense2",
-      "Faction_Type": "Martial",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Requirement": "Shield",
-      "Name": "Shield Bash",
-      "Trigger_Text": "Enemy makes a Martial Attack in range",
-      "Text": "Interrupt that attack, then Push 1 that enemy",
-      "Stamina_Cost": 2,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Inline",
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "MartialDefense3",
-      "Faction_Type": "Martial",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Dodge",
-      "Trigger_Text": "Enemy makes an Attack against you",
-      "Text": "Interrupt that attack, then move into an adjacent unoccupied tile",
-      "Stamina_Cost": 2,
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Close"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -208,61 +184,15 @@
       "Card_Type": "Defense",
       "Deck_Type": "Skill",
       "Name": "Second Wind",
-      "Text": "Heal 4",
+      "Text": "Heal 5",
       "Stamina_Cost": 2,
       "Scar_Cost": 0,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
           "Heal": 5
-        }
-      ]
-    },
-    {
-      "ID": "MartialDefense5",
-      "Faction_Type": "Martial",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Shrug Off",
-      "Trigger_Text": "Receive damage from an enemy",
-      "Text": "Heal 5",
-      "Scar_Cost": 2,
-      "Regen": 1,
-      "Effects": [
-        {
-          "Heal": 6
-        }
-      ]
-    },
-    {
-      "ID": "MartialDefense6",
-      "Faction_Type": "Martial",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Wounded Bellow",
-      "Trigger_Text": "Enemy makes an Attack in against you",
-      "Text": "Interrupt that attack. Deal weapon damage to all adjacent tiles, then Push 1 all adjacent tiles",
-      "Stamina_Cost": 4,
-      "Scar_Cost": 2,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "MartialDefense7",
-      "Faction_Type": "Martial",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Sheath the Sword",
-      "Trigger_Text": "Enemy makes a Martial Attack in range against you",
-      "Text": "Interrupt that attack. Deal quadruple weapon damage as true damage to the target that played the interrupted attack, then take quadruple weapon damage as true damage.",
-      "Stamina_Cost": 4,
-      "Scar_Cost": 0,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Inline",
-      "Effects": [
-        {
         }
       ]
     },
@@ -274,6 +204,9 @@
       "Name": "Focus",
       "Text": "Once per turn: Pay 1, +1 weapon damage until the end of your turn",
       "Stamina_Cost": 1,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -287,6 +220,9 @@
       "Name": "Rage",
       "Text": "When you gain this buff, draw 2. +1 weapon damage. At the beginning of your turn, take 1 true damage",
       "Stamina_Cost": 1,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -300,21 +236,9 @@
       "Name": "Taunt",
       "Text": "When you gain this buff, you may take another player's AT. +1 armor for each AT you have",
       "Stamina_Cost": 3,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "MartialBuff4",
-      "Faction_Type": "Martial",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Requirement": "Shield",
-      "Name": "Brace Yourself",
-      "Trigger_Text": "An attack is made against you",
-      "Text": "+1 Armor. When you play an Attack Card, remove this buff then gain +1 weapon damage until the end of your turn",
-      "Stamina_Cost": 2,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -329,20 +253,9 @@
       "Name": "Stand Your Ground",
       "Text": "+1 weapon damage. +1 Armor. When your token is moved to another tile, put this card into your hand ",
       "Stamina_Cost": 3,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "MartialBuff6",
-      "Faction_Type": "Martial",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Requirement": "Shield",
-      "Name": "Entrench",
-      "Text": "+1 Armor. Cards and effects cannot move your token. Ability: Pay 2, then put this card into your hand",
-      "Stamina_Cost": 3,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -356,6 +269,9 @@
       "Name": "Eager for Battle",
       "Text": "When you gain this buff, you may take another player's AT. At the beginning of your turn, Heal 1 for each AT you have",
       "Stamina_Cost": 1,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -369,6 +285,9 @@
       "Name": "The Best Defense",
       "Text": "Whenever you resolve a defense card, gain +1 weapon damage until the end of your turn",
       "Stamina_Cost": 3,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -382,6 +301,9 @@
       "Name": "Vigilance",
       "Text": "Whenever you play a defense card, Heal 1",
       "Stamina_Cost": 2,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -395,6 +317,9 @@
       "Name": "Target Rich Environment",
       "Text": "+1 weapon damage for each enemy in adjacent tiles",
       "Stamina_Cost": 3,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -408,20 +333,9 @@
       "Name": "Mark",
       "Text": "Take an additional 1 damage from attack cards",
       "Stamina_Cost": 1,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "MartialDebuff2",
-      "Faction_Type": "Martial",
-      "Card_Type": "Debuff",
-      "Deck_Type": "Skill",
-      "Name": "Bleed",
-      "Trigger_Text": "You dealt damage to an enemy",
-      "Text": "That enemy gains this debuff. At the beginning of your turn, take 1 true damage",
-      "Stamina_Cost": 1,
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -435,8 +349,13 @@
       "Name": "Divine Bolt",
       "Text": "Deal weapon damage to a target",
       "Stamina_Cost": 2,
-      "Range_Min": 1,
-      "Range_Max": 3,
+      "Range": {
+        "Min": 1,
+        "Max": 3
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -450,9 +369,14 @@
       "Name": "Righteous Backhand",
       "Text": "Deal weapon damage to a target, then Push 2",
       "Stamina_Cost": 2,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Inline",
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Inline"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -466,9 +390,14 @@
       "Name": "Chain of Penitence",
       "Text": "Deal weapon damage to a target, then Pull 3",
       "Stamina_Cost": 2,
-      "Range_Min": 3,
-      "Range_Max": 4,
-      "Range_Restriction": "Close",
+      "Range": {
+        "Min": 3,
+        "Max": 4,
+        "Restriction": "Close"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -482,8 +411,13 @@
       "Name": "Leap of Faith",
       "Text": "Place your token on an unoccupied tile in range, then Push 1 all adjacent tokens, then deal weapon damage to all adjacent tokens",
       "Stamina_Cost": 3,
-      "Range_Min": 2,
-      "Range_Max": 3,
+      "Range": {
+        "Min": 2,
+        "Max": 3
+      },
+      "Target": [
+        "Tile"
+      ],
       "Effects": [
         {
         }
@@ -497,12 +431,18 @@
       "Name": "Pillar of Light",
       "Text": "Deal double weapon damage to a target",
       "Stamina_Cost": 4,
-      "Regen": 1,
-      "Range_Min": 2,
-      "Range_Max": 2,
-      "Splash": 1,
+      "Range": {
+        "Min": 2,
+        "Max": 2,
+        "Restriction": "Inline"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
+          "Regen": 1,
+          "Splash": 1
         }
       ]
     },
@@ -515,9 +455,14 @@
       "Name": "Smite",
       "Text": "Deal triple weapon damage to a target",
       "Stamina_Cost": 4,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Close",
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Close"
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -531,11 +476,17 @@
       "Name": "Lesser Heal",
       "Text": "Target Heals 4",
       "Stamina_Cost": 1,
-      "Regen": 1,
-      "Range_Min": 1,
-      "Range_Max": 4,
+      "Range": {
+        "Min": 1,
+        "Max": 4
+      },
+      "Target": [
+        "Self",
+        "Player"
+      ],
       "Effects": [
         {
+          "Regen": 1
         }
       ]
     },
@@ -547,12 +498,18 @@
       "Name": "Lay on Hands",
       "Text": "Target Heals 10",
       "Stamina_Cost": 3,
-      "Regen": 3,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Close",
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Close"
+      },
+      "Target": [
+        "Self",
+        "Player"
+      ],
       "Effects": [
         {
+          "Regen": 3
         }
       ]
     },
@@ -564,11 +521,17 @@
       "Name": "Lesser Healing Wave",
       "Text": "You and all allies in range Heal 2",
       "Stamina_Cost": 3,
-      "Regen": 1,
-      "Range_Min": 1,
-      "Range_Max": 5,
+      "Range": {
+        "Min": 1,
+        "Max": 5
+      },
+      "Target": [
+        "Self",
+        "Players in range"
+      ],
       "Effects": [
         {
+          "Regen": 1
         }
       ]
     },
@@ -580,11 +543,17 @@
       "Name": "Healing Wave",
       "Text": "You and all allies in range Heal 4",
       "Stamina_Cost": 3,
-      "Regen": 1,
-      "Range_Min": 1,
-      "Range_Max": 3,
+      "Range": {
+        "Min": 1,
+        "Max": 3
+      },
+      "Target": [
+        "Self",
+        "Player in range"
+      ],
       "Effects": [
         {
+          "Regen": 1
         }
       ]
     },
@@ -596,9 +565,15 @@
       "Name": "Regeneration",
       "Text": "At the beginning of your turn, Heal 1",
       "Stamina_Cost": 1,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Inline",
+      "Range": {
+        "Min": 1,
+        "Max": 2,
+        "Restriction": "Inline"
+      },
+      "Target": [
+        "Self",
+        "Player"
+      ],
       "Effects": [
         {
         }
@@ -612,6 +587,9 @@
       "Name": "Enrapture",
       "Text": "Enemies in adjacent tiles cannot spend stamina to move",
       "Stamina_Cost": 3,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -625,6 +603,9 @@
       "Name": "Heaven's Favor",
       "Text": "Whenever you resolve a Divine card, gain +1 weapon damage until end of turn",
       "Stamina_Cost": 2,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -638,6 +619,9 @@
       "Name": "Heaven's Shield",
       "Text": "Allies in adjacent tiles get +1 Armor. You get +1 Armor for each ally in adjacent tiles.",
       "Stamina_Cost": 3,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -651,8 +635,13 @@
       "Name": "Arcane Bolt",
       "Text": "Deal weapon damage to a target",
       "Stamina_Cost": 2,
-      "Range_Min": 1,
-      "Range_Max": 1,
+      "Range": {
+        "Min": 1,
+        "Max": 1
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -667,8 +656,13 @@
       "Text": "Deal triple weapon damage to a target",
       "Stamina_Cost": 4,
       "Scar_Cost": 6,
-      "Range_Min": 3,
-      "Range_Max": 3,
+      "Range": {
+        "Min": 3,
+        "Max": 3
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -683,11 +677,16 @@
       "Name": "Arcane Mortar",
       "Text": "Deal double weapon damage to a target",
       "Stamina_Cost": 3,
-      "Range_Min": 2,
-      "Range_Max": 2,
-      "Splash": 1,
+      "Range": {
+        "Min": 2,
+        "Max": 2
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
+          "Splash": 1
         }
       ]
     },
@@ -701,12 +700,17 @@
       "Text": "Deal weapon damage to a target",
       "Stamina_Cost": 4,
       "Scar_Cost": 3,
-      "Regen": 1,
-      "Range_Min": 3,
-      "Range_Max": 3,
-      "Splash": 2,
+      "Range": {
+        "Min": 3,
+        "Max": 3
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
+          "Regen": 1,
+          "Splash": 2
         }
       ]
     },
@@ -719,26 +723,13 @@
       "Name": "Gravity Slap",
       "Text": "Deal double weapon damage to a target then move them to an adjacent unoccupied tile",
       "Stamina_Cost": 4,
-      "Range_Min": 2,
-      "Range_Max": 4,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ArcaneDefense1",
-      "Faction_Type": "Arcane",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Emergency Blink",
-      "Trigger_Text": "An attack is made against you.",
-      "Text": "Interrupt that attack and place your token on an unoccupied tile within range.",
-      "Stamina_Cost": 1,
-      "Scar_Cost": 1,
-      "Regen": 1,
-      "Range_Min": 2,
-      "Range_Max": 2,
+      "Range": {
+        "Min": 2,
+        "Max": 4
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
@@ -752,6 +743,9 @@
       "Name": "Teleport",
       "Text": "Place your token on an unoccupied tile",
       "Stamina_Cost": 5,
+      "Target": [
+        "Tile"
+      ],
       "Effects": [
         {
         }
@@ -766,37 +760,12 @@
       "Text": "Draw 2 cards, then discard 2 cards",
       "Stamina_Cost": 1,
       "Scar_Cost": 5,
-      "Regen": 1,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
-        }
-      ]
-    },
-    {
-      "ID": "ArcaneDefense4",
-      "Faction_Type": "Arcane",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Rifle Through Pockets",
-      "Text": "Search your Health Deck for a Consumable and put it into your hand then shuffle your Health Deck",
-      "Stamina_Cost": 2,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ArcaneBuff1",
-      "Faction_Type": "Arcane",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Name": "Boon of Knowledge",
-      "Text": "At the beginning of your turn, draw a card, then put a card from your hand on top of your Health Deck",
-      "Stamina_Cost": 1,
-      "Range_Min": 1,
-      "Range_Max": 2,
-      "Effects": [
-        {
+          "Regen": 1
         }
       ]
     },
@@ -808,6 +777,9 @@
       "Name": "Mage Armor",
       "Text": "+1 Armor",
       "Stamina_Cost": 1,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -821,19 +793,9 @@
       "Name": "Clarity",
       "Text": "+1 Hand Size",
       "Stamina_Cost": 1,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ArcaneBuff4",
-      "Faction_Type": "Arcane",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Name": "Volatility",
-      "Text": "Once per turn: Pay 2, then the next attack card you play that requires a ranged weapon gains Splash 1 (instances of Splash are additive)",
-      "Stamina_Cost": 1,
+      "Target": [
+        "Self"
+      ],
       "Effects": [
         {
         }
@@ -847,220 +809,13 @@
       "Name": "Armor Corruption",
       "Text": "-3 Armor",
       "Stamina_Cost": 3,
-      "Range_Min": 1,
-      "Range_Max": 4,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableAttack1",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Attack",
-      "Deck_Type": "Skill",
-      "Name": "Ye Olde Bomb",
-      "Text": "Deal 2 true damage to a target and each adjacent tile",
-      "Stamina_Cost": 2,
-      "Range_Min": 2,
-      "Range_Max": 3,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableAttack2",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Attack",
-      "Deck_Type": "Skill",
-      "Name": "Shrapnel Grenade",
-      "Text": "Deal 3 true damage to a target, then deal 1 true damage to all adjacent targets, then Push 1 all adjacent tiles",
-      "Stamina_Cost": 3,
-      "Range_Min": 2,
-      "Range_Max": 3,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableDefense1",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Healing Potion",
-      "Text": "Heal 3",
-      "Stamina_Cost": 0,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableDefense2",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Healing Drought",
-      "Text": "Heal 6",
-      "Stamina_Cost": 0,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableDefense3",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Defense",
-      "Deck_Type": "Skill",
-      "Name": "Flash Bomb",
-      "Trigger_Text": "Enemy makes an attack against you",
-      "Text": "Interrupt that attack",
-      "Stamina_Cost": 0,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableBuff1",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Name": "Blessed Gel",
-      "Text": "You deal martial weapon damage as divine weapon damage",
-      "Stamina_Cost": 3,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableBuff2",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Name": "Magical Gel",
-      "Text": "You deal martial weapon damage as arcane weapon damage",
-      "Stamina_Cost": 3,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableBuff3",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Name": "Liquid Courage",
-      "Text": "+1 weapon damage",
-      "Stamina_Cost": 1,
-      "Effects": [
-        {
-          "Bonus_SP": -1
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableBuff4",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Name": "Potion of Stone Skin",
-      "Text": "+1 armor",
-      "Stamina_Cost": 1,
-      "Effects": [
-        {
-          "Bonus_Armor": 1
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableBuff5",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Name": "Potion of Stone Skin",
-      "Text": "+3 armor",
-      "Stamina_Cost": 1,
-      "Effects": [
-        {
-          "Bonus_SP": -1,
-          "Bonus_Armor": 3
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableBuff6",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Name": "Energy Drink",
-      "Text": "+1 Stamina Pool",
-      "Stamina_Cost": 2,
-      "Effects": [
-        {
-          "Bonus_SP": 1
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableBuff7",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Buff",
-      "Deck_Type": "Skill",
-      "Name": "Flask of Clarity",
-      "Text": "+1 Hand Size",
-      "Stamina_Cost": 2,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableDebuff1",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Debuff",
-      "Deck_Type": "Skill",
-      "Name": "Acid Flask",
-      "Text": "-2 armor",
-      "Stamina_Cost": 1,
-      "Range_Min": 1,
-      "Range_Max": 3,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableDebuff2",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Debuff",
-      "Deck_Type": "Skill",
-      "Name": "Corrosive Flask",
-      "Text": "-2 weapon damage",
-      "Stamina_Cost": 2,
-      "Range_Min": 1,
-      "Range_Max": 2,
-      "Effects": [
-        {
-        }
-      ]
-    },
-    {
-      "ID": "ConsumableDebuff2",
-      "Faction_Type": "Consumable",
-      "Card_Type": "Debuff",
-      "Deck_Type": "Skill",
-      "Name": "Pocket Sand",
-      "Text": "-1 Range (minimum 1)",
-      "Stamina_Cost": 1,
-      "Range_Min": 1,
-      "Range_Max": 1,
-      "Range_Restriction": "Close",
+      "Range": {
+        "Min": 1,
+        "Max": 4
+      },
+      "Target": [
+        "Enemy"
+      ],
       "Effects": [
         {
         }
