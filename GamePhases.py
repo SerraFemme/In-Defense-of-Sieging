@@ -2,6 +2,7 @@
 Module for all of the primary phases of the game
 Reward and Hub Town phases to be added later on
 """
+# from ObserveEvents import Observable
 
 
 class BattlePhase(object):
@@ -11,8 +12,9 @@ class BattlePhase(object):
     def __init__(self, player_phase, enemy_phase):
         self.player_phase = player_phase
         self.enemy_phase = enemy_phase
+        # Observable Class initiator
 
-    def loop(self):
+    def loop(self):  # optimize?
         global keep_playing
         keep_playing = True
         global i  # turn counter
