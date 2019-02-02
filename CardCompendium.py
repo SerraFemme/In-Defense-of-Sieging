@@ -18,7 +18,7 @@ class CardMaker(object):
         self.Name = self.card_info['Name']
         self.Text = self.card_info['Text']
         self.Target = self.card_info['Target']
-        self.Effects = self.card_info['Effects']
+        self.Effects_List = self.card_info['Effects']
         if 'Trigger_Text' in self.card_info:
             self.Trigger_Text = self.card_info['Trigger_Text']
         if 'Requirement' in self.card_info:
@@ -29,6 +29,9 @@ class CardMaker(object):
             self.Scar_Cost = self.card_info['Scar_Cost']
         if 'Range' in self.card_info:
             self.Range = self.card_info['Range']
+        self.Effects = []
+        for i in self.Effects_List:
+            pass
 
     def print_info(self):
         print('Card Name:', self.Name)
@@ -43,7 +46,7 @@ class CardMaker(object):
 class PlayerDeck(object):
     """
     Class which keeps track of ALL cards owned by a player.
-    Deck List is the list of cards owned by the player.
+    Deck List is the list of cards owned by the player and SHOULD not change during the Battle phase.
     Health Deck is the deck of cards that acts like health.
     Wounds pile is the discard pile.
     Scar Deck is the special discard pile where cards can be placed but never

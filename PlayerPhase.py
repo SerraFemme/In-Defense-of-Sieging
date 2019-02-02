@@ -5,6 +5,7 @@ Contains all functions needed for the players to make their team and take their 
 from ReadGameData import SubListManager
 from Player import Player
 from Equipment import Equipment
+from CardCompendium import *
 
 
 class TeamMaker(object):

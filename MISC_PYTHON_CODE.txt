@@ -2,8 +2,6 @@
 Basic Stack Class
 ---
 class Stack(object):
-    """Example Stack implementation, decomission later"""
-
     def __init__(self):
         self.stack = []  # May need changing
 
@@ -31,8 +29,6 @@ class Stack(object):
 Basic Queue Class
 ---
 class Queue(object):
-    """Example Queue implementation. decomission later"""
-
     def __init__(self):
         self.queue = list()  # May need changing
 
@@ -76,7 +72,6 @@ def class_for_name(module_name, class_name):
 
 loaded_class = class_for_name('foo.bar', 'Baz')
 
-
 3.
 module = __import__(module_name)
 class_ = getattr(module, class_name)
@@ -86,6 +81,7 @@ instance = class_()
 -------------------------------------------------------------------------------
 Observer Pattern for Python
 ---
+1.
 class Observable:
     def __init__(self):
         self.__observers = []
@@ -108,3 +104,50 @@ class Observer:
 subject = Observable()
 observer = Observer(subject)
 subject.notify_observers('test')
+
+2.
+class Subject(object):
+    def __init__(self, *args, **kwargs):
+        # additional set up
+        self.observers = []
+
+    def register(self, observer):
+        self.observers.append(observer)
+
+    def unregister(self, observer):
+        self.observers.remove(observer)
+
+    def notify(self, **extra_kwargs):
+        for observer in self.observers:
+            observer.notify(self, **extra_kwargs)
+
+
+class Observer(object):
+    def __init__(self, *args, **kwargs):
+        # additional set up
+
+    def notify(self, subject, **extra_kwargs):
+        raise NotImplementedError("All observers must implement a notify method.")
+
+
+class ThingIAmMessingWith(Subject):
+    def __init__(self,  initial):
+        self.initial
+
+    def do_the_thing_that_changes(self):
+        # do the thing
+        # when done, call notify
+        self.notify(extra_kwargs)
+
+class ThingIWantToDoOnChange(Observer):
+    def __init__(self, *args, **kwargs):
+        # setup
+        pass
+
+    def notify(self, thing, **extra_kwargs):
+        # now you do the thing you want to do, with thing containing the variable in question
+        pass
+
+thing = ThingIAmMessingWith(initial='whatever')
+to_do = ThingIWantToDoOnChange()
+thing.register(to_do)
