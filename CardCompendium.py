@@ -134,17 +134,20 @@ class PlayerDeck(object):
         self.hand.append(card)
 
     def mulligan(self):
-        print('Mulligan Phase:')
-        while len(self.hand) > 0:
-            try:
-                print('0: Pass Mulligan Phase')
-                for j in self.hand:
-                    print(j.Name)
-                v = int(input('Enter digit for selection: '))
-            except ValueError:
-                    print('Invalid input, try again')
-            else:
-                if v == 0:
-                    break
+        if len(self.hand) == 0:
+            print('0 cards in hand, skipping Mulligan Phase')
+        else:
+            print('Mulligan Phase:')
+            while len(self.hand) > 0:
+                try:
+                    print('0: Pass Mulligan Phase')
+                    for j in self.hand:
+                        print(j.Name)
+                    v = int(input('Enter digit for selection: '))
+                except ValueError:
+                        print('Invalid input, try again')
                 else:
-                    self.wound_pile.append(self.hand.pop(v-1))
+                    if v == 0:
+                        break
+                    else:
+                        self.wound_pile.append(self.hand.pop(v-1))
