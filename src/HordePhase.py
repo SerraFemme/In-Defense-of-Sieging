@@ -2,10 +2,10 @@
 Module that sets up the enemy horde and controls their turn
 """
 
-from ReadGameData import SubListManager
-from Enemy import Enemy
-from Equipment import Equipment
-from EnemyTargeting import *
+from src.ReadGameData import SubListManager
+from src.Enemy import Enemy
+from src.Equipment import Equipment
+from src.EnemyTargeting import *
 
 
 class HordeMaker(object):

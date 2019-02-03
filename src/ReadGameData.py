@@ -14,7 +14,7 @@ MASTER_DICT = {'Terrain': 'MapTerrain.json',
 
 class MasterListManager(object):
     """
-    Reads all listed files in MASTER_DICT from the Game Data folder then stores
+    Reads all listed files in MASTER_DICT from the data folder then stores
     into MASTER_LIST.
     Returns a specific list when needed.
     """
@@ -28,7 +28,7 @@ class MasterListManager(object):
     # @property?
     def _read_file(self, filename):
         try:
-            path = os.path.abspath('Game Data')
+            path = os.path.abspath('data')
             if os.path.exists(path):
                 os.chdir(path)
 

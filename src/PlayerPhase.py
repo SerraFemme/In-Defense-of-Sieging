@@ -2,10 +2,9 @@
 Contains all functions needed for the players to make their team and take their turns
 """
 
-from ReadGameData import SubListManager
-from Player import Player
-from Equipment import Equipment
-from CardCompendium import *
+from src.ReadGameData import SubListManager
+from src.Player import Player
+from src.Equipment import Equipment
 
 
 class TeamMaker(object):

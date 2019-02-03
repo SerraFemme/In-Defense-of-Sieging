@@ -1,7 +1,7 @@
 from random import randrange
-from ReadGameData import SubListManager
-from Player import Player
-from Enemy import Enemy
+from src.ReadGameData import SubListManager
+from src.Player import Player
+from src.Enemy import Enemy
 
 
 class MapInator(object):

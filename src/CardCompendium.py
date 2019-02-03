@@ -59,7 +59,7 @@ class PlayerDeck(object):
 
     def __init__(self, deck):
         self.deck_list = deck  # Contains all cards owned by the player
-        self.health_deck = self.deck_list  # Functions as Health Pool
+        self.health_deck = deck  # Functions as Health Pool
         self.shuffle(self.health_deck)
         self.wound_pile = []  # Discard Pile
         self.scar_pile = []  # Inaccessible Discard Pile
@@ -79,7 +79,7 @@ class PlayerDeck(object):
         return len(self.hand)
 
     def max_health(self):
-        value = len(self.health_deck) - len(self.scar_pile)
+        value = len(self.deck_list) - len(self.scar_pile)
         return value
 
     def heal(self, value):

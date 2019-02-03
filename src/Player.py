@@ -1,4 +1,4 @@
-from UnitStat import *
+from src.UnitStat import *
 
 
 class Player(object):
