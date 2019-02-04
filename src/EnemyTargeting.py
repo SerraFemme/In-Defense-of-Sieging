@@ -5,30 +5,6 @@ Controls which player the enemy will move and attack during their turn
 from random import randrange
 
 
-# Use as Module level functions
-# def __find_nearest_player(target_list):
-#     nearest_player = []
-#     shortest_distance = None
-#     for player in target_list:
-#         if shortest_distance is None:
-#             nearest_player.append(player)
-#             shortest_distance = self.__get_distance(self.grunt, player)
-#         elif shortest_distance > self.__get_distance(self.grunt, player):
-#             nearest_player.clear()
-#             nearest_player.append(player)
-#             shortest_distance = nearest_player.append(player)
-#         elif shortest_distance == self.__get_distance(self.grunt, player):
-#             nearest_player.append(player)
-#
-#     i = randrange(len(nearest_player))
-#     target = nearest_player[i]
-#     return target
-#
-# def __get_distance(enemy, player):
-#     x = abs(enemy.Position[0] - player.Position[0])
-#     y = abs(enemy.Position[1] - player.Position[1])
-#     return x + y
-
 class TargetNearest(object):
     """
     Targeting used by Grunts
@@ -109,21 +85,8 @@ class TargetAT(object):
             if len(valid_target) == 1:
                 return valid_target[0]
             else:
-                shortest_distance = None
-                closest_target = valid_target
-                for player in closest_target:
-                    if shortest_distance is None:
-                        closest_target.append(player)
-                        shortest_distance = self.__get_distance(self.enemy, player)
-                    elif shortest_distance > self.__get_distance(self.enemy, player):
-                        closest_target.clear()
-                        closest_target.append(player)
-                        shortest_distance = self.__get_distance(self.enemy, player)
-                    elif shortest_distance == self.__get_distance(self.enemy, player):
-                        closest_target.append(player)
-
-                i = randrange(len(closest_target))
-                return closest_target[i]
+                return TargetNearest(self.enemy,
+                                     valid_target).find_nearest_player()
 
         elif role == 'Caster':
             valid_target = []
@@ -141,20 +104,8 @@ class TargetAT(object):
             if len(valid_target) == 1:
                 return valid_target[0]
             else:
-                shortest_distance = None
-                closest_target = valid_target
-                for player in closest_target:
-                    if shortest_distance is None:
-                        shortest_distance = self.__get_distance(self.enemy, player)
-                    elif shortest_distance > self.__get_distance(self.enemy, player):
-                        closest_target.clear()
-                        closest_target.append(player)
-                        shortest_distance = self.__get_distance(self.enemy, player)
-                    elif shortest_distance == self.__get_distance(self.enemy, player):
-                        closest_target.append(player)
-
-                i = randrange(len(closest_target))
-                return closest_target[i]
+                return TargetNearest(self.enemy,
+                                     valid_target).find_nearest_player()
 
     def __get_distance(self, enemy, player):
         x = abs(enemy.Position[0] - player.Position[0])

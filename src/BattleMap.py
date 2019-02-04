@@ -33,26 +33,25 @@ class MapInator(object):
             value = 0
         return basic_map_list[value]
 
-    # Getter function to get a tile
     def get_tile(self, x, y):
         y_list = self.main_list[y]  # find the Y value
         x_tile = y_list[x]  # find the X value
         return x_tile  # return the tile
 
-    def is_tile_unoccupied(self, X, Y):
-        tile = self.get_tile(X, Y)
+    def is_tile_unoccupied(self, x, y):
+        tile = self.get_tile(x, y)
         return tile.is_unoccupied()
 
-    def get_unit(self, X, Y):
-        tile = self.get_tile(X, Y)
+    def get_unit(self, x, y):
+        tile = self.get_tile(x, y)
         return tile.unit
 
-    def set_unit(self, X, Y, unit):
-        tile = self.get_tile(X, Y)
+    def set_unit(self, x, y, unit):
+        tile = self.get_tile(x, y)
         tile.unit = unit
 
-    def set_tile_unoccupied(self, X, Y):
-        tile = self.get_tile(X, Y)
+    def set_tile_unoccupied(self, x, y):
+        tile = self.get_tile(x, y)
         tile.set_unit_empty()
 
     def print_map(self):
@@ -78,7 +77,7 @@ class MapInator(object):
         else:  # something unexpected
             print('Q', end='')
 
-    # Find Unit Function
+    # Find Unit Function?
 
 
 class Tile(object):
@@ -135,7 +134,7 @@ class Tile(object):
         if self.unit == 'Invalid':
             print('Cannot be occupied')
         else:
-            print('Occupied:', type(self.unit))
+            print('Occupied:', type(self.unit))  # Change output
 
 
 class TerrainGenerator(object):
@@ -151,9 +150,10 @@ class Movement(object):
         self.battle_map = map_given
 
     def place_enemy_random(self, enemy):
+        map_size = self.battle_map.map_size
         while True:
             x = randrange(0, 11)
-            y = randrange(9, 11)
+            y = randrange(map_size[1]-3, map_size[1]-1)
             if self.battle_map.is_tile_unoccupied(x, y):
                 self.battle_map.set_unit(x, y, enemy)
                 enemy.Position = (x, y)

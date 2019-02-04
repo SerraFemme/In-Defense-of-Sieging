@@ -27,7 +27,7 @@ class Player(object):
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()
-        # self.Deck.mulligan
+        # self.Deck.mulligan()
         # upkeep
 
     def print_info(self):  # fix: prints None at end
