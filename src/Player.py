@@ -56,7 +56,7 @@ class Player(object):
             if i.Name == item:
                 return i
 
-    def add_equipment(self, item):
+    def add_equipment(self, item):  # Make Dynamic
         self.Equipment.append(item)
         if 'Damage' in item.Equipment_Stats:
             self.Weapon_Damage.add_effect(item.Name, item.Equipment_Stats['Damage'])
@@ -66,6 +66,8 @@ class Player(object):
             self.Bonus_Range.add_effect(item.Name, item.Equipment_Stats['Range'])
         if 'Stamina' in item.Equipment_Stats:
             self.Stamina.add_pool_effect(item.Name, item.Equipment_Stats['Stamina'])
+        if 'Hand' in item.Equipment_Stats:
+            self.HandSize.add_effect(item.name, item.Equipment_Stats['Hand'])
 
     # Deck Stuff
     def take_damage(self, value):

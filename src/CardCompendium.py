@@ -47,7 +47,8 @@ class PlayerDeck(object):
     """
     Class which keeps track of ALL cards owned by a player.
     Deck List is the list of cards owned by the player and SHOULD not change during the Battle phase.
-    Health Deck is the deck of cards that acts like health.
+    Health Deck is the deck of cards that acts like health. When your deck
+    becomes empty, you immediately become unconscious.
     Wounds pile is the discard pile.
     Scar Deck is the special discard pile where cards can be placed but never
     removed for the duration of the battle.

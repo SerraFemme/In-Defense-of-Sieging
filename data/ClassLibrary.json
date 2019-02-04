@@ -110,6 +110,19 @@
       ],
       "Hand_Size": 5,
       "Stamina_Pool": 10
+    },
+    {
+      "ID": "Battle Mage",
+      "Allowed_Faction": [
+        "Arcane",
+        "Martial"
+      ],
+      "Allowed_Equipment": [
+        "Melee",
+        "Armor"
+      ],
+      "Hand_Size": 5,
+      "Stamina_Pool": 10
     }
   ]
 }

@@ -263,7 +263,8 @@
       "Equipment_Type": "Armor",
       "Name": "Arcane Chain Mail",
       "Armor": 2,
-      "Stamina": -2
+      "Stamina": -2,
+      "Hand": 1
     }
   ]
 }
