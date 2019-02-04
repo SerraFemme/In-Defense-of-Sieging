@@ -85,13 +85,13 @@ class PlayerDeck(object):
 
     def heal(self, value):
         for i in range(value):
-            if len(self.wound_pile) >= 0:
+            if len(self.wound_pile) > 0:
                 card = self.get_top_card(self.wound_pile)
                 self.put_card_on_bottom(self.health_deck, card)
 
     def mill(self, value):
         for i in range(value):
-            if len(self.health_deck) >= 0:
+            if len(self.health_deck) > 0:
                 card = self.get_top_card(self.health_deck)
                 self.put_card_on_top(self.wound_pile, card)
 
@@ -117,7 +117,7 @@ class PlayerDeck(object):
     # Hand
     def draw(self, value):
         for i in range(value):
-            if len(self.health_deck) >= 0:
+            if len(self.health_deck) > 0:
                 card = self.health_deck.pop()
                 self.hand.append(card)
 

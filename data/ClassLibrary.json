@@ -123,6 +123,18 @@
       ],
       "Hand_Size": 5,
       "Stamina_Pool": 10
+    },
+    {
+      "ID": "Sanguinist",
+      "Allowed_Faction": [
+        "Arcane",
+        "Martial"
+      ],
+      "Allowed_Equipment": [
+        "Melee"
+      ],
+      "Hand_Size": 4,
+      "Stamina_Pool": 10
     }
   ]
 }

@@ -68,6 +68,12 @@
         "ArcaneMelee3",
         "ArcaneArmor1"
       ]
+    },
+    {
+      "ID": "Sanguinist",
+      "Starting_Equipment": [
+        "ArcaneMelee2"
+      ]
     }
   ]
 }
