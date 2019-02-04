@@ -15,6 +15,7 @@ def main():
     print('IN DEFENSE OF SIEGING')
     print('By: Russell Buckner' + '\n')
 
+    # Move into BattlePhase?
     r = MasterListManager()
     terrain_list = r.get_list('Terrain')
     class_list = r.get_list('Class')
@@ -28,11 +29,13 @@ def main():
     battle_map = MapInator(terrain_list)
     movement = Movement(battle_map)
 
+    # Move the team makers and team phases into BattlePhase
     t = TeamMaker(class_list, starting_equipment, equipment_list,
                   starting_deck, card_library)
     player_team = t.team_init()
 
-    horde = HordeMaker(battle_map, movement, encounter_list, races, roles, equipment_list, len(player_team))
+    horde = HordeMaker(battle_map, movement, encounter_list, races, roles,
+                       equipment_list, len(player_team))
     enemy_team = horde.create_enemy_horde()
 
     player_phase = PlayerTurn(player_team, battle_map, movement)

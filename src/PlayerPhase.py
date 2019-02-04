@@ -1,5 +1,6 @@
 """
-Contains all functions needed for the players to make their team and take their turns
+Contains all functions needed for the player team to make their team and take
+their turns.
 """
 
 from src.ReadGameData import SubListManager
@@ -10,14 +11,14 @@ from src.Equipment import Equipment
 class TeamMaker(object):
     """
     Creates the player team.
-    For each player, asks them to enter their name, then select which class they would
-        like to play, then creates a Player object with the proper info.
+    For each player, asks them to enter their name, then select which class
+    they would like to play, then creates a Player object with the proper info.
     """
     def __init__(self, c, se, e, sd, card):
         self.class_list = SubListManager(c)
-        self.starting_equipment = SubListManager(se)
+        self.s_equipment = SubListManager(se)  # Starting Equipment
         self.equipment_list = SubListManager(e)
-        self.starting_deck = SubListManager(sd)
+        self.s_deck = SubListManager(sd)  # Starting Deck
         self.card_library = SubListManager(card)
         self.player_list = []
 
@@ -42,11 +43,12 @@ class TeamMaker(object):
             print(name, selected_class, sep=': ')
             class_info = self.class_list.get_item(selected_class)
             player = Player(class_info, name, len(self.player_list)+1)
-            self.equip_starting_equipment(player,  # shorten
-                                          self.starting_equipment.get_item(selected_class), self.equipment_list)
+            self.equip_s_equipment(player,
+                                   self.s_equipment.get_item(selected_class),
+                                   self.equipment_list)
             # give player starting deck
-            # self.add_starting_deck(player, self.starting_deck.get_item(selected_class, self.card_library)
-            # self.add_starting_deck(player, self.starting_deck.get_item("Test", self.card_library)
+            # self.add_s_deck(player, self.s_deck.get_item(selected_class, self.card_library)
+            # self.add_s_deck(player, self.s_deck.get_item("Test", self.card_library)
             self.player_list.append(player)
         return self.player_list
 
@@ -72,19 +74,19 @@ class TeamMaker(object):
         item_list = self.class_list.get_list()
         return item_list
 
-    def equip_starting_equipment(self, player, s_equip, equip_list):
+    def equip_s_equipment(self, player, s_equip, equip_list):
         s_list = s_equip['Starting_Equipment']
         for i in s_list:
             e = Equipment(equip_list.get_item(i))
             player.add_equipment(e)
 
-    # def add_starting_deck(self, player, s_deck, card_list):
+    # def add_s_deck(self, player, s_deck, card_list):
     #     deck = []
     #     deck_list = s_deck['Starting_Deck']
     #     for i in deck_list:
     #         card = CardMaker(card_list.get_item(i))
     #         deck.append(card)
-    #     player.PlayerDeck = deck
+    #     player.Deck = deck
 
 
 class PlayerTurn(object):
@@ -103,6 +105,8 @@ class PlayerTurn(object):
             self.battle_map.print_map()
             print('\n' + person.Player_Name, person.Class_Name, sep=': ')
             self.movement.place_starting_player(person)
+            # hand = person.Deck.value
+            # person.Deck.draw(hand)
 
     def player_turn_loop(self):
         keep_playing = True
@@ -118,9 +122,12 @@ class PlayerTurn(object):
                         print('\n' + 'Turn:', person.Player_Name)
                         print('Icon:', person.Player_Number)
                         value = self.print_action_menu(person, self.movement)
-                        turn = self.process_player_selection(value, self.movement, person)
+                        turn = self.process_player_selection(value,
+                                                             self.movement,
+                                                             person)
             else:
-                print(person.Player_Name, 'is unconscious. Passing Turn' + '\n')
+                print(person.Player_Name,
+                      'is unconscious. Passing Turn' + '\n')
         return keep_playing
 
     def print_player_menu(self, player):
@@ -190,6 +197,7 @@ class PlayerTurn(object):
                 print('')
         elif value == 5:
             print('')
-            tile = self.battle_map.get_tile(player.Position[0], player.Position[1])
+            tile = self.battle_map.get_tile(player.Position[0],
+                                            player.Position[1])
             tile.print_info()
         return True

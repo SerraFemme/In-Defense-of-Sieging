@@ -5,6 +5,30 @@ Controls which player the enemy will move and attack during their turn
 from random import randrange
 
 
+# Use as Module level functions
+# def __find_nearest_player(target_list):
+#     nearest_player = []
+#     shortest_distance = None
+#     for player in target_list:
+#         if shortest_distance is None:
+#             nearest_player.append(player)
+#             shortest_distance = self.__get_distance(self.grunt, player)
+#         elif shortest_distance > self.__get_distance(self.grunt, player):
+#             nearest_player.clear()
+#             nearest_player.append(player)
+#             shortest_distance = nearest_player.append(player)
+#         elif shortest_distance == self.__get_distance(self.grunt, player):
+#             nearest_player.append(player)
+#
+#     i = randrange(len(nearest_player))
+#     target = nearest_player[i]
+#     return target
+#
+# def __get_distance(enemy, player):
+#     x = abs(enemy.Position[0] - player.Position[0])
+#     y = abs(enemy.Position[1] - player.Position[1])
+#     return x + y
+
 class TargetNearest(object):
     """
     Targeting used by Grunts
@@ -14,7 +38,7 @@ class TargetNearest(object):
         self.grunt = grunt
         self.player_list = player_list
 
-    def find_nearest_player(self):  # Move into separate module?
+    def find_nearest_player(self):  # Move into separate function?
         nearest_player = []
         shortest_distance = None
         for player in self.player_list:
@@ -97,11 +121,9 @@ class TargetAT(object):
                         shortest_distance = self.__get_distance(self.enemy, player)
                     elif shortest_distance == self.__get_distance(self.enemy, player):
                         closest_target.append(player)
-                if len(closest_target) == 1:
-                    return closest_target[0]
-                else:
-                    i = randrange(len(closest_target))
-                    return closest_target[i]
+
+                i = randrange(len(closest_target))
+                return closest_target[i]
 
         elif role == 'Caster':
             valid_target = []

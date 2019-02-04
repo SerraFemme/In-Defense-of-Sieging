@@ -87,3 +87,11 @@ class Splash(object):
     Deal weapon damage to all units in a radius X around the target.
     Instances of Splash are additive. (adds to the radius)
     """
+
+
+class Unique(object):
+    """
+    Buff and Debuff specific keyword.
+    Cannot have more than 1 of the named cards attached to the same unit,
+    regardless of the source. (Unless noted otherwise)
+    """

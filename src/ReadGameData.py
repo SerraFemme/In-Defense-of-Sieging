@@ -23,12 +23,12 @@ class MasterListManager(object):
 
     def __init__(self):
         for i in MASTER_DICT.values():
-            self.MASTER_LIST.append(self._read_file(i))
+            self.MASTER_LIST.append(self.__read_file(i))
 
     # @property?
-    def _read_file(self, filename):
+    def __read_file(self, filename):
         try:
-            path = os.path.abspath('data')
+            path = os.path.abspath('data')  # convert to pathlib?
             if os.path.exists(path):
                 os.chdir(path)
 

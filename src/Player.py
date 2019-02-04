@@ -21,13 +21,13 @@ class Player(object):
         self.Armor = StatTracker()
         self.Bonus_Range = StatTracker()
         self.HandSize = StatTracker(self.class_info['Hand_Size'])
-        # self.PlayerDeck = Starting Deck
+        self.Deck = None
         self.Equipment = []
         self.Passive = None
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()
-        # mulligan phase
+        # self.Deck.mulligan
         # upkeep
 
     def print_info(self):  # fix: prints None at end
@@ -40,7 +40,7 @@ class Player(object):
         print('Armor:', self.Armor.value)
         print('Hand Size:', self.HandSize.value)
 
-    def get_class_name(self):
+    def get_class_name(self):  # Switch to get_name and change function?
         return self.Class_Name
 
     # Faction Restrictions
@@ -48,10 +48,10 @@ class Player(object):
     # Equipment Restrictions
 
     # Equipment Stuff
-    def get_equipped_list(self):
+    def get_equipped_list(self):  # Needed?
         return self.Equipment
 
-    def get_equipped_item(self, item):
+    def get_equipped_item(self, item):  # Needed?
         for i in self.Equipment:
             if i.Name == item:
                 return i
@@ -67,8 +67,11 @@ class Player(object):
         if 'Stamina' in item.Equipment_Stats:
             self.Stamina.add_pool_effect(item.Name, item.Equipment_Stats['Stamina'])
 
-    def take_damage(self):
+    # Deck Stuff
+    def take_damage(self, value):
+        # self.Deck.mill(value)
         pass
 
-    def heal(self):
+    def heal(self, value):
+        # self.Deck.heal
         pass

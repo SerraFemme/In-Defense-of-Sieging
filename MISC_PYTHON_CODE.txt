@@ -77,6 +77,14 @@ module = __import__(module_name)
 class_ = getattr(module, class_name)
 instance = class_()
 
+4.
+import foo
+method_to_call = getattr(foo, 'bar')
+result = method_to_call()
+
+or
+
+result = getattr(foo, 'bar')()
 
 -------------------------------------------------------------------------------
 Observer Pattern for Python
