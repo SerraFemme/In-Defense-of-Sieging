@@ -71,7 +71,7 @@
       "ID": "MartialDefense5",
       "Faction_Type": "Martial",
       "Card_Type": "Defense",
-      "Name": "Shrug Off",
+      "Name": "Knit Wounds",
       "Text": "Heal 6",
       "Trigger_Text": "Receive damage from an enemy",
       "Scar_Cost": 2,
@@ -116,6 +116,62 @@
       ]
     },
     {
+      "ID": "MartialDefense8",
+      "Faction_Type": "Martial",
+      "Card_Type": "Defense",
+      "Name": "Shrug Off",
+      "Text": "You may put up to X cards from the top of your wounds onto your scar pile. Reduce the incoming damage by X",
+      "Trigger_Text": "Enemy makes an Attack in against you"
+    },
+    {
+      "ID": "MartialDefense9",
+      "Faction_Type": "Martial",
+      "Card_Type": "Defense",
+      "Name": "Multi-Attack",
+      "Text": "draw a card, -1 weapon damage until end of your turn, attack card you play cost 1 less until end of your turn.",
+      "Stamina_Cost": 1
+    },
+    {
+      "ID": "MartialDefense10",
+      "Faction_Type": "Martial",
+      "Card_Type": "Defense",
+      "Name": "Dash",
+      "Text": "Pay the movement cost of the target tile, then place your token on it. Path has to be clear.",
+      "Stamina_Cost": 1,
+      "Range": {
+        "Min": 1,
+        "Max": 3,
+        "Restriction": "Inline"
+      },
+      "Effects": [{}]
+    },
+    {
+      "ID": "MartialDefense11",
+      "Faction_Type": "Martial",
+      "Card_Type": "Defense",
+      "Name": "Leap",
+      "Text": "Place your token on a tile in range.",
+      "Stamina_Cost": 2,
+      "Range": {
+        "Min": 2,
+        "Max": 2
+      },
+      "Effects": [{}]
+    },
+    {
+      "ID": "MartialDefense11",
+      "Faction_Type": "Martial",
+      "Card_Type": "Defense",
+      "Name": "Smoke Bomb",
+      "Text": "Put a Smoke on an adjacent tile",
+      "Stamina_Cost": 1,
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Inline"
+      }
+    },
+    {
       "ID": "MartialBuff4",
       "Faction_Type": "Martial",
       "Card_Type": "Buff",
@@ -156,6 +212,45 @@
         {
         }
       ]
+    },
+    {
+      "ID": "MartialDebuff3",
+      "Faction_Type": "Martial",
+      "Card_Type": "Debuff",
+      "Name": "Bear Trap",
+      "Text": "When an Enemy moves onto this tile, they gain this card then takes 3 True Damage. You cannot move. Pay 4 Stamina to remove this card"
+    },
+    {
+      "ID": "MartialDebuff4",
+      "Faction_Type": "Martial",
+      "Card_Type": "Debuff",
+      "Name": "Poison",
+      "Text": "When you move, take 1 True Damage"
+    },
+    {
+      "ID": "MartialDebuff5",
+      "Faction_Type": "Martial",
+      "Card_Type": "Debuff",
+      "Name": "Paralyzing Backhand",
+      "Text": "Push the target away 1 tile.  You cannot spend stamina. At the end of your turn, remove this card.",
+      "Stamina_Cost": 4,
+      "Range": {
+        "Min": 1,
+        "Max": 1,
+        "Restriction": "Close"
+      }
+    },
+    {
+      "ID": "DivineDebuff1",
+      "Faction_Type": "Divine",
+      "Card_Type": "Debuff",
+      "Name": "Fear of God",
+      "Text": "You cannot spend stamina to move. At the end of your turn, remove this card.",
+      "Stamina_Cost": 3,
+      "Range": {
+        "Min": 1,
+        "Max": 3
+      }
     },
     {
       "ID": "ArcaneDefense1",

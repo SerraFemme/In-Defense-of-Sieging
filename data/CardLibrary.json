@@ -596,6 +596,15 @@
       ]
     },
     {
+      "ID": "DivineBuff5",
+      "Faction_Type": "Divine",
+      "Card_Type": "Buff",
+      "Name": "Fanaticism",
+      "Text": "+1 weapon damage. Increase damage dealt to you by 1",
+      "Stamina_Cost": 1,
+      "Effects": [{}]
+    },
+    {
       "ID": "ArcaneAttack1",
       "Faction_Type": "Arcane",
       "Card_Type": "Attack",
@@ -720,7 +729,7 @@
       "Name": "Costly Knowledge",
       "Text": "Draw 2 cards, then discard 2 cards",
       "Stamina_Cost": 1,
-      "Scar_Cost": 5,
+      "Scar_Cost": 4,
       "Target": [
         "Self"
       ],
