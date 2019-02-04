@@ -183,7 +183,7 @@
       "Faction_Type": "Divine",
       "Equipment_Type": "Melee",
       "Name": "Holy Flail",
-      "Damage": 4,
+      "Damage": 2,
       "Range": 1,
       "Stamina": -1
     },
@@ -255,6 +255,14 @@
       "Equipment_Type": "Armor",
       "Name": "Full Plate",
       "Armor": 3,
+      "Stamina": -2
+    },
+    {
+      "ID": "ArcaneArmor1",
+      "Faction_Type": "Arcane",
+      "Equipment_Type": "Armor",
+      "Name": "Arcane Chain Mail",
+      "Armor": 2,
       "Stamina": -2
     }
   ]
