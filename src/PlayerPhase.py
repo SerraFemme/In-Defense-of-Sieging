@@ -152,7 +152,7 @@ class PlayerTurn(object):
             b = False
             s = []
             s.clear()
-            print('\n' + player.get_class_name(), end='')
+            print('\n' + player.get_name(), end='')
             print(': Remaining Stamina:', player.Stamina.points)
             print('0: Pass Turn')
             if player.Stamina.points > 0:

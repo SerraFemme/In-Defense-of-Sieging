@@ -109,7 +109,7 @@ class EnemyTurn(object):
 
     def enemy_turn_loop(self):
         for enemy in self.enemy_horde:
-            print('\n' + 'Turn:', enemy.get_enemy_name(), enemy.Enemy_Number)
+            print('\n' + 'Turn:', enemy.get_name(), enemy.Enemy_Number)
             enemy.turn_beginning()
             if enemy.Stamina.points > 0:
                 target = self.find_target(enemy)
@@ -133,7 +133,7 @@ class EnemyTurn(object):
             print('Remaining Stamina:', enemy.Stamina.points)
             self.take_selected_action(enemy, target)
         else:
-            print(enemy.get_enemy_name(), 'is out of Stamina!')
+            print(enemy.get_name(), 'is out of Stamina!')
 
     def take_selected_action(self, enemy, target):
         x = abs(enemy.Position[0] - target.Position[0])

@@ -22,7 +22,7 @@ class Player(object):
         self.Bonus_Range = StatTracker()
         self.HandSize = StatTracker(self.class_info['Hand_Size'])
         self.Deck = None
-        self.Equipment = []
+        self.Equipment = []  # Restrict to 3 items
         self.Passive = None
 
     def turn_beginning(self):
@@ -40,8 +40,8 @@ class Player(object):
         print('Armor:', self.Armor.value)
         print('Hand Size:', self.HandSize.value)
 
-    def get_class_name(self):  # Switch to get_name and change function?
-        return self.Class_Name
+    def get_name(self):
+        return self.Player_Name + ': ' + self.Class_Name
 
     # Faction Restrictions
 
@@ -65,15 +65,15 @@ class Player(object):
         if 'Range' in item.Equipment_Stats:
             self.Bonus_Range.add_effect(item.Name, item.Equipment_Stats['Range'])
         if 'Stamina' in item.Equipment_Stats:
-            self.Stamina.add_pool_effect(item.Name, item.Equipment_Stats['Stamina'])
+            self.Stamina.add_effect(item.Name, item.Equipment_Stats['Stamina'])
         if 'Hand' in item.Equipment_Stats:
             self.HandSize.add_effect(item.name, item.Equipment_Stats['Hand'])
 
     # Deck Stuff
-    def take_damage(self, value):
-        # self.Deck.mill(value)
-        pass
+    def take_damage(self, value):  # Redo later
+        self.Deck.mill(value)
+        if len(self.Deck) == 0:
+            self.Conscious = False
 
-    def heal(self, value):
-        # self.Deck.heal
-        pass
+    def heal(self, value):  # Redo later
+        self.Deck.heal(value)

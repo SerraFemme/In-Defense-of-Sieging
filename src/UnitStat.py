@@ -83,7 +83,7 @@ class Stamina(object):
     def get_pool_size(self):
         return self.pool.value
 
-    def add_pool_effect(self, effect_name, value):
+    def add_effect(self, effect_name, value):
         self.pool.add_effect(effect_name, value)
 
     def remove_pool_effect(self, effect):

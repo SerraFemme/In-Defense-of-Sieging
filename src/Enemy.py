@@ -21,7 +21,7 @@ class Enemy(object):
         self.Weapon_Damage = StatTracker(self.role_info['Bonus_Damage'])
         self.Armor = StatTracker(self.race_info['Base_Armor'] + self.role_info['Bonus_Armor'])
         self.Bonus_Range = StatTracker()
-        self.Equipment = []
+        self.Equipment = []  # Restrict to 3 items
         self.Passive = None
 
     def turn_beginning(self):
@@ -38,14 +38,14 @@ class Enemy(object):
         print('Bonus Range:', self.Bonus_Range.value)
         print('Armor:', self.Armor.value)
 
-    def get_enemy_name(self):
+    def get_name(self):
         return self.Race_Name + ' ' + self.Role_Name
 
     # Equipment Stuff
-    def get_equipped_list(self):
+    def get_equipped_list(self):  # Needed?
         return self.Equipment
 
-    def get_equipped_item(self, item):
+    def get_equipped_item(self, item):  # Needed?
         for i in self.Equipment:
             if i.Name == item:
                 return i
@@ -59,7 +59,7 @@ class Enemy(object):
         if 'Range' in item.Equipment_Stats:
             self.Bonus_Range.add_effect(item.Name, item.Equipment_Stats['Range'])
         if 'Stamina' in item.Equipment_Stats:
-            self.Stamina.add_pool_effect(item.Name, item.Equipment_Stats['Stamina'])
+            self.Stamina.add_effect(item.Name, item.Equipment_Stats['Stamina'])
 
     def heal(self, value):
         self.Health_Points += value
