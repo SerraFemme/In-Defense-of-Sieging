@@ -18,6 +18,11 @@
       "ID": "Mountain",
       "Char": "&",
       "Unit": "Invalid"
+    },
+    {
+      "ID": "River",
+      "Char": "_",
+      "Movement_Cost": 3
     }
   ]
 }

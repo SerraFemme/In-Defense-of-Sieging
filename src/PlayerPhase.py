@@ -46,6 +46,7 @@ class TeamMaker(object):
             self.equip_s_equipment(player,
                                    self.s_equipment.get_item(selected_class),
                                    self.equipment_list)
+            # give class passive
             # give player starting deck
             # self.add_s_deck(player, self.s_deck.get_item(selected_class, self.card_library)
             # self.add_s_deck(player, self.s_deck.get_item("Test", self.card_library)

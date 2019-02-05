@@ -215,6 +215,14 @@ class Movement(object):
     #             value = True
     #     return x_place, y_place
 
+    def teleport(self, unit, destination):
+        start = unit.Position
+        x = destination[0]
+        y = destination[1]
+        if self.battle_map.is_tile_unoccupied(x, y):
+            self.battle_map.set_unit(unit)
+            self.battle_map.set_tile_unoccupied(start[0], start[1])
+
     def move_player(self, player):
         print('Which direction would you like to go?')
         print('1: Up')

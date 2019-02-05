@@ -1,0 +1,37 @@
+TURNS: Include Source
+BeginPlayerTurn
+EndPlayerTurn
+BeginPlayerPhase
+EndPlayerPhase
+BeginEnemyTurn
+EndEnemyTurn
+BeginEnemyPhase
+EndEnemyPhase
+
+DECK FUNCTIONS: Include Source
+PlayerDraw
+PlayerDiscard
+PlayerMill
+PlayerHeal
+PlayerScar
+
+CARD FUNCTIONS: Include Source
+AttackPlayed
+DefensePlayed
+BuffPlayed
+DebuffPlayed
+MartialPlayed
+DivinePlayed
+ArcanePlayed
+CardInterrupted: Include Card
+TargetedBy
+
+MOVEMENT FUNCTIONS:
+MovedOntoTile
+
+UNIT FUNCTIONS:
+PlayerFaints
+UnitDies
+
+ENEMY FUNCTIONS:
+EnemyHeals
