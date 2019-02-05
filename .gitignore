@@ -303,3 +303,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Virtual Environments
+venv

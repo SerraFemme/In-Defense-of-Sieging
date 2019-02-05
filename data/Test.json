@@ -1,0 +1,27 @@
+{
+  "Effects": [
+    {
+      "duration": "instant",
+      "conditions": []
+    },
+    {
+      "duration": "conditional",
+      "conditions": [
+        {
+          "event": "life_loss",
+          "data_point": "amount_lost",
+          "operator": ">=",
+          "value": 5,
+          "cumulative": true
+        },
+        {
+          "event": "player_moved",
+          "data_point": "",
+          "operator": "",
+          "value": 0,
+          "cumulative": false
+        }
+      ]
+    }
+  ]
+}
