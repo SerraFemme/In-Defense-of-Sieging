@@ -38,6 +38,12 @@
       "Base_Health": 16,
       "Base_Armor": 2,
       "Stamina_Pool": 3
+    },
+    {
+      "ID": "Ghoul",
+      "Base_Health": 22,
+      "Base_Armor": 3,
+      "Stamina_Pool": 5
     }
   ]
 }

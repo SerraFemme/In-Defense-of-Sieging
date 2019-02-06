@@ -6,6 +6,7 @@ their turns.
 from src.ReadGameData import SubListManager
 from src.Player import Player
 from src.Equipment import Equipment
+import src.ClassPassives
 
 
 class TeamMaker(object):
@@ -46,7 +47,7 @@ class TeamMaker(object):
             self.equip_s_equipment(player,
                                    self.s_equipment.get_item(selected_class),
                                    self.equipment_list)
-            # give class passive
+            # player.Passive = getattribute(src.ClassPassives, selected_class)
             # give player starting deck
             # self.add_s_deck(player, self.s_deck.get_item(selected_class, self.card_library)
             # self.add_s_deck(player, self.s_deck.get_item("Test", self.card_library)
@@ -122,7 +123,7 @@ class PlayerTurn(object):
                         self.battle_map.print_map()
                         print('\n' + 'Turn:', person.Player_Name)
                         print('Icon:', person.Player_Number)
-                        value = self.print_action_menu(person, self.movement)
+                        value = self.print_turn_menu(person, self.movement)
                         turn = self.process_player_selection(value,
                                                              self.movement,
                                                              person)
@@ -146,7 +147,7 @@ class PlayerTurn(object):
                 else:
                     return v
 
-    def print_action_menu(self, player, movement):  # clean up
+    def print_turn_menu(self, player, movement):  # clean up
         global b, action
         b = True
         while b:
@@ -189,6 +190,7 @@ class PlayerTurn(object):
             movement.move_player(player)
         elif value == 2:
             print('No actions yet')
+            # self.action_menu(player)
         elif value == 3:
             print(player.print_info())
         elif value == 4:
@@ -202,3 +204,9 @@ class PlayerTurn(object):
                                             player.Position[1])
             tile.print_info()
         return True
+
+    def action_menu(self, player):
+        if player.Passive is None:
+            pass
+        else:
+            pass  # Is an activated passive
