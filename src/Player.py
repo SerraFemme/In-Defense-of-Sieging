@@ -24,6 +24,7 @@ class Player(object):
         self.Deck = None
         self.Equipment = []  # Restrict to 3 items
         self.Passive = None
+        self.Abilities = {}
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()

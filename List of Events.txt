@@ -1,37 +1,60 @@
-TURNS: Include Source
-BeginPlayerTurn
-EndPlayerTurn
+GAME EVENTS:
+BattleStart
+BattleEnd
+
+TURN EVENTS:
 BeginPlayerPhase
 EndPlayerPhase
-BeginEnemyTurn
-EndEnemyTurn
+BeginPlayerTurn
+EndPlayerTurn
 BeginEnemyPhase
 EndEnemyPhase
+BeginEnemyTurn
+EndEnemyTurn
+UpkeepPhase
+MulliganPhase
+EndPhase
 
-DECK FUNCTIONS: Include Source
-PlayerDraw
-PlayerDiscard
-PlayerMill
-PlayerHeal
-PlayerScar
+DECK EVENTS:
+Draw
+Discard
+Mill
+Heal
+Scar
+Shuffle
 
-CARD FUNCTIONS: Include Source
-AttackPlayed
-DefensePlayed
-BuffPlayed
-DebuffPlayed
-MartialPlayed
-DivinePlayed
-ArcanePlayed
-CardInterrupted: Include Card
-TargetedBy
+CARD EVENTS:
+CardPlayed
+CardResolved
+CardInterrupted
+CardCreated
+CardDeleted
+CardCopied
+PermanentEntering
+PermanentLeaving
 
 MOVEMENT FUNCTIONS:
 MovedOntoTile
 
-UNIT FUNCTIONS:
+UNIT EVENTS:
 PlayerFaints
 UnitDies
+DamageDealt
+DamageTaken
+UnitHealing
 
-ENEMY FUNCTIONS:
-EnemyHeals
+MODIFIED EVENTS:
+CostModified
+CardTransformed
+
+STAMINA EVENTS:
+StaminaGained
+StaminaSpent
+
+ABILITY EVENTS:
+AbilityActivated
+AbilityTriggered
+AbilityResolved
+
+TARGETING EVENTS:
+DefenderTargeted
