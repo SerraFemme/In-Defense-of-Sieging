@@ -68,7 +68,7 @@ class Player(object):
         if 'Stamina' in item.Equipment_Stats:
             self.Stamina.add_effect(item.Name, item.Equipment_Stats['Stamina'])
         if 'Hand' in item.Equipment_Stats:
-            self.HandSize.add_effect(item.name, item.Equipment_Stats['Hand'])
+            self.HandSize.add_effect(item.Name, item.Equipment_Stats['Hand'])
 
     # Deck Stuff
     def take_damage(self, value):  # Redo later

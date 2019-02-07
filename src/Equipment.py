@@ -22,6 +22,8 @@ class Equipment(object):
             self.Equipment_Stats['Range'] = self.equipment_info['Range']
         if 'Stamina' in self.equipment_info:
             self.Equipment_Stats['Stamina'] = self.equipment_info['Stamina']
+        if 'Hand' in self.equipment_info:
+            self.Equipment_Stats['Hand'] = self.equipment_info['Hand']
         self.Abilities = None
 
     def print_info(self):

@@ -112,6 +112,20 @@
       },
       "Effects": [
         {
+          "Effect1": {
+            "Target": "Enemy",
+            "Type": "Damage",
+            "Value": "W",
+            "Multiplier": 4,
+            "DamageType": "True"
+          },
+          "Effect2": {
+            "Target": "Self",
+            "Type": "Damage",
+            "Value": "W",
+            "Multiplier": 4,
+            "DamageType": "True"
+          }
         }
       ]
     },
@@ -159,7 +173,7 @@
       "Effects": [{}]
     },
     {
-      "ID": "MartialDefense11",
+      "ID": "MartialDefense12",
       "Faction_Type": "Martial",
       "Card_Type": "Defense",
       "Name": "Smoke Bomb",

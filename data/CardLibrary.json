@@ -17,6 +17,11 @@
       ],
       "Effects": [
         {
+          "Effect1": {
+            "Type": "Damage",
+            "Value": "W",
+            "Multiplier": 1
+          }
         }
       ]
     },
@@ -38,6 +43,25 @@
       ],
       "Effects": [
         {
+          "Effect1": {
+            "Type": "Shift",
+            "Target": "Tile",
+            "Range": {
+              "Min": 2,
+              "Max": 4,
+              "Restriction": "Inline"
+            }
+          },
+          "Effect2": {
+            "Type": "Damage",
+            "Target": "Enemy",
+            "Value": "W",
+            "Multiplier": 2
+          },
+          "Effect3": {
+            "Type": "Push",
+            "Value": 1
+          }
         }
       ]
     },
@@ -60,6 +84,18 @@
       ],
       "Effects": [
         {
+          "Effect1": {
+            "Target": "Enemy",
+            "Type": "Damage",
+            "Value": "W",
+            "Multiplier": 1
+          },
+          "Effect2": {
+            "Target": "Self",
+            "Type": "Damage",
+            "Value": 1,
+            "DamageType": "True"
+          }
         }
       ]
     },
@@ -81,6 +117,13 @@
       ],
       "Effects": [
         {
+          "Effect1": {
+            "Target": "Enemy",
+            "Type": "Damage",
+            "Value": "W",
+            "Multiplier": 1,
+            "DamageType": "True"
+          }
         }
       ]
     },
@@ -602,7 +645,9 @@
       "Name": "Fanaticism",
       "Text": "+1 weapon damage. Increase damage dealt to you by 1",
       "Stamina_Cost": 1,
-      "Effects": [{}]
+      "Effects": [
+        {}
+      ]
     },
     {
       "ID": "ArcaneAttack1",

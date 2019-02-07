@@ -145,7 +145,6 @@
       "Equipment_Type": "Melee",
       "Name": "Arcane Pike",
       "Damage": 5,
-      "Range": 1,
       "Stamina": -1
     },
     {

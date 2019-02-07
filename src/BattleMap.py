@@ -4,6 +4,9 @@ from src.Player import Player
 from src.Enemy import Enemy
 
 
+DIRECTION = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+
 class MapInator(object):
     """
     Creates and manages the Battle Map.
@@ -83,8 +86,8 @@ class MapInator(object):
 class Tile(object):
     """Contains all relevant information for a tile"""
 
-    def __init__(self, X, Y, t):
-        self.coordinate = (X, Y)
+    def __init__(self, x, y, t):
+        self.coordinate = (x, y)
         self.terrain = t
         self.tileEffects = []
         self.unit = None
@@ -231,14 +234,14 @@ class Movement(object):
         print('4: Left')
         while True:
             try:
-                direction = int(input('Select Direction: '))
+                v = int(input('Select Direction: '))
             except ValueError:
                 print('Invalid input, try again' + '\n')
             else:
-                if 0 < direction <= 4:
+                if 0 < v <= 4:
                     break
                 else:
-                    print(direction, 'is not a valid selection, try again' + '\n')
+                    print(v, 'is not a valid selection, try again' + '\n')
         while True:
             try:
                 distance = int(input('Enter distance: '))
@@ -246,33 +249,14 @@ class Movement(object):
                 print('Invalid input, try again')
             else:
                 break
-        self.move_unit(player, direction, distance)
+        self.move_unit(player, DIRECTION[v-1], distance)
 
     def move_unit(self, unit, direction, distance):
-        if direction == 1:
-            for i in range(distance):  # Move Up
-                if self.can_move_onto_tile(unit, 0, 1):
-                    self.move_onto_tile(unit, 0, 1)
-                else:
-                    break
-        if direction == 2:  # Move Right
-            for i in range(distance):
-                if self.can_move_onto_tile(unit, 1, 0):
-                    self.move_onto_tile(unit, 1, 0)
-                else:
-                    break
-        if direction == 3:  # Move Down
-            for i in range(distance):
-                if self.can_move_onto_tile(unit, 0, -1):
-                    self.move_onto_tile(unit, 0, -1)
-                else:
-                    break
-        if direction == 4:  # Move Left
-            for i in range(distance):
-                if self.can_move_onto_tile(unit, -1, 0):
-                    self.move_onto_tile(unit, -1, 0)
-                else:
-                    break
+        for i in range(distance):  # Move Up
+            if self.can_move_onto_tile(unit, direction[0], direction[1]):
+                self.move_onto_tile(unit, direction[0], direction[1])
+            else:
+                break
 
     def move_onto_tile(self, unit, x, y):  # clean up?
         coordinate = unit.Position
@@ -334,14 +318,14 @@ class Movement(object):
         while i <= enemy.Stamina.get_pool_size():
             if x_distance != 0:
                 if enemy.Position[0] < destination[0] and self.can_move_onto_tile(enemy, 1, 0):
-                    self.move_unit(enemy, 2, 1)
+                    self.move_unit(enemy, DIRECTION[1], 1)
                 elif enemy.Position[0] > destination[0] and self.can_move_onto_tile(enemy, -1, 0):
-                    self.move_unit(enemy, 4, 1)
+                    self.move_unit(enemy, DIRECTION[3], 1)
             if y_distance != 0:
                 if enemy.Position[1] < destination[1] and self.can_move_onto_tile(enemy, 0, 1):
-                    self.move_unit(enemy, 1, 1)
+                    self.move_unit(enemy, DIRECTION[0], 1)
                 elif enemy.Position[1] > destination[1] and self.can_move_onto_tile(enemy, 0, -1):
-                    self.move_unit(enemy, 3, 1)
+                    self.move_unit(enemy, DIRECTION[2], 1)
             if enemy.Stamina.points == 0:
                 break
 
