@@ -1,7 +1,6 @@
 from random import randrange
 from src.ReadGameData import SubListManager
-from src.Player import Player
-from src.Enemy import Enemy
+from src.Unit import Player, Enemy
 
 
 DIRECTION = [(0, 1), (1, 0), (0, -1), (-1, 0)]
@@ -340,5 +339,10 @@ class RangeInator(object):
     Calculates the valid tiles for targeting
     """
 
-    def enemy_range(self):
+    def __init__(self, battle_map):
+        self.battle_map = battle_map
+
+    def calculate_range(self):
+        valid_targets = []
+        # Unit, min range, max range, restriction
         pass

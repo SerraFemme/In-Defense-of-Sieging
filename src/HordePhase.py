@@ -3,7 +3,7 @@ Module that sets up the enemy horde and controls their turn
 """
 
 from src.ReadGameData import SubListManager
-from src.Enemy import Enemy
+from src.Unit import Enemy
 from src.Equipment import Equipment
 from src.EnemyTargeting import *
 

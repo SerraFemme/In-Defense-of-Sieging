@@ -50,7 +50,7 @@ class StatTracker(object):
         return v
 
 
-class Stamina(object):
+class Stamina(object):  # convert to inherit StatTracker
     """
     Used by Units to keep track of Stamina Points, Pool, and effects
     """

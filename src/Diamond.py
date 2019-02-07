@@ -5,16 +5,16 @@ class Diamond(object):
     """
 
     # temporary values used for testing
-    range = 3
+    Range = 3
     X = 5
     Y = 5
 
-    for i in range(-range, range + 1):
+    for i in range(-Range, Range + 1):
         print(X, Y + i)
         # check if the coordinates are valid
         # if valid, add to the list of affected tiles
 
-        sideX = (range - abs(i))
+        sideX = (Range - abs(i))
         if sideX != 0:
             for v in range(1, sideX + 1):
                 print(X + v, Y + i)

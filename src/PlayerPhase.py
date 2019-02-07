@@ -4,7 +4,7 @@ their turns.
 """
 
 from src.ReadGameData import SubListManager
-from src.Player import Player
+from src.Unit import Player
 from src.Equipment import Equipment
 import src.ClassPassives
 
