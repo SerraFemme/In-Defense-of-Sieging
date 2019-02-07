@@ -14,4 +14,4 @@ from events import event_name
 event_name.register(myfunc)
 event_name.send(my_data)
 
-persistent keyword for events
+persistent: keyword for events

@@ -1,8 +1,8 @@
 from src.ReadGameData import *
 from src.BattleMap import MapInator, Movement
 from src.GamePhases import BattlePhase
-from src.PlayerPhase import TeamMaker, PlayerTurn
-from src.HordePhase import HordeMaker, EnemyTurn
+from src.PlayerPhase import TeamMaker
+from src.HordePhase import HordeMaker
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
     print('IN DEFENSE OF SIEGING')
     print('By: Russell Buckner' + '\n')
 
-    # Move into BattlePhase?
+    # Move into new class?
     r = MasterListManager()
     terrain_list = r.get_list('Terrain')
     class_list = r.get_list('Class')
@@ -29,7 +29,7 @@ def main():
     battle_map = MapInator(terrain_list)
     movement = Movement(battle_map)
 
-    # Move the team makers and team phases into BattlePhase
+    # Create Module/Class that creates and keeps track of teams
     t = TeamMaker(class_list, starting_equipment, equipment_list,
                   starting_deck, card_library)
     player_team = t.team_init()
@@ -38,13 +38,7 @@ def main():
                        equipment_list, len(player_team))
     enemy_team = horde.create_enemy_horde()
 
-    player_phase = PlayerTurn(player_team, battle_map, movement)
-
-    enemy_phase = EnemyTurn(enemy_team, battle_map, movement, player_team)
-
-    player_phase.setup_players()
-
-    b = BattlePhase(player_phase, enemy_phase)
+    b = BattlePhase(player_team, enemy_team, battle_map, movement)
     b.loop()
 
 

@@ -3,23 +3,26 @@ Module for all of the primary phases of the game
 Reward and Hub Town phases to be added later on
 """
 # from ObserveEvents import Observable
+from src.PlayerPhase import PlayerTurn
+from src.HordePhase import EnemyTurn
 
 
 class BattlePhase(object):
     """
-    Creates the Battle Map, populates it with enemies then players, then starts the battle
+    Controls the Battle Phase
     """
-    def __init__(self, player_phase, enemy_phase):
-        self.player_phase = player_phase
-        self.enemy_phase = enemy_phase
+    def __init__(self, player_team, enemy_team, battle_map, movement):
         # Observable Class initiator
+        self.player_phase = PlayerTurn(player_team, battle_map, movement)
+        self.player_phase.setup_players()
+        self.enemy_phase = EnemyTurn(enemy_team, battle_map, movement,
+                                     player_team)
 
     def loop(self):  # optimize?
-        global keep_playing
-        keep_playing = True
         global i  # turn counter
         i = 1
-        while keep_playing:
+        # while keep_playing:
+        while True:
             print('\n' + 'Turn', i, '\n' + 'Player Phase')
             keep_playing = self.player_phase.player_turn_loop()
             if keep_playing is False:
