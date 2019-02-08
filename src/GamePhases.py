@@ -3,8 +3,7 @@ Module for all of the primary phases of the game
 Reward and Hub Town phases to be added later on
 """
 # from ObserveEvents import Observable
-from src.PlayerPhase import PlayerTurn
-from src.HordePhase import EnemyTurn
+from src.TeamPhases import PlayerTurn, EnemyTurn
 
 
 class BattlePhase(object):

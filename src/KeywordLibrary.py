@@ -95,3 +95,11 @@ class Unique(object):
     Cannot have more than 1 of the named cards attached to the same unit,
     regardless of the source. (Unless noted otherwise)
     """
+
+
+class Fabricated(object):
+    """
+    Fabricated cards are purely temporary.
+    If they would be put into either the wound or scar pile, they are DELETED
+    instead.
+    """

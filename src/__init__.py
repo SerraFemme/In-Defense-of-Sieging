@@ -1,8 +1,7 @@
 from src.ReadGameData import *
 from src.BattleMap import MapInator, Movement
 from src.GamePhases import BattlePhase
-from src.PlayerPhase import TeamMaker
-from src.HordePhase import HordeMaker
+from src.TeamPhases import TeamMaker, HordeMaker
 
 
 def main():

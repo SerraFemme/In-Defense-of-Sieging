@@ -43,11 +43,11 @@ class StatTracker(object):
         self.EffectList.remove(deleted)
 
     def has_effect(self, effect_name):
-        v = False
+        b = False
         for item in self.EffectList:
             if item[0] == effect_name:
-                v = True
-        return v
+                b = True
+        return b
 
 
 class Stamina(object):  # convert to inherit StatTracker
@@ -58,7 +58,6 @@ class Stamina(object):  # convert to inherit StatTracker
     def __init__(self, value=10):
         self.pool = StatTracker(value)  # Pool Capacity
         self.points = value  # Unspent Stamina
-        # self.PoolEffects = [] # List of effects affecting Pool Capacity
 
     # Stamina Point Functions
     def gain_stamina_points(self, value):
@@ -88,7 +87,6 @@ class Stamina(object):  # convert to inherit StatTracker
 
     def remove_pool_effect(self, effect):
         if self.pool.has_effect(effect):
-            value = self.pool.get_effect(effect)
             self.pool.remove_effect(effect)
         else:
             print(effect, 'is not listed')

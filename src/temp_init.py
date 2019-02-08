@@ -7,8 +7,8 @@ pygame.init()
 FPS = 30
 fps_clock = pygame.time.Clock()
 
-window_width = 400
-window_height = 300
+window_width = 800
+window_height = 600
 
 DISPLAYSURF = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption('In Defense of Sieging')
