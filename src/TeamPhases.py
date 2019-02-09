@@ -123,7 +123,7 @@ class PlayerTurn(object):
                     while turn:
                         self.battle_map.print_map()
                         print('\n' + 'Turn:', person.Player_Name)
-                        print('Icon:', person.Player_Number)
+                        print('Icon:', person.Char)
                         value = self.print_turn_menu(person, self.movement)
                         turn = self.process_player_selection(value,
                                                              self.movement,

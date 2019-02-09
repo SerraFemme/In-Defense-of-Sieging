@@ -73,7 +73,7 @@ class MapInator(object):
         elif tile.unit == 'Invalid':
             print(tile.get_terrain_char(), end='')
         elif isinstance(tile.unit, Player):
-            print(tile.unit.Player_Number, end='')
+            print(tile.unit.Char, end='')
         elif isinstance(tile.unit, Enemy):
             print(tile.unit.Char, end='')
         else:  # something unexpected

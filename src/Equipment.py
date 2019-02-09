@@ -14,16 +14,10 @@ class Equipment(object):
         self.Equipment_Type = self.equipment_info['Equipment_Type']
         self.Name = self.equipment_info['Name']
         self.Equipment_Stats = {}
-        if 'Damage' in self.equipment_info:
-            self.Equipment_Stats['Damage'] = self.equipment_info['Damage']
-        if 'Armor' in self.equipment_info:
-            self.Equipment_Stats['Armor'] = self.equipment_info['Armor']
-        if 'Range' in self.equipment_info:
-            self.Equipment_Stats['Range'] = self.equipment_info['Range']
-        if 'Stamina' in self.equipment_info:
-            self.Equipment_Stats['Stamina'] = self.equipment_info['Stamina']
-        if 'Hand' in self.equipment_info:
-            self.Equipment_Stats['Hand'] = self.equipment_info['Hand']
+        if 'Stats' in self.equipment_info:
+            stats = self.equipment_info['Stats']
+            for key in stats:
+                self.Equipment_Stats[key] = stats[key]
         self.Abilities = None
 
     def print_info(self):

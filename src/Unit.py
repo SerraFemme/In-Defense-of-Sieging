@@ -12,7 +12,7 @@ class Player(object):
     def __init__(self, selected_class, name, number):
         self.class_info = selected_class
         self.Player_Name = name
-        self.Player_Number = number
+        self.Char = number
         self.Conscious = True
         self.Position = None
         self.AT = []  # Aggression Tokens
@@ -26,8 +26,12 @@ class Player(object):
         self.HandSize = StatTracker(self.class_info['Hand_Size'])
         self.Deck = None
         self.Equipment = []  # Restrict to 3 items
-        self.Passive = None
-        self.Abilities = {}
+        self.Abilities = None  # Stores passives and other misc abilities
+        # self.Stats = {
+        #     "Stamina": Stamina(self.class_info['Stamina_Pool']),
+        #     "Armor": StatTracker(),
+        #     "Range": StatTracker(),
+        #     "Hand": StatTracker(self.class_info['Hand_Size'])}
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()
@@ -72,6 +76,9 @@ class Player(object):
             self.Stamina.add_effect(item.Name, item.Equipment_Stats['Stamina'])
         if 'Hand' in item.Equipment_Stats:
             self.HandSize.add_effect(item.Name, item.Equipment_Stats['Hand'])
+        # for key in item.Equipment_Stats:
+        #     if key in self.Stats:
+        #         self.Stats[key].add_effect(key, item.Equipment_Stats[key])
 
     # Deck Stuff
     def take_damage(self, value):  # Redo later
@@ -104,7 +111,7 @@ class Enemy(object):
         self.Armor = StatTracker(self.race_info['Base_Armor'] + self.role_info['Bonus_Armor'])
         self.Bonus_Range = StatTracker()
         self.Equipment = []  # Restrict to 3 items
-        self.Passive = None
+        self.Abilities = None  # Stores passives and other misc. abilities
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()

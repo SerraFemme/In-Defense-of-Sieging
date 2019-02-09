@@ -50,7 +50,40 @@ class StatTracker(object):
         return b
 
 
-class Stamina(object):  # convert to inherit StatTracker
+# class Stamina(StatTracker):  # Conversion to inheritance
+#     """
+#     Used by Units to keep track of Stamina Points, Pool, and effects
+#     """
+#
+#     def __init__(self, value=10):
+#         self.pool = super().__init__(value)  # Pool Capacity
+#         self.points = value  # Unspent Stamina
+#
+#     # Stamina Point Functions
+#     def gain_stamina_points(self, value):
+#         self.points += value
+#
+#     def spend_stamina_points(self, value):
+#         if self.can_spend(value):  # may be redundant?
+#             self.points -= value
+#         else:
+#             self.points = 0  # may need to change later
+#
+#     def reset_stamina_points(self):
+#         self.points = self.get_pool_size()
+#
+#     def can_spend(self, value):
+#         if value > self.points:
+#             return False
+#         else:
+#             return True
+#
+#     # Stamina Pool Functions
+#     def get_pool_size(self):
+#         return self.pool.get_value()
+
+
+class Stamina(object):
     """
     Used by Units to keep track of Stamina Points, Pool, and effects
     """
@@ -85,8 +118,23 @@ class Stamina(object):  # convert to inherit StatTracker
     def add_effect(self, effect_name, value):
         self.pool.add_effect(effect_name, value)
 
-    def remove_pool_effect(self, effect):
+    def remove_effect(self, effect):
         if self.pool.has_effect(effect):
             self.pool.remove_effect(effect)
         else:
             print(effect, 'is not listed')
+
+
+class UnitAbilities(object):
+    """
+    Stores and runs ALL passives and abilities granted by the unit or their
+    equipment.
+    """
+    def __init__(self):
+        self.button_abilities = []
+        self.triggered_abilities = []
+        self.dynamic_abilities = []
+
+    def list_buttons(self):
+        for i in self.button_abilities:
+            pass

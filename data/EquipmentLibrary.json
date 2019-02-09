@@ -5,219 +5,273 @@
       "Faction_Type": "Martial",
       "Equipment_Type": "Melee",
       "Name": "Dagger",
-      "Damage": 2,
-      "Stamina": 1
+      "Stats": {
+        "Damage": 2,
+        "Stamina": 1
+      }
     },
     {
       "ID": "MartialMelee2",
       "Faction_Type": "Martial",
       "Equipment_Type": "Melee",
       "Name": "Shortsword",
-      "Damage": 3
+      "Stats": {
+        "Damage": 3
+      }
     },
     {
       "ID": "MartialMelee3",
       "Faction_Type": "Martial",
       "Equipment_Type": "Melee",
       "Name": "Longsword",
-      "Damage": 4
+      "Stats": {
+        "Damage": 4
+      }
     },
     {
       "ID": "MartialMelee4",
       "Faction_Type": "Martial",
       "Equipment_Type": "Melee",
       "Name": "Greatsword",
-      "Damage": 5,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 5,
+        "Stamina": -1
+      }
     },
     {
       "ID": "MartialMelee5",
       "Faction_Type": "Martial",
       "Equipment_Type": "Melee",
       "Name": "Great Hammer",
-      "Damage": 4,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 4,
+        "Stamina": -1
+      }
     },
     {
       "ID": "MartialMelee6",
       "Faction_Type": "Martial",
       "Equipment_Type": "Melee",
       "Name": "Great Axe",
-      "Damage": 6,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 6,
+        "Stamina": -1
+      }
     },
     {
       "ID": "MartialMelee7",
       "Faction_Type": "Martial",
       "Equipment_Type": "Melee",
       "Name": "Great Club",
-      "Damage": 8,
-      "Stamina": -2
+      "Stats": {
+        "Damage": 8,
+        "Stamina": -2
+      }
     },
     {
       "ID": "MartialMelee8",
       "Faction_Type": "Martial",
       "Equipment_Type": "Melee",
       "Name": "Duelist’s Cane",
-      "Damage": 1,
-      "Armor": 1,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 1,
+        "Armor": 1,
+        "Stamina": -1
+      }
     },
     {
       "ID": "MartialRanged1",
       "Faction_Type": "Martial",
       "Equipment_Type": "Ranged",
-      "name": "Short Bow",
-      "Damage": 2,
-      "Stamina": 2
+      "Name": "Short Bow",
+      "Stats": {
+        "Damage": 2,
+        "Stamina": 2
+      }
     },
     {
       "ID": "MartialRanged2",
       "Faction_Type": "Martial",
       "Equipment_Type": "Ranged",
       "Name": "Long Bow",
-      "Damage": 3,
-      "Range": 3
+      "Stats": {
+        "Damage": 3,
+        "Range": 3
+      }
     },
     {
       "ID": "MartialRanged3",
       "Faction_Type": "Martial",
       "Equipment_Type": "Ranged",
       "Name": "Crossbow",
-      "Damage": 4,
-      "Range": 2,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 4,
+        "Range": 2,
+        "Stamina": -1
+      }
     },
     {
       "ID": "MartialRanged4",
       "Faction_Type": "Martial",
       "Equipment_Type": "Ranged",
-      "name": "Great Bow",
-      "Damage": 5,
-      "Range": 4,
-      "Stamina": -3
+      "Name": "Great Bow",
+      "Stats": {
+        "Damage": 5,
+        "Range": 4,
+        "Stamina": -3
+      }
     },
     {
       "ID": "MartialRanged5",
       "Faction_Type": "Martial",
       "Equipment_Type": "Ranged",
       "Name": "Arbalest",
-      "Damage": 6,
-      "Range": 2,
-      "Stamina": -2
+      "Stats": {
+        "Damage": 6,
+        "Range": 2,
+        "Stamina": -2
+      }
     },
     {
       "ID": "MartialRanged6",
       "Faction_Type": "Martial",
       "Equipment_Type": "Ranged",
       "Name": "Mortar Launcher",
-      "Damage": 6,
-      "Range": 4,
-      "Stamina": -2
+      "Stats": {
+        "Damage": 6,
+        "Range": 4,
+        "Stamina": -2
+      }
     },
     {
       "ID": "MartialRanged7",
       "Faction_Type": "Martial",
       "Equipment_Type": "Ranged",
       "Name": "Blunderbuss",
-      "Damage": 7,
-      "Stamina": -2
+      "Stats": {
+        "Damage": 7,
+        "Stamina": -2
+      }
     },
     {
       "ID": "ArcaneMelee1",
       "Faction_Type": "Arcane",
       "Equipment_Type": "Melee",
       "Name": "Spellblade’s Sidesword",
-      "Damage": 4
+      "Stats": {
+        "Damage": 4
+      }
     },
     {
       "ID": "ArcaneMelee2",
       "Faction_Type": "Arcane",
       "Equipment_Type": "Melee",
       "Name": "Arcane Scythe",
-      "Damage": 4,
-      "Range": 1,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 4,
+        "Range": 1,
+        "Stamina": -1
+      }
     },
     {
       "ID": "ArcaneMelee3",
       "Faction_Type": "Arcane",
       "Equipment_Type": "Melee",
       "Name": "Arcane Pike",
-      "Damage": 5,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 5,
+        "Stamina": -1
+      }
     },
     {
       "ID": "ArcaneRanged1",
       "Faction_Type": "Arcane",
       "Equipment_Type": "Ranged",
       "Name": "Wand",
-      "Damage": 3,
-      "Range": 3
+      "Stats": {
+        "Damage": 3,
+        "Range": 3
+      }
     },
     {
       "ID": "ArcaneRanged2",
       "Faction_Type": "Arcane",
       "Equipment_Type": "Ranged",
       "Name": "Wizard’s Staff",
-      "Damage": 4,
-      "Range": 2
+      "Stats": {
+        "Damage": 4,
+        "Range": 2
+      }
     },
     {
       "ID": "DivineMelee1",
       "Faction_Type": "Divine",
       "Equipment_Type": "Melee",
       "Name": "Holy Dagger",
-      "Damage": 2
+      "Stats": {
+        "Damage": 2
+      }
     },
     {
       "ID": "DivineMelee2",
       "Faction_Type": "Divine",
       "Equipment_Type": "Melee",
       "Name": "Holy Mace",
-      "Damage": 3
+      "Stats": {
+        "Damage": 3
+      }
     },
     {
       "ID": "DivineMelee3",
       "Faction_Type": "Divine",
       "Equipment_Type": "Melee",
       "Name": "Holy Flail",
-      "Damage": 2,
-      "Range": 1,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 2,
+        "Range": 1,
+        "Stamina": -1
+      }
     },
     {
       "ID": "DivineMelee4",
       "Faction_Type": "Divine",
       "Equipment_Type": "Melee",
       "Name": "Holy Greatsword",
-      "Damage": 5,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 5,
+        "Stamina": -1
+      }
     },
     {
       "ID": "DivineMelee5",
       "Faction_Type": "Divine",
       "Equipment_Type": "Melee",
       "Name": "Holy Great Hammer",
-      "Damage": 4,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 4,
+        "Stamina": -1
+      }
     },
     {
       "ID": "DivineMelee6",
       "Faction_Type": "Divine",
       "Equipment_Type": "Melee",
       "Name": "Holy Fists",
-      "Damage": 0,
-      "Stamina": 2
+      "Stats": {
+        "Damage": 0,
+        "Stamina": 2
+      }
     },
     {
       "ID": "DivineRanged1",
       "Faction_Type": "Arcane",
       "Equipment_Type": "Melee",
       "Name": "Holy Staff",
-      "Damage": 4,
-      "Range": 2,
-      "Stamina": -1
+      "Stats": {
+        "Damage": 4,
+        "Range": 2,
+        "Stamina": -1
+      }
     },
     {
       "ID": "MartialShield1",
@@ -230,40 +284,50 @@
       "Faction_Type": "Martial",
       "Equipment_Type": "Shield",
       "Name": "Tower Shield",
-      "Armor": 1,
-      "Stamina": -1
+      "Stats": {
+        "Armor": 1,
+        "Stamina": -1
+      }
     },
     {
       "ID": "MartialArmor1",
       "Faction_Type": "Martial",
       "Equipment_Type": "Armor",
       "Name": "Leather Armor",
-      "Armor": 1
+      "Stats": {
+        "Armor": 1
+      }
     },
     {
       "ID": "MartialArmor2",
       "Faction_Type": "Martial",
       "Equipment_Type": "Armor",
       "Name": "Chain Mail",
-      "Armor": 2,
-      "Stamina": -1
+      "Stats": {
+        "Armor": 2,
+        "Stamina": -1
+      }
     },
     {
       "ID": "MartialArmor3",
       "Faction_Type": "Martial",
       "Equipment_Type": "Armor",
       "Name": "Full Plate",
-      "Armor": 3,
-      "Stamina": -2
+      "Stats": {
+        "Armor": 3,
+        "Stamina": -2
+      }
     },
     {
       "ID": "ArcaneArmor1",
       "Faction_Type": "Arcane",
       "Equipment_Type": "Armor",
       "Name": "Arcane Chain Mail",
-      "Armor": 2,
-      "Stamina": -2,
-      "Hand": 1
+      "Stats": {
+        "Armor": 2,
+        "Stamina": -2,
+        "Hand": 1
+      }
     }
   ]
 }
