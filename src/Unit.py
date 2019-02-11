@@ -10,33 +10,37 @@ class Player(object):
     """
 
     def __init__(self, selected_class, name, number):
-        self.class_info = selected_class
         self.Player_Name = name
-        self.Char = number
+        self.Icon = number
         self.Conscious = True
         self.Position = None
         self.AT = []  # Aggression Tokens
-        self.Class_Name = self.class_info['ID']
-        self.Faction_Restriction = self.class_info['Allowed_Faction']
-        self.Equipment_Restriction = self.class_info['Allowed_Equipment']
-        self.Stamina = Stamina(self.class_info['Stamina_Pool'])
+        self.Class_Name = selected_class['ID']
+        self.Faction_Restriction = selected_class['Allowed_Faction']
+        self.Equipment_Restriction = selected_class['Allowed_Equipment']
+        self.Stamina = Stamina(selected_class['Stamina_Pool'])
         self.Weapon_Damage = StatTracker()
         self.Armor = StatTracker()
         self.Bonus_Range = StatTracker()
-        self.HandSize = StatTracker(self.class_info['Hand_Size'])
+        self.HandSize = StatTracker(selected_class['Hand_Size'])
         self.Deck = None
         self.Equipment = []  # Restrict to 3 items
         self.Abilities = None  # Stores passives and other misc abilities
         # self.Stats = {
-        #     "Stamina": Stamina(self.class_info['Stamina_Pool']),
+        #     "Stamina": Stamina(selected_class['Stamina_Pool']),
         #     "Armor": StatTracker(),
         #     "Range": StatTracker(),
-        #     "Hand": StatTracker(self.class_info['Hand_Size'])}
+        #     "Hand": StatTracker(selected_class['Hand_Size'])}
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()
         # self.Deck.mulligan()
         # upkeep
+
+    def turn_ending(self):
+        # end step
+        # discard step
+        pass
 
     def print_info(self):  # fix: prints None at end
         print('\n' + 'Class:', self.Class_Name)
@@ -100,7 +104,7 @@ class Enemy(object):
         self.role_info = role
         self.Race_Name = self.race_info['ID']
         self.Role_Name = self.role_info['ID']
-        self.Char = self.role_info['Char']
+        self.Icon = self.role_info['Char']
         self.Enemy_Number = number
         self.Position = None
         self.Alive = True
@@ -112,6 +116,10 @@ class Enemy(object):
         self.Bonus_Range = StatTracker()
         self.Equipment = []  # Restrict to 3 items
         self.Abilities = None  # Stores passives and other misc. abilities
+        # self.Stats = {
+        #     "Stamina": Stamina(),
+        #     "Armor": StatTracker(),
+        #     "Range": StatTracker()}
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()
@@ -149,6 +157,9 @@ class Enemy(object):
             self.Bonus_Range.add_effect(item.Name, item.Equipment_Stats['Range'])
         if 'Stamina' in item.Equipment_Stats:
             self.Stamina.add_effect(item.Name, item.Equipment_Stats['Stamina'])
+        # for key in item.Equipment_Stats:
+        #     if key in self.Stats:
+        #         self.Stats[key].add_effect(key, item.Equipment_Stats[key])
 
     def heal(self, value):
         self.Health_Points += value

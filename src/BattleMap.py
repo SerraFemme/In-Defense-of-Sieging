@@ -72,12 +72,8 @@ class MapInator(object):
             print(tile.get_terrain_char(), end='')
         elif tile.unit == 'Invalid':
             print(tile.get_terrain_char(), end='')
-        elif isinstance(tile.unit, Player):
-            print(tile.unit.Char, end='')
-        elif isinstance(tile.unit, Enemy):
-            print(tile.unit.Char, end='')
-        else:  # something unexpected
-            print('Q', end='')
+        else:
+            print(tile.unit.Icon, end='')
 
     # Find Unit Function?
 

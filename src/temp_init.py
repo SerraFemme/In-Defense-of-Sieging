@@ -10,15 +10,16 @@ HALF_WINHEIGHT = int(WINHEIGHT / 2)
 
 # Tile Constants
 TILEWIDTH = 50
-TILEHEIGHT = 85
-TILEFLOORHEIGHT = 40
+TILEHEIGHT = 50
 
 CAM_MOVE_SPEED = 5
 
 BRIGHTBLUE = (0, 170, 255)
 WHITE = (255, 255, 255)
+orange_red = (255, 69, 0)
 BGCOLOR = BRIGHTBLUE
 TEXTCOLOR = WHITE
+title_color = orange_red
 
 UP = 'up'
 DOWN = 'down'
@@ -36,12 +37,12 @@ def main():
 
     pygame.display.set_caption('In Defense of Sieging')
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
+    # basic_font = pygame.font.Font('', 18)
 
     IMAGESDICT = {'corner': pygame.image.load('Wall_Block_Tall.png'),
                   'wall': pygame.image.load('Wood_Block_Tall.png'),
                   'inside floor': pygame.image.load('Plain_Block.png'),
                   'outside floor': pygame.image.load('Grass_Block.png'),
-                  'title': pygame.image.load('star_title.png'),
                   'princess': pygame.image.load('princess.png'),
                   'boy': pygame.image.load('boy.png'),
                   'catgirl': pygame.image.load('catgirl.png'),
@@ -59,13 +60,6 @@ def main():
                           '2': IMAGESDICT['short tree'],
                           '3': IMAGESDICT['tall tree'],
                           '4': IMAGESDICT['ugly tree']}
-
-    currentImage = 0
-    PLAYERIMAGES = [IMAGESDICT['princess'],
-                    IMAGESDICT['boy'],
-                    IMAGESDICT['catgirl'],
-                    IMAGESDICT['horngirl'],
-                    IMAGESDICT['pinkgirl']]
 
     UNITIMAGES = {'P': IMAGESDICT['boy'],
                   'G': IMAGESDICT['pinkgirl'],
@@ -85,12 +79,20 @@ def main():
 
 
 def start_screen():
-    """Display the start screen (which has the title and instructions)
-    until the player presses a key. Returns None."""
+    """
+    Display the start screen (which has the title and instructions)
+    until the player presses a key. Returns None.
+    """
+    global title_color
+
+    TITLE = 'In Defense of Sieging'
+    TITLEFONT = pygame.font.Font('freesansbold.ttf', 60)
 
     # Position the title image.
-    titleRect = IMAGESDICT['title'].get_rect()
-    topCoord = 50  # topCoord tracks where to position the top of the text
+    # titleRect = IMAGESDICT['title'].get_rect()
+    titleSurf = TITLEFONT.render(TITLE, True, title_color)
+    titleRect = titleSurf.get_rect()
+    topCoord = 150  # topCoord tracks where to position the top of the text
     titleRect.top = topCoord
     titleRect.centerx = HALF_WINWIDTH
     topCoord += titleRect.height
@@ -98,20 +100,20 @@ def start_screen():
     # Unfortunately, Pygame's font & text system only shows one line at
     # a time, so we can't use strings with \n newline characters in them.
     # So we will use a list with each line in it.
-    instructionText = ['Push the stars over the marks.',
-                       'Arrow keys to move, WASD for camera control, P to change character.',
-                       'Backspace to reset level, Esc to quit.',
-                       'N for next level, B to go back a level.']
+    instruction_text = ['By Russell Buckner',
+                        'Copyright 2019, All rights reserved.',
+                        '',
+                        'Press any key to continue']
 
     # Start with drawing a blank color to the entire window:
     DISPLAYSURF.fill(BGCOLOR)
 
     # Draw the title image to the window:
-    DISPLAYSURF.blit(IMAGESDICT['title'], titleRect)
+    DISPLAYSURF.blit(titleSurf, titleRect)
 
     # Position and draw the text.
-    for i in range(len(instructionText)):
-        instSurf = BASICFONT.render(instructionText[i], 1, TEXTCOLOR)
+    for i in range(len(instruction_text)):
+        instSurf = BASICFONT.render(instruction_text[i], 1, TEXTCOLOR)
         instRect = instSurf.get_rect()
         topCoord += 10  # 10 pixels will go in between each line of text.
         instRect.top = topCoord
@@ -134,23 +136,25 @@ def start_screen():
 
 
 def drawMap(battle_map, gameStateObj, goals):  # Assimilate, convert mapOdj to Battle Map
-    """Draws the map to a Surface object, including the player and
-    stars. This function does not call pygame.display.update(), nor
-    does it draw the "Level" and "Steps" text in the corner."""
+    """
+    Draws the map to a Surface object, including the player and stars.
+    This function does NOT call pygame.display.update(), nor does it draw the
+    "Level" and "Steps" text in the corner.
+    """
 
     # mapSurf will be the single Surface object that the tiles are drawn
     # on, so that it is easy to position the entire map on the DISPLAYSURF
     # Surface object. First, the width and height must be calculated.
     map_size = battle_map.map_size
     mapSurfWidth = map_size[0] * TILEWIDTH
-    mapSurfHeight = (map_size[1]) * TILEFLOORHEIGHT + TILEHEIGHT
+    mapSurfHeight = (map_size[1]) * TILEHEIGHT
     mapSurf = pygame.Surface((mapSurfWidth, mapSurfHeight))
-    mapSurf.fill(BGCOLOR) # start with a blank color on the surface.
+    mapSurf.fill(BGCOLOR)  # start with a blank color on the surface.
 
     # Draw the tile sprites onto this surface.
     for x in range(map_size[0]):
         for y in range(map_size[1]):
-            spaceRect = pygame.Rect((x * TILEWIDTH, y * TILEFLOORHEIGHT,
+            spaceRect = pygame.Rect((x * TILEWIDTH, y * TILEHEIGHT,
                                      TILEWIDTH, TILEHEIGHT))
             tile = battle_map.get_tile(x, y)
             char = tile.get_terrain_char()

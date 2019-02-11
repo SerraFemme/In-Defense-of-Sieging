@@ -159,3 +159,23 @@ class ThingIWantToDoOnChange(Observer):
 thing = ThingIAmMessingWith(initial='whatever')
 to_do = ThingIWantToDoOnChange()
 thing.register(to_do)
+
+-------------------------------------------------------------------------------
+PYGAME
+Display Text to Screen
+---
+pygame.font.init() # you have to call this at the start,
+                   # if you want to use this module.
+myfont = pygame.font.SysFont('Comic Sans MS', 30)
+
+textsurface = myfont.render('Some Text', False, (0, 0, 0))
+
+screen.blit(textsurface,(0,0))
+
+---
+Load Images in Pygame
+---
+background = "C:\\python26\\stuff\\bg.jpg"
+background_surface = pygame.image.load(background)
+
+-------------------------------------------------------------------------------

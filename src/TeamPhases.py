@@ -123,7 +123,7 @@ class PlayerTurn(object):
                     while turn:
                         self.battle_map.print_map()
                         print('\n' + 'Turn:', person.Player_Name)
-                        print('Icon:', person.Char)
+                        print('Icon:', person.Icon)
                         value = self.print_turn_menu(person, self.movement)
                         turn = self.process_player_selection(value,
                                                              self.movement,
@@ -314,13 +314,16 @@ class EnemyTurn(object):
 
     def enemy_turn_loop(self):
         for enemy in self.enemy_horde:
-            print('\n' + 'Turn:', enemy.get_name(), enemy.Enemy_Number)
-            enemy.turn_beginning()
-            if enemy.Stamina.points > 0:
-                target = self.find_target(enemy)
-                print('Targeting:', target.Player_Name + ',', target.Class_Name)
-                print('Moving from', enemy.Position, 'to ', end='')
-                self.move_into_range(enemy, target)
+            if enemy.Alive:
+                print('\n' + 'Turn:', enemy.get_name(), enemy.Enemy_Number)
+                enemy.turn_beginning()
+                if enemy.Stamina.points > 0:
+                    target = self.find_target(enemy)
+                    print('Targeting:', target.Player_Name + ',', target.Class_Name)
+                    print('Moving from', enemy.Position, 'to ', end='')
+                    self.move_into_range(enemy, target)
+            else:
+                print('\n' + enemy.get_name(), enemy.Enemy_Number, 'is dead. Skipping Turn')
 
     def find_target(self, enemy):
         if enemy.Role_Name == 'Grunt':

@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 
 MASTER_DICT = {'Terrain': 'MapTerrain.json',
                'Class': 'ClassLibrary.json',
@@ -25,6 +26,12 @@ class MasterListManager(object):
         for i in MASTER_DICT.values():
             self.MASTER_LIST.append(self.__read_file(i))
 
+    # def __init__(self):
+    #     json_dir = Path('/In Defense of Sieging/data/JSON Files')
+    #     if json_dir.is_dir():
+    #         for i in MASTER_DICT.values():
+    #             self.MASTER_LIST.append(self.__read_file(json_dir, i))
+
     # @property?
     def __read_file(self, filename):
         try:
@@ -39,6 +46,27 @@ class MasterListManager(object):
             data = json.load(jsonList)
 
         return data
+
+    def get_list(self, item):
+        item_block = None
+        for i in self.MASTER_LIST:
+            for j in i:
+                if j == item:
+                    item_block = i
+
+        return item_block
+
+    # def __read_file(self, path, filename):
+    #     try:
+    #         path.resolve(strict=True)
+    #
+    #     except FileNotFoundError:
+    #         print("Can't change the Current Working Directory to:", path)
+    #
+    #     with open(filename) as jsonList:
+    #         data = json.load(jsonList)
+    #
+    #     return data
 
     def get_list(self, item):
         item_block = None
