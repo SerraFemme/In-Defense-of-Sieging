@@ -1,6 +1,8 @@
 import pygame
 import sys
 from pygame.locals import *
+from pathlib import Path
+import os
 
 FPS = 30
 WINWIDTH = 800
@@ -14,8 +16,9 @@ TILEHEIGHT = 50
 
 CAM_MOVE_SPEED = 5
 
-BRIGHTBLUE = (0, 170, 255)
 WHITE = (255, 255, 255)
+BRIGHTBLUE = (0, 170, 255)
+pale_turquoise = (175, 238, 238)
 orange_red = (255, 69, 0)
 BGCOLOR = BRIGHTBLUE
 TEXTCOLOR = WHITE
@@ -26,9 +29,35 @@ DOWN = 'down'
 LEFT = 'left'
 RIGHT = 'right'
 
+image_dict = {'grass': 'GRASS.png',
+              'hill': 'HILL.png',
+              'mountain': 'MOUNTAIN.png',
+              'cursor': 'CURSOR',
+              'targeting_tile': 'TARGETING_TILE.png',
+              'princess': 'princess.png',
+              'boy': 'boy.png',
+              'catgirl': 'catgirl.png',
+              'horngirl': 'horngirl.png',
+              'pinkgirl': 'pinkgirl.png',
+              'rock': 'Rock.png',
+              'short tree': 'Tree_Short.png',
+              'tall tree': 'Tree_Tall.png',
+              'ugly tree': 'Tree_Ugly.png'}
+
+# path = Path().cwd()  # / 'data/Images'
+# image_folder = path.parents[0] / 'data/Images'
+
+# if Path('data/Images').exists():
+#     image_folder = Path('data/Images')
+
+# src = Path().cwd()
+# home = src.parents[0]
+# image_folder = home / 'data' / 'Images'
+
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, IMAGESDICT, TILEMAPPING, OUTSIDEDECOMAPPING, BASICFONT, UNITIMAGES, currentImage
+    global FPSCLOCK, DISPLAYSURF, IMAGESDICT, TILEMAPPING, OUTSIDEDECOMAPPING,\
+        BASICFONT, UNITIMAGES, currentImage, image_dict
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
@@ -39,23 +68,30 @@ def main():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     # basic_font = pygame.font.Font('', 18)
 
-    IMAGESDICT = {'corner': pygame.image.load('Wall_Block_Tall.png'),
-                  'wall': pygame.image.load('Wood_Block_Tall.png'),
-                  'inside floor': pygame.image.load('Plain_Block.png'),
-                  'outside floor': pygame.image.load('Grass_Block.png'),
-                  'princess': pygame.image.load('princess.png'),
-                  'boy': pygame.image.load('boy.png'),
-                  'catgirl': pygame.image.load('catgirl.png'),
-                  'horngirl': pygame.image.load('horngirl.png'),
-                  'pinkgirl': pygame.image.load('pinkgirl.png'),
-                  'rock': pygame.image.load('Rock.png'),
-                  'short tree': pygame.image.load('Tree_Short.png'),
-                  'tall tree': pygame.image.load('Tree_Tall.png'),
-                  'ugly tree': pygame.image.load('Tree_Ugly.png')}
+    # with open(image_folder):
+    #     IMAGESDICT = {'grass': pygame.image.load('GRASS.png'),
+    #                   'hill': pygame.image.load('HILL.png'),
+    #                   'mountain': pygame.image.load('MOUNTAIN.png'),
+    #                   'cursor': pygame.image.load('CURSOR'),
+    #                   'targeting_tile': pygame.image.load('TARGETING_TILE.png'),
+    #                   'princess': pygame.image.load('princess.png'),
+    #                   'boy': pygame.image.load('boy.png'),
+    #                   'catgirl': pygame.image.load('catgirl.png'),
+    #                   'horngirl': pygame.image.load('horngirl.png'),
+    #                   'pinkgirl': pygame.image.load('pinkgirl.png'),
+    #                   'rock': pygame.image.load('Rock.png'),
+    #                   'short tree': pygame.image.load('Tree_Short.png'),
+    #                   'tall tree': pygame.image.load('Tree_Tall.png'),
+    #                   'ugly tree': pygame.image.load('Tree_Ugly.png')}
 
-    TILEMAPPING = {'&': IMAGESDICT['corner'],  # Mountain
-                   '~': IMAGESDICT['inside floor'],  # Hill
-                   '.': IMAGESDICT['outside floor']}  # Grass
+    IMAGESDICT = {}
+
+    for key in image_dict:
+        IMAGESDICT[key] = pygame.image.load(__read_file(image_dict[key]))
+
+    TILEMAPPING = {'&': IMAGESDICT['mountain'],
+                   '~': IMAGESDICT['hill'],
+                   '.': IMAGESDICT['grass']}
     OUTSIDEDECOMAPPING = {'1': IMAGESDICT['rock'],
                           '2': IMAGESDICT['short tree'],
                           '3': IMAGESDICT['tall tree'],
@@ -77,6 +113,19 @@ def main():
             pygame.display.update()
             FPSCLOCK.tick(FPS)
 
+def __read_file(filename):
+    try:
+        path = os.path.abspath('data/Images')  # convert to pathlib?
+        if os.path.exists(path):
+            os.chdir(path)
+
+    except OSError:
+        print("Can't change the Current Working Directory to:", path)
+
+    with open(filename) as image:
+        data = pygame.image.load(image)
+
+    return data
 
 def start_screen():
     """

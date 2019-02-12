@@ -35,7 +35,7 @@ class MasterListManager(object):
     # @property?
     def __read_file(self, filename):
         try:
-            path = os.path.abspath('data')  # convert to pathlib?
+            path = os.path.abspath('data/JSON Files')  # convert to pathlib?
             if os.path.exists(path):
                 os.chdir(path)
 
