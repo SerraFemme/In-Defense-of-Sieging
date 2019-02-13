@@ -83,7 +83,7 @@ class Tile(object):
 
     def __init__(self, x, y, t):
         self.coordinate = (x, y)
-        self.terrain = t
+        self.terrain = t  # dict of info
         self.tileEffects = []
         self.unit = None
         if 'Unit' in self.terrain:
