@@ -1,6 +1,6 @@
 import json
 import os
-from pathlib import Path
+# from pathlib import Path
 
 MASTER_DICT = {'Terrain': 'MapTerrain.json',
                'Class': 'ClassLibrary.json',
@@ -20,6 +20,8 @@ class MasterListManager(object):
     Returns a specific list when needed.
     """
 
+    # TODO: implement pathlib?
+
     MASTER_LIST = []
 
     def __init__(self):
@@ -32,7 +34,7 @@ class MasterListManager(object):
     #         for i in MASTER_DICT.values():
     #             self.MASTER_LIST.append(self.__read_file(json_dir, i))
 
-    # @property?
+    # TODO: @property?
     def __read_file(self, filename):
         try:
             path = os.path.abspath('data/JSON files')  # convert to pathlib?
@@ -53,6 +55,9 @@ class MasterListManager(object):
             for j in i:
                 if j == item:
                     item_block = i
+                    break
+            if item_block is not None:
+                break
 
         return item_block
 
@@ -68,14 +73,17 @@ class MasterListManager(object):
     #
     #     return data
 
-    def get_list(self, item):
-        item_block = None
-        for i in self.MASTER_LIST:
-            for j in i:
-                if j == item:
-                    item_block = i
-
-        return item_block
+    # def get_list(self, item):
+    #     item_block = None
+    #     for i in self.MASTER_LIST:
+    #         for j in i:
+    #             if j == item:
+    #                 item_block = i
+    #                 break
+    #         if item_block is not None:
+    #             break
+    #
+    #     return item_block
 
 
 class SubListManager(object):

@@ -11,7 +11,8 @@ class Player(object):
 
     def __init__(self, selected_class, name, number):
         self.Player_Name = name
-        self.Icon = number
+        self.Player_Number = number
+        self.Icon = 'P' + number
         self.Conscious = True
         self.Position = None
         self.AT = []  # Aggression Tokens
@@ -26,6 +27,7 @@ class Player(object):
         self.Deck = None
         self.Equipment = []  # Restrict to 3 items
         self.Abilities = None  # Stores passives and other misc abilities
+        # TODO: convert Stats to a dict
         # self.Stats = {
         #     "Stamina": Stamina(selected_class['Stamina_Pool']),
         #     "Armor": StatTracker(),
@@ -68,7 +70,7 @@ class Player(object):
             if i.Name == item:
                 return i
 
-    def add_equipment(self, item):  # Make Dynamic
+    def add_equipment(self, item):  # TODO: Make Dynamic
         self.Equipment.append(item)
         if 'Damage' in item.Equipment_Stats:
             self.Weapon_Damage.add_effect(item.Name, item.Equipment_Stats['Damage'])
@@ -116,6 +118,7 @@ class Enemy(object):
         self.Bonus_Range = StatTracker()
         self.Equipment = []  # Restrict to 3 items
         self.Abilities = None  # Stores passives and other misc. abilities
+        # TODO: convert Stats to a dict
         # self.Stats = {
         #     "Stamina": Stamina(),
         #     "Armor": StatTracker(),

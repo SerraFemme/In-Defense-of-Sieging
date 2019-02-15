@@ -10,95 +10,45 @@ from src.EnemyTargeting import *
 import src.ClassPassives
 
 
-class TeamMaker(object):
+class PlayerMaker(object):
     """
     Creates the player team.
     For each player, asks them to enter their name, then select which class
     they would like to play, then creates a Player object with the proper info.
     """
+
     def __init__(self, c, se, e, sd, card):
-        self.class_list = SubListManager(c)
-        self.s_equipment = SubListManager(se)  # Starting Equipment
-        self.equipment_list = SubListManager(e)
-        self.s_deck = SubListManager(sd)  # Starting Deck
-        self.card_library = SubListManager(card)
-        self.player_list = []
+        self.class_list = c
+        self.s_equipment = se  # Starting Equipment
+        self.equipment_list = e
+        self.s_deck = sd  # Starting Deck
+        self.card_library = card
 
-    def team_init(self):
-        while True:
-            try:
-                print('Create your team:')
-                v = int(input('\n' + 'Enter number of Players (1-4): '))
+    def create_player(self, player_name, player_number, selected_class):
+        player = Player(selected_class, player_name, player_number)
+        self.__equip_s_equipment(player,
+                                 self.s_equipment.get_item(selected_class['ID']),
+                                 self.equipment_list)
+        # player.Passive = getattribute(src.ClassPassives, selected_class)
+        # TODO: give player starting deck
+        # self.add_s_deck(player, self.s_deck.get_item(selected_class, self.card_library)
+        # self.add_s_deck(player, self.s_deck.get_item("Test", self.card_library)
+        return player
 
-            except ValueError:
-                print('Invalid input, try again')
-            else:
-                if 0 < v <= 4:
-                    break
-                else:
-                    print(v, 'is not a valid number')
-
-        available_classes = self.__available_classes()
-        for i in range(v):
-            name = input('\n' + 'Enter Player Name: ')
-            selected_class = self.__select_class(available_classes)
-            print(name, selected_class, sep=': ')
-            class_info = self.class_list.get_item(selected_class)
-            player = Player(class_info, name, len(self.player_list)+1)
-            self.equip_s_equipment(player,
-                                   self.s_equipment.get_item(selected_class),
-                                   self.equipment_list)
-            # player.Passive = getattribute(src.ClassPassives, selected_class)
-            # give player starting deck
-            # self.add_s_deck(player, self.s_deck.get_item(selected_class, self.card_library)
-            # self.add_s_deck(player, self.s_deck.get_item("Test", self.card_library)
-            self.player_list.append(player)
-        return self.player_list
-
-    def __select_class(self, class_list):
-        print('\n' + 'Select Class:')
-        for i, item in enumerate(class_list):
-            print(i, item['ID'], sep=': ')
-        while True:
-            try:
-                v = int(input('Enter digit of class: '))
-            except ValueError:
-                print('Invalid input, try again', '\n')
-            else:
-                if 0 <= v < len(class_list):
-                    break
-                else:
-                    print(v, 'is not a valid class selection')
-
-        selection = class_list.pop(v)
-        return selection['ID']
-
-    def __available_classes(self):
-        item_list = self.class_list.get_list()
-        return item_list
-
-    def equip_s_equipment(self, player, s_equip, equip_list):
+    def __equip_s_equipment(self, player, s_equip, equip_list):
         s_list = s_equip['Starting_Equipment']
         for i in s_list:
             e = Equipment(equip_list.get_item(i))
             player.add_equipment(e)
-
-    # def add_s_deck(self, player, s_deck, card_list):
-    #     deck = []
-    #     deck_list = s_deck['Starting_Deck']
-    #     for i in deck_list:
-    #         card = CardMaker(card_list.get_item(i))
-    #         deck.append(card)
-    #     player.Deck = deck
 
 
 class PlayerTurn(object):
     """
     Contains all functions needed for a player to take their turn.
     """
-    def __init__(self, team, bmap, move):
+    def __init__(self, team, b_map, move):
         self.player_team = team
-        self.battle_map = bmap
+        self.battle_map = b_map
         self.movement = move
 
     def setup_players(self):
