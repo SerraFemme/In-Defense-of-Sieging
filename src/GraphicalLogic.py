@@ -10,6 +10,7 @@ default_font = CONSTANTS.FONT_DICT['sans_bold']
 black = CONSTANTS.COLORS['black']
 orange_red = CONSTANTS.COLORS['orange_red']
 dark_orange = CONSTANTS.COLORS['dark_orange']
+# green_yellow = CONSTANTS.COLORS['green_yellow']
 medium_green = CONSTANTS.COLORS['medium_green']
 grey = CONSTANTS.COLORS['grey']
 blue = CONSTANTS.COLORS['blue']
@@ -34,12 +35,14 @@ class CreateTeam(object):
         self.next_player = 0
         self.player_reset = False
         self.reset_number = -1
+        self.number_of_options = 1
         self.option_selected = 0
-        self.max_displayed = 8
+        self.max_displayed = 9
         self.top_displayed = 0
         self.team_size = 0
         self.player_list = []
         self.available_list = []
+        self.player_team = None
 
     def start(self, DISPLAYSURF, bg_color, HALF_WINWIDTH, fps_clock):
         pygame.font.init()
@@ -92,7 +95,7 @@ class CreateTeam(object):
                     elif self.column_selected == 1:
                         self.__cycle_players(event)
                     elif self.column_selected == 2:
-                        self.__cycle_options(event)
+                        self.__cycle_options(event, DISPLAYSURF, bg_color, HALF_WINWIDTH, fps_clock)
 
             # Available Classes
             if self.max_displayed <= len(self.available_list):
@@ -106,9 +109,11 @@ class CreateTeam(object):
             # FIXME: prints last class repeatedly if len(available_classes) < max_displayed
             for j in range(self.top_displayed, self.top_displayed + bottom):
                 display_string = self.available_list[j]
-                if j == self.class_selected and self.column_selected == 0:
+                if j == self.class_selected and self.column_selected == 0:  # cursor on class
                     button_color = orange_red
-                else:
+                elif self.team_size == max_team_size and self.player_reset is False:  # team full
+                    button_color = grey
+                else:  # cursor can be on class
                     button_color = dark_orange
                 class_button = pygame.draw.rect(DISPLAYSURF, button_color,
                                                 (quarter_width - class_button_center[0],
@@ -128,14 +133,16 @@ class CreateTeam(object):
             for i in self.player_list:
                 player_name = i['name']
                 player_class = i['ID']
-                if i['number'] - 1 == self.player_selected and self.column_selected == 1:
+                if i['number'] - 1 == self.player_selected and self.column_selected == 1:  # cursor on player
                     button_color = orange_red
-                elif i['number'] - 1 == self.reset_number and self.player_reset:
+                elif i['number'] - 1 == self.reset_number and self.player_reset:  # player being reset
                     button_color = blue
-                elif i['number'] - 1 == self.next_player and self.team_size < max_team_size:
+                elif i['number'] - 1 != self.reset_number and self.player_reset:
+                    button_color = grey
+                elif i['number'] - 1 == self.next_player and self.team_size < max_team_size:  # next empty player
                     button_color = medium_green
                 else:
-                    button_color = dark_orange
+                    button_color = dark_orange  # can have cursor on player
                 player_button = pygame.draw.rect(DISPLAYSURF, button_color,
                                                  (HALF_WINWIDTH - player_button_center[0],
                                                   player_top_coordinate,
@@ -160,11 +167,11 @@ class CreateTeam(object):
 
             # options selection
             option_color = dark_orange
-            if self.team_size == 0:
+            if self.team_size < max_team_size or self.player_reset:
                 option_color = grey
             elif self.column_selected == 2:
                 option_color = orange_red
-            display_string = 'Mission Select'
+            display_string = 'Encounter Select'
             mission_select = pygame.draw.rect(DISPLAYSURF, option_color,
                                               (3 * quarter_width - option_button_center[0],
                                                option_top_coordinate,
@@ -204,7 +211,7 @@ class CreateTeam(object):
                     self.top_displayed += 1
 
         elif event.key == K_d or event.key == K_RIGHT:
-            if self.team_size > 0:
+            if self.team_size > 0 and self.player_reset is False:
                 self.column_selected = 1
 
         elif event.key == K_e or event.key == K_RETURN:
@@ -245,7 +252,7 @@ class CreateTeam(object):
                 self.player_selected += 1
 
         elif event.key == K_d or event.key == K_RIGHT:
-            if self.team_size > 0 and self.player_reset is False:
+            if self.team_size == max_team_size and self.player_reset is False:
                 self.column_selected = 2
         elif event.key == K_a or event.key == K_LEFT:
             if self.team_size < max_team_size:
@@ -261,16 +268,21 @@ class CreateTeam(object):
             self.column_selected = 0
             self.reset_number = self.player_selected
 
-    def __cycle_options(self, event):
+    def __cycle_options(self, event, DISPLAYSURF, bg_color, HALF_WINWIDTH, fps_clock):
         if event.key == K_w or event.key == K_UP:
-            pass
+            if self.option_selected > 0:
+                self.option_selected -= 1
         elif event.key == K_s or event.key == K_DOWN:
-            pass
+            if self.option_selected < self.number_of_options - 1:
+                self.option_selected += 1
         elif event.key == K_a or event.key == K_LEFT:
             self.column_selected = 1
         elif event.key == K_e or event.key == K_RETURN:
-            if self.option_selected == 0:
-                player_team = self.__finalize_team()
+            if self.option_selected == 0 and self.player_team is None:
+                self.player_team = self.__finalize_team()
+                es = EncounterSelect(self.master_list, self.player_team)
+                es.start(DISPLAYSURF, bg_color, HALF_WINWIDTH, fps_clock)
+            # TODO: add team reset option
 
     def __finalize_team(self):
         self.player_team = []
@@ -291,23 +303,81 @@ class CreateTeam(object):
         sys.exit()
 
 
-class MissionSelect(object):
+class EncounterSelect(object):
     """
     Select difficulty
     Select encounter
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, master_list, player_team):
+        self.master_list = master_list
+        self.player_team = player_team
+        self.enemy_team = None
+        self.encounter_list = SubListManager(master_list.get_list('Encounter'))
+        self.races = SubListManager(master_list.get_list('Enemy Race'))
+        self.roles = SubListManager(master_list.get_list('Enemy Role'))
+        self.column_selected = 0
+        self.number_of_options = 1
+        self.option_selected = 0
 
     def start(self, DISPLAYSURF, bg_color, HALF_WINWIDTH, fps_clock):
+        pygame.font.init()
+        small_text = pygame.font.Font(default_font, 20)
+
+        title = 'Encounter Selection'
+        title_font = pygame.font.Font(default_font, 30)
+
+        titleSurf = title_font.render(title, True, black)
+        titleRect = titleSurf.get_rect()
+        topCoord = 30
+        titleRect.top = topCoord
+        titleRect.centerx = HALF_WINWIDTH
+        topCoord += titleRect.height + 20
+
+        DISPLAYSURF.fill(bg_color)
+        DISPLAYSURF.blit(titleSurf, titleRect)
+
         while True:  # Main loop for the start screen.
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.__terminate()
+                elif event.type == KEYDOWN:
+                    if self.column_selected == 0:
+                        self.__cycle_difficulties(event)
+                    elif self.column_selected == 1:
+                        self.__cycle_encounters(event)
+                    elif self.column_selected == 2:
+                        self.__cycle_options(event)
 
             pygame.display.update()
             fps_clock.tick()
+
+    def __cycle_difficulties(self, event):
+        pass
+
+    def __cycle_encounters(self, event):
+        pass
+
+    def __cycle_options(self, event):
+        if event.key == K_w or event.key == K_UP:
+            if self.option_selected > 0:
+                self.option_selected -= 1
+        elif event.key == K_s or event.key == K_DOWN:
+            if self.option_selected < self.number_of_options - 1:
+                self.option_selected += 1
+        elif event.key == K_e or event.key == K_RETURN:
+            if self.option_selected == 0:  # Start Battle
+                self.enemy_team = self.__finalize_encounter()
+                # bi = BattleInitialization(self.player_team, self.enemy_team)
+                # bi.start(DISPLAYSURF, bg_color, HALF_WINWIDTH, fps_clock)
+                pass
+            elif self.option_selected == 1:  # Reset Encounter
+                pass
+
+    def __finalize_encounter(self):
+        self.enemy_team = []
+        # TODO: make enemy team
+        return self.enemy_team
 
     def __terminate(self):
         pygame.quit()
@@ -322,8 +392,9 @@ class BattleInitialization(object):
     go to run_battle()
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, player_team, enemy_team):
+        self.player_team = player_team
+        self.enemy_team = enemy_team
 
     def start(self, DISPLAYSURF, bg_color, HALF_WINWIDTH, fps_clock):
         while True:  # Main loop for the start screen.

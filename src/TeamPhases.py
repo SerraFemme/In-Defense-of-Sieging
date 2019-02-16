@@ -27,7 +27,7 @@ class PlayerMaker(object):
     def create_player(self, player_name, player_number, selected_class):
         player = Player(self.class_list.get_item(selected_class), player_name, player_number)
         self.__equip_s_equipment(player,
-                                 self.s_equipment.get_item(selected_class['ID']),
+                                 self.s_equipment.get_item(selected_class),
                                  self.equipment_list)
         # player.Passive = getattribute(src.ClassPassives, selected_class)
         # TODO: give player starting deck

@@ -82,9 +82,6 @@ def main():
     os.chdir(direct)
 
     master_list = MasterListManager()
-    # encounter_list = SubListManager(master_list.get_list('Encounter'))
-    # races = SubListManager(master_list.get_list('Enemy Race'))
-    # roles = SubListManager(master_list.get_list('Enemy Role'))
 
     ct = CreateTeam(master_list)
 
