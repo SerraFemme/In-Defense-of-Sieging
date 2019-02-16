@@ -25,7 +25,7 @@ class PlayerMaker(object):
         self.card_library = card
 
     def create_player(self, player_name, player_number, selected_class):
-        player = Player(selected_class, player_name, player_number)
+        player = Player(self.class_list.get_item(selected_class), player_name, player_number)
         self.__equip_s_equipment(player,
                                  self.s_equipment.get_item(selected_class['ID']),
                                  self.equipment_list)
@@ -46,6 +46,7 @@ class PlayerTurn(object):
     """
     Contains all functions needed for a player to take their turn.
     """
+
     def __init__(self, team, b_map, move):
         self.player_team = team
         self.battle_map = b_map
@@ -167,6 +168,7 @@ class HordeMaker(object):
     """
     Creates an enemy horde based on the encounter list then puts them on the map
     """
+
     def __init__(self, battle_map, movement, encounter_list, races, roles, equipment_list, n):
         self.battle_map = battle_map
         self.movement = movement
@@ -187,7 +189,7 @@ class HordeMaker(object):
                 for j in range(i['Number']):
                     race = self.race_list.get_item(i['Race'])
                     role = self.role_list.get_item(i['Role'])
-                    enemy = Enemy(race, role, j+1)
+                    enemy = Enemy(race, role, j + 1)
                     for e in i['Equipment']:
                         equipment = self.equipment_list.get_item(e)
                         enemy.add_equipment(Equipment(equipment))
@@ -196,7 +198,7 @@ class HordeMaker(object):
                 for j in range(self.number_of_players):
                     race = self.race_list.get_item(i['Race'])
                     role = self.role_list.get_item(i['Role'])
-                    enemy = Enemy(race, role, j+1)
+                    enemy = Enemy(race, role, j + 1)
                     for e in i['Equipment']:
                         equipment = self.equipment_list.get_item(e)
                         enemy.add_equipment(Equipment(equipment))

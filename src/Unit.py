@@ -12,7 +12,7 @@ class Player(object):
     def __init__(self, selected_class, name, number):
         self.Player_Name = name
         self.Player_Number = number
-        self.Icon = 'P' + number
+        self.Icon = 'P' + str(number)
         self.Conscious = True
         self.Position = None
         self.AT = []  # Aggression Tokens

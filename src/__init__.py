@@ -2,10 +2,11 @@ import sys
 import os
 import pygame
 from pygame.locals import *
-from src.ReadGameData import MasterListManager, SubListManager
+from src.CONSTANTS import CONSTANTS
+from src.ReadGameData import MasterListManager
+from src.GraphicalLogic import CreateTeam
 from src.BattleMap import MapInator
 from src.GamePhases import BattlePhase
-from src.TeamPhases import PlayerMaker, HordeMaker
 
 # Window Constants
 FPS = 30
@@ -21,21 +22,19 @@ TILEHEIGHT = 50
 
 CAM_MOVE_SPEED = 10
 
-WHITE = (255, 255, 255)
-black = (0, 0, 0)
-bright_blue = (0, 170, 255)
-pale_turquoise = (175, 238, 238)
-orange_red = (255, 69, 0)
-dark_orange = (255, 140, 0)
-red = (180, 0, 0)
-bright_red = (255, 0, 0)
-green = (0, 200, 0)
-bright_green = (0, 255, 0)
-BGCOLOR = pale_turquoise
-TEXTCOLOR = dark_orange
-title_color = dark_orange
+# Colors
+bg_color = CONSTANTS.COLORS['pale_turquoise']
+title_color = CONSTANTS.COLORS['dark_orange']
+black = CONSTANTS.COLORS['black']
+bright_red = CONSTANTS.COLORS['red']
+red = CONSTANTS.COLORS['dark_red']
+orange_red = CONSTANTS.COLORS['orange_red']
+dark_orange = CONSTANTS.COLORS['dark_orange']
+green = CONSTANTS.COLORS['medium_green']
+bright_green = CONSTANTS.COLORS['green']
 
-default_font = 'freesansbold.ttf'
+# Fonts
+default_font = CONSTANTS.FONT_DICT['sans_bold']
 
 UP = 'up'
 DOWN = 'down'
@@ -50,10 +49,6 @@ png_dict = {'Grass': 'GRASS.png',
             'targeting_tile': 'TARGETING_TILE.png',
             'player_token': 'PLAYER.png',
             'enemy_token': 'ENEMY.png'}
-
-max_team_size = 4  # Change later
-player_team = []
-enemy_team = []
 
 
 def main():
@@ -86,23 +81,19 @@ def main():
     direct = os.path.abspath('..')
     os.chdir(direct)
 
-    r = MasterListManager()
-    terrain_list = SubListManager(r.get_list('Terrain'))
-    class_list = SubListManager(r.get_list('Class'))
-    equipment_list = SubListManager(r.get_list('Equipment'))
-    starting_equipment = SubListManager(r.get_list('Starting Equipment'))
-    starting_deck = SubListManager(r.get_list('Starting Deck'))
-    card_library = SubListManager(r.get_list('Card'))
-    encounter_list = SubListManager(r.get_list('Encounter'))
-    races = SubListManager(r.get_list('Enemy Race'))
-    roles = SubListManager(r.get_list('Enemy Role'))
+    master_list = MasterListManager()
+    # encounter_list = SubListManager(master_list.get_list('Encounter'))
+    # races = SubListManager(master_list.get_list('Enemy Race'))
+    # roles = SubListManager(master_list.get_list('Enemy Role'))
+
+    ct = CreateTeam(master_list)
 
     while True:  # main game loop
         for event in pygame.event.get():
             if event.type == QUIT:
                 __terminate()
 
-        main_menu()  # menu
+        main_menu(ct)  # menu
 
 
 def start_screen():
@@ -127,12 +118,12 @@ def start_screen():
                        '',
                        'Press any key to continue']
 
-    DISPLAYSURF.fill(BGCOLOR)  # Start with drawing a blank color to the entire window:
+    DISPLAYSURF.fill(bg_color)  # Start with drawing a blank color to the entire window:
     DISPLAYSURF.blit(titleSurf, titleRect)  # Draw the title image to the window:
 
     # Position and draw the text.
     for i in range(len(title_text_info)):
-        instSurf = BASICFONT.render(title_text_info[i], 1, TEXTCOLOR)
+        instSurf = BASICFONT.render(title_text_info[i], 1, dark_orange)
         instRect = instSurf.get_rect()
         topCoord += 10  # 10 pixels will go in between each line of text.
         instRect.top = topCoord
@@ -154,8 +145,8 @@ def start_screen():
         FPSCLOCK.tick()
 
 
-def main_menu():
-    global title_color
+def main_menu(ct):
+    global title_color, FPSCLOCK
     title = 'In Defense of Sieging'
     title_font = pygame.font.Font(default_font, 40)
 
@@ -166,7 +157,7 @@ def main_menu():
     titleRect.centerx = HALF_WINWIDTH
     topCoord += titleRect.height
 
-    DISPLAYSURF.fill(BGCOLOR)  # Start with drawing a blank color to the entire window:
+    DISPLAYSURF.fill(bg_color)  # Start with drawing a blank color to the entire window:
     DISPLAYSURF.blit(titleSurf, titleRect)  # Draw the title image to the window:
 
     button_size = (120, 50)
@@ -195,7 +186,7 @@ def main_menu():
                     if selected == 1:
                         __terminate()
                     elif selected == 0:
-                        create_player_team()
+                        ct.start(DISPLAYSURF, bg_color, HALF_WINWIDTH, FPSCLOCK)
                         # run_battle()
 
         # Start Button
@@ -233,176 +224,6 @@ def main_menu():
         text_surface, text_rect = __text_object(exit_text, small_text)
         text_rect.center = (HALF_WINWIDTH, exit_button.centery)
         DISPLAYSURF.blit(text_surface, text_rect)
-
-        pygame.display.update()
-        FPSCLOCK.tick()
-
-
-def create_player_team():
-    global terrain_list, class_list, equipment_list, starting_equipment, \
-        starting_deck, card_library, encounter_list, races, roles
-    global max_team_size, player_team
-    title = 'Player Team Creation'
-    title_font = pygame.font.Font(default_font, 30)
-
-    titleSurf = title_font.render(title, True, black)
-    titleRect = titleSurf.get_rect()
-    topCoord = 30
-    titleRect.top = topCoord
-    titleRect.centerx = HALF_WINWIDTH
-    topCoord += titleRect.height + 20
-
-    DISPLAYSURF.fill(BGCOLOR)
-    DISPLAYSURF.blit(titleSurf, titleRect)
-
-    class_selected = 0
-    player_selected = 0
-    max_displayed = 8
-    top_displayed = 0
-    class_top_coordinate = topCoord
-    player_top_coordinate = topCoord
-
-    available_classes = class_list.get_list()
-    pm = PlayerMaker(class_list, starting_equipment, equipment_list,
-                     starting_deck, card_library)
-
-    class_button_size = (180, 50)
-    class_button_center = (class_button_size[0] / 2, class_button_size[1] / 2)
-
-    player_button_size = (180, 80)
-    player_button_center = (player_button_size[0] / 2, player_button_size[1] / 2)
-
-    quarter_width = int(HALF_WINWIDTH / 2)
-
-    while True:  # Main loop for the start screen.
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                __terminate()
-            elif event.type == KEYDOWN:
-                # Handle key presses
-                if event.key == K_w or event.key == K_UP:
-                    if class_selected == top_displayed + 1:
-                        if class_selected != 0:
-                            class_selected -= 1
-                        if top_displayed != 0:
-                            top_displayed -= 1
-                    else:
-                        if class_selected != 0:
-                            class_selected -= 1
-                elif event.key == K_s or event.key == K_DOWN:
-                    if class_selected < top_displayed + max_displayed - 2:
-                        if class_selected < len(available_classes) - 1:
-                            class_selected += 1
-                    elif class_selected == top_displayed + max_displayed - 1 and top_displayed + max_displayed != len(
-                            available_classes):
-                        if top_displayed + max_displayed < len(available_classes):
-                            top_displayed += 1
-                    else:
-                        if class_selected < len(available_classes) - 1:
-                            class_selected += 1
-                        if top_displayed + max_displayed < len(available_classes):
-                            top_displayed += 1
-                    # if class_selected == top_displayed + max_displayed - 1:
-                    #     if class_selected < top_displayed + max_displayed - 2:
-                    #         class_selected += 1
-                    #     if top_displayed + max_displayed - 1 < len(display_list):
-                    #         top_displayed += 1
-                    # else:
-                    #     if class_selected != top_displayed + max_displayed - 1:
-                    #         class_selected += 1
-
-                elif event.key == K_e or event.key == K_RETURN:
-                    if len(player_team) < max_team_size:
-                        c = available_classes.pop(class_selected)
-                        number = str(len(player_team) + 1)
-                        name = 'Player ' + number
-                        player = pm.create_player(name, number, c)
-                        player_team.append(player)
-                        if class_selected > 0:
-                            class_selected -= 1
-
-        if max_displayed <= len(available_classes):
-            bottom = max_displayed
-        else:
-            bottom = len(available_classes)
-
-        if top_displayed + bottom > len(available_classes):
-            top_displayed -= 1
-
-        # FIXME: prints last class repeatedly if len(available_classes) < max_displayed
-        for j in range(top_displayed, top_displayed + bottom):
-            display_class = available_classes[j]
-            display_string = display_class['ID']
-            if j == class_selected:
-                button_color = orange_red
-            else:
-                button_color = dark_orange
-            class_button = pygame.draw.rect(DISPLAYSURF, button_color,
-                                            (quarter_width - class_button_center[0],
-                                             class_top_coordinate,
-                                             class_button_size[0],
-                                             class_button_size[1]))
-
-            text_surface, text_rect = __text_object(display_string, small_text)
-            text_rect.center = (quarter_width, class_button.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
-
-            class_top_coordinate += class_button_size[1] + 10
-
-        class_top_coordinate = topCoord
-
-        if len(player_team) > 0:
-            for p in range(len(player_team)):
-                player_name = player_team[p].Player_Name
-                player_class = player_team[p].Class_Name
-                button_color = orange_red
-                player_button = pygame.draw.rect(DISPLAYSURF, button_color,
-                                                 (3 * quarter_width - player_button_center[0],
-                                                  player_top_coordinate,
-                                                  player_button_size[0],
-                                                  player_button_size[1]))
-
-                text_surface, text_rect = __text_object(player_name, small_text)
-                text_rect.center = (3 * quarter_width, player_button.centery - int(player_button_size[1] / 4))
-                DISPLAYSURF.blit(text_surface, text_rect)
-
-                text_surface, text_rect = __text_object(player_class, small_text)
-                text_rect.center = (3 * quarter_width, player_button.centery + int(player_button_size[1] / 4))
-                DISPLAYSURF.blit(text_surface, text_rect)
-
-                player_top_coordinate += player_button_size[1] + 10
-
-            player_top_coordinate = topCoord
-
-        if len(available_classes) > 0:
-            # TODO: Go to encounter maker button
-            pass
-
-        pygame.display.update()
-        FPSCLOCK.tick()
-
-
-def mission_select():  # TODO: enemy encounters
-    # Select difficulty
-    # Select encounter
-    while True:  # Main loop for the start screen.
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                __terminate()
-
-        pygame.display.update()
-        FPSCLOCK.tick()
-
-
-def battle_initialization():  # TODO: place ALL units on battle_map
-    # create map, size based on player team size
-    # auto-place enemy team
-    # players select starting position
-    # go to run_battle()
-    while True:  # Main loop for the start screen.
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                __terminate()
 
         pygame.display.update()
         FPSCLOCK.tick()
@@ -480,7 +301,7 @@ def run_battle():
                 elif event.key == K_RIGHT:
                     cameraRight = False
 
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(bg_color)
 
         if redraw_map:
             mapSurf = drawMap(battle_map)
@@ -513,7 +334,7 @@ def drawMap(battle_map):
     mapSurfWidth = map_size[0] * TILEWIDTH
     mapSurfHeight = map_size[1] * TILEHEIGHT
     mapSurf = pygame.Surface((mapSurfWidth, mapSurfHeight))
-    mapSurf.fill(BGCOLOR)
+    mapSurf.fill(bg_color)
 
     # Draw the tile sprites onto this surface.
     for x in range(map_size[0]):
