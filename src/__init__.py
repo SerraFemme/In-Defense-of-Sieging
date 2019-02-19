@@ -85,12 +85,12 @@ def main():
 
     ct = CreateTeam(master_list)
 
-    while True:  # main game loop
+    while True:  # main menu loop
         for event in pygame.event.get():
             if event.type == QUIT:
                 __terminate()
 
-        main_menu(ct)  # menu
+        main_menu(ct)
 
 
 def start_screen():

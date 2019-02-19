@@ -15,6 +15,13 @@ medium_green = CONSTANTS.COLORS['medium_green']
 grey = CONSTANTS.COLORS['grey']
 blue = CONSTANTS.COLORS['blue']
 
+window_width = CONSTANTS.WINWIDTH
+
+
+# TODO: move start screen to here
+
+# TODO: move menu to here
+
 
 class CreateTeam(object):
     """
@@ -319,6 +326,7 @@ class EncounterSelect(object):
         self.column_selected = 0
         self.number_of_options = 1
         self.option_selected = 0
+        self.tribe_dict = {}
 
     def start(self, DISPLAYSURF, bg_color, HALF_WINWIDTH, fps_clock):
         pygame.font.init()
@@ -337,20 +345,35 @@ class EncounterSelect(object):
         DISPLAYSURF.fill(bg_color)
         DISPLAYSURF.blit(titleSurf, titleRect)
 
+        self.__parse_encounter_list()
+
+        window_section = window_width / len(self.tribe_dict)
+
         while True:  # Main loop for the start screen.
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.__terminate()
                 elif event.type == KEYDOWN:
                     if self.column_selected == 0:
-                        self.__cycle_difficulties(event)
+                        self.__cycle_factions(event)
                     elif self.column_selected == 1:
-                        self.__cycle_encounters(event)
+                        self.__cycle_difficulties(event)
                     elif self.column_selected == 2:
+                        self.__cycle_encounters(event)
+                    elif self.column_selected == 3:
                         self.__cycle_options(event)
+
+            # TODO: print Tribes to screen
+
+            # TODO: print Difficulties to screen
+
+            # TODO: print encounters to screen
 
             pygame.display.update()
             fps_clock.tick()
+
+    def __cycle_factions(self, event):
+        pass
 
     def __cycle_difficulties(self, event):
         pass
@@ -379,6 +402,16 @@ class EncounterSelect(object):
         # TODO: make enemy team
         return self.enemy_team
 
+    def __parse_encounter_list(self):
+        e_l = self.encounter_list.get_list()
+        for e in e_l:
+            if e['Tribe'] in self.tribe_dict:
+                v = self.tribe_dict[e['Tribe']]
+                v.append(e)
+            else:
+                v = []
+                self.tribe_dict[e['Tribe']] = v.append(e)
+
     def __terminate(self):
         pygame.quit()
         sys.exit()
@@ -392,9 +425,11 @@ class BattleInitialization(object):
     go to run_battle()
     """
 
-    def __init__(self, player_team, enemy_team):
+    def __init__(self, master_list, player_team, enemy_team):
+        self.master_list = master_list
         self.player_team = player_team
         self.enemy_team = enemy_team
+        # terrain list
 
     def start(self, DISPLAYSURF, bg_color, HALF_WINWIDTH, fps_clock):
         while True:  # Main loop for the start screen.
@@ -408,3 +443,8 @@ class BattleInitialization(object):
     def __terminate(self):
         pygame.quit()
         sys.exit()
+
+
+# TODO: move BattleEngine to here
+
+# TODO: move DrawMap to here

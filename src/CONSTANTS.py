@@ -4,7 +4,13 @@ class CONSTANTS(object):
     The intention is to have a "catalogue" of variables set up before they're needed.
     """
 
-    MAX_PLAYERS = 4
+    # Graphical Constants
+    FPS = 30
+    WINWIDTH = 800
+    WINHEIGHT = 600
+    HALF_WINWIDTH = int(WINWIDTH / 2)
+    HALF_WINHEIGHT = int(WINHEIGHT / 2)
+    third_window_width = int(WINWIDTH / 3)
 
     COLORS = {'white': (255, 255, 255),
               'black': (0, 0, 0),
@@ -35,3 +41,6 @@ class CONSTANTS(object):
               'saddle_brown': (139, 69, 19)}
 
     FONT_DICT = {'sans_bold': 'freesansbold.ttf'}
+
+    # Game Logic Constants
+    MAX_PLAYERS = 4
