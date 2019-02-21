@@ -66,6 +66,40 @@
           ]
         }
       ]
+    },
+    {
+      "ID": "Encounter2",
+      "Name": "",
+      "Tribe": "Undead",
+      "Difficulty": "Easy",
+      "Enemies": [
+        {
+          "Number": "N",
+          "Race": "Zombies",
+          "Role": "Grunt",
+          "Equipment": [
+            "MartialMelee3",
+            "MartialShield1"
+          ]
+        },
+        {
+          "Number": 2,
+          "Race": "Zombies",
+          "Role": "Grunt",
+          "Equipment": [
+            "MartialMelee4",
+            "MartialShield1"
+          ]
+        },
+        {
+          "Number": 1,
+          "Race": "Skeleton",
+          "Role": "Assassin",
+          "Equipment": [
+            "MartialMelee3"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -12,6 +12,8 @@ class CONSTANTS(object):
     HALF_WINHEIGHT = int(WINHEIGHT / 2)
     third_window_width = int(WINWIDTH / 3)
 
+    STANDARD_BUTTON_SIZE = (160, 40)
+
     COLORS = {'white': (255, 255, 255),
               'black': (0, 0, 0),
               'light_grey': (211, 211, 211),
@@ -44,3 +46,8 @@ class CONSTANTS(object):
 
     # Game Logic Constants
     MAX_PLAYERS = 4
+
+    DIFFICULTY_LIST = ['Easy',
+                       'Medium',
+                       'Hard',
+                       'Boss']
