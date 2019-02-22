@@ -18,6 +18,8 @@ grey = CONSTANTS.COLORS['grey']
 blue = CONSTANTS.COLORS['blue']
 
 window_width = CONSTANTS.WINWIDTH
+window_width_half = CONSTANTS.HALF_WINWIDTH
+window_width_quarter = int(window_width_half / 2)
 window_height = CONSTANTS.WINHEIGHT
 button_size = CONSTANTS.STANDARD_BUTTON_SIZE
 
@@ -336,10 +338,10 @@ class EncounterSelect(object):
         self.roles = SubListManager(master_list.get_list('Enemy Role'))
         self.column_selected = 0
         self.tribe_selected = 0
+        self.diff_selected = 0
         self.number_of_options = 1
         self.option_selected = 0
         self.tribe_list = []
-        self.difficulty_list = []
         self.tribe_dict = {}
         self.selected_encounter = None
         self.enemy_team = []
@@ -397,8 +399,8 @@ class EncounterSelect(object):
             display_string = self.tribe_list[i]
             if i == self.tribe_selected and self.column_selected == 0:  # cursor on tribe
                 button_color = orange_red
-            elif self.column_selected != 0:
-                button_color = grey
+            # elif self.column_selected != 0:
+            #     button_color = grey
             else:  # cursor can be on button
                 button_color = dark_orange
             tribe_button = pygame.draw.rect(DISPLAYSURF, button_color,
@@ -414,27 +416,65 @@ class EncounterSelect(object):
         # Print Difficulties
         diff_top = tribe_top + tribe_button_size[1] + 10
 
-        diff_number = len(diff_list) + 1
-
-        diff_division = window_width / diff_number
-
         diff_button_size = (button_size[0] - 40, button_size[1])
         diff_button_center = (int(diff_button_size[0] / 2), int(diff_button_size[1] / 2))
 
-        button_color = green_yellow
-        for i in range(len(diff_list)):
-            diff_button = pygame.draw.rect(DISPLAYSURF, button_color,
-                                           (diff_division * (1 + i) - diff_button_center[0],
-                                            diff_top,
-                                            diff_button_size[0],
-                                            diff_button_size[1]))
+        arrow_box_size = (60, 30)
+        arrow_box_center = (int(arrow_box_size[0] / 2), int(arrow_box_size[1] / 2))
+        arrow_color = green_yellow
+        if self.diff_selected > 0:
+            right_arrow = '<--'
+            right_box = pygame.draw.rect(DISPLAYSURF, arrow_color,
+                                         (window_width_quarter - arrow_box_center[0],
+                                          diff_top,
+                                          arrow_box_size[0],
+                                          arrow_box_size[1]))
 
-            text_surface, text_rect = self.__text_object(diff_list[i], small_text)
-            text_rect.center = (diff_division * (1 + i), diff_button.centery)
+            text_surface, text_rect = self.__text_object(right_arrow, small_text)
+            text_rect.center = (right_box.centerx, right_box.centery)
+            DISPLAYSURF.blit(text_surface, text_rect)
+
+        button_color = green_yellow
+        diff_box = pygame.draw.rect(DISPLAYSURF, button_color,
+                                    (window_width_half - diff_button_center[0],
+                                     diff_top,
+                                     diff_button_size[0],
+                                     diff_button_size[1]))
+
+        text_surface, text_rect = self.__text_object(diff_list[self.diff_selected], small_text)
+        text_rect.center = (diff_box.centerx, diff_box.centery)
+        DISPLAYSURF.blit(text_surface, text_rect)
+
+        if self.diff_selected < len(diff_list) - 1:
+            left_arrow = '-->'
+            left_box = pygame.draw.rect(DISPLAYSURF, arrow_color,
+                                        (3 * window_width_quarter - arrow_box_center[0],
+                                         diff_top,
+                                         arrow_box_size[0],
+                                         arrow_box_size[1]))
+
+            text_surface, text_rect = self.__text_object(left_arrow, small_text)
+            text_rect.center = (left_box.centerx, left_box.centery)
             DISPLAYSURF.blit(text_surface, text_rect)
 
         # TODO: Print Encounters to screen
-        encounter_top = diff_top + diff_button_size[1] + 10
+        # encounter_top = diff_top + diff_button_size[1] + 10
+
+        encounter_box_size = (400, 50)
+        encounter_box_center = (int(encounter_box_size[0] / 2), int(encounter_box_size[1] / 2))
+
+        # for i in range(len(diff_list)):
+        #     diff_button = pygame.draw.rect(DISPLAYSURF, button_color,
+        #                                    (diff_division * (1 + i) - diff_button_center[0],
+        #                                     diff_top,
+        #                                     diff_button_size[0],
+        #                                     diff_button_size[1]))
+        #
+        #     text_surface, text_rect = self.__text_object(diff_list[i], small_text)
+        #     text_rect.center = (diff_division * (1 + i), diff_button.centery)
+        #     DISPLAYSURF.blit(text_surface, text_rect)
+
+
 
 
     def __cycle_tribes(self, event):
@@ -450,7 +490,16 @@ class EncounterSelect(object):
             self.column_selected = 1
 
     def __cycle_difficulties(self, event):
-        pass
+        if event.key == K_d or event.key == K_RIGHT:
+            if self.diff_selected < len(diff_list) - 1:
+                self.diff_selected += 1
+
+        elif event.key == K_a or event.key == K_LEFT:
+            if self.diff_selected > 0:
+                self.diff_selected -= 1
+
+        elif event.key == K_q or event.key == K_BACKSPACE:
+            self.column_selected = 0
 
     def __cycle_encounters(self, event):
         pass
