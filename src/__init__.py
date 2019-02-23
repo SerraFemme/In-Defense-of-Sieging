@@ -9,22 +9,20 @@ from src.BattleMap import MapInator
 from src.GamePhases import BattlePhase
 
 # Window Constants
-FPS = 30
-WINWIDTH = 800
-WINHEIGHT = 600
-HALF_WINWIDTH = int(WINWIDTH / 2)
-HALF_WINHEIGHT = int(WINHEIGHT / 2)
-third_window_width = int(WINWIDTH / 3)
+FPS = CONSTANTS.FPS
+WINWIDTH = CONSTANTS.WINWIDTH
+WINHEIGHT = CONSTANTS.WINHEIGHT
+HALF_WINWIDTH = CONSTANTS.HALF_WINWIDTH
+HALF_WINHEIGHT = CONSTANTS.HALF_WINHEIGHT
+third_window_width = CONSTANTS.THIRD_WINDOW_WIDTH
 
 # Tile Constants
 TILEWIDTH = 50
 TILEHEIGHT = 50
 
-CAM_MOVE_SPEED = 10
+CAM_MOVE_SPEED = CONSTANTS.CAM_MOVE_SPEED
 
 # Colors
-bg_color = CONSTANTS.COLORS['pale_turquoise']
-title_color = CONSTANTS.COLORS['dark_orange']
 black = CONSTANTS.COLORS['black']
 bright_red = CONSTANTS.COLORS['red']
 red = CONSTANTS.COLORS['dark_red']
@@ -32,6 +30,10 @@ orange_red = CONSTANTS.COLORS['orange_red']
 dark_orange = CONSTANTS.COLORS['dark_orange']
 green = CONSTANTS.COLORS['medium_green']
 bright_green = CONSTANTS.COLORS['green']
+pale_turquoise = CONSTANTS.COLORS['pale_turquoise']
+
+bg_color = pale_turquoise
+title_color = dark_orange
 
 # Fonts
 default_font = CONSTANTS.FONT_DICT['sans_bold']
@@ -183,7 +185,7 @@ def main_menu(ct):
                     if selected == 1:
                         __terminate()
                     elif selected == 0:
-                        ct.start(DISPLAYSURF, bg_color, HALF_WINWIDTH, FPSCLOCK)
+                        ct.start(DISPLAYSURF, FPSCLOCK)
                         # run_battle()
 
         # Start Button
@@ -201,7 +203,7 @@ def main_menu(ct):
                                          button_size[1]))
 
         text_surface, text_rect = __text_object(start_text, small_text)
-        text_rect.center = (HALF_WINWIDTH, start_button.centery)
+        text_rect.center = (start_button.centex, start_button.centery)
         DISPLAYSURF.blit(text_surface, text_rect)
 
         # FIXME: "Exit" word shifts slightly when selected
@@ -219,7 +221,7 @@ def main_menu(ct):
                                         button_size[1]))
 
         text_surface, text_rect = __text_object(exit_text, small_text)
-        text_rect.center = (HALF_WINWIDTH, exit_button.centery)
+        text_rect.center = (exit_button.centerx, exit_button.centery)
         DISPLAYSURF.blit(text_surface, text_rect)
 
         pygame.display.update()

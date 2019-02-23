@@ -10,7 +10,9 @@ class CONSTANTS(object):
     WINHEIGHT = 600
     HALF_WINWIDTH = int(WINWIDTH / 2)
     HALF_WINHEIGHT = int(WINHEIGHT / 2)
-    third_window_width = int(WINWIDTH / 3)
+    THIRD_WINDOW_WIDTH = int(WINWIDTH / 3)
+
+    CAM_MOVE_SPEED = 10
 
     STANDARD_BUTTON_SIZE = (160, 40)
 
