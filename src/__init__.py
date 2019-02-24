@@ -203,7 +203,7 @@ def main_menu(ct):
                                          button_size[1]))
 
         text_surface, text_rect = __text_object(start_text, small_text)
-        text_rect.center = (start_button.centex, start_button.centery)
+        text_rect.center = (start_button.centerx, start_button.centery)
         DISPLAYSURF.blit(text_surface, text_rect)
 
         # FIXME: "Exit" word shifts slightly when selected

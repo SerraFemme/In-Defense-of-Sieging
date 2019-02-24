@@ -396,7 +396,7 @@ class EncounterSelect(object):
         titleRect = titleSurf.get_rect()
         topCoord = 30
         titleRect.top = topCoord
-        titleRect.centerx = HALF_WINWIDTH
+        titleRect.centerx = window_width_half
         topCoord += titleRect.height + 20
 
         DISPLAYSURF.fill(bg_color)
@@ -569,14 +569,14 @@ class EncounterSelect(object):
         titleRect = titleSurf.get_rect()
         topCoord = 30
         titleRect.top = topCoord
-        titleRect.centerx = HALF_WINWIDTH
+        titleRect.centerx = window_width_half
         topCoord += titleRect.height + 20
 
         DISPLAYSURF.fill(bg_color)
         DISPLAYSURF.blit(titleSurf, titleRect)
 
         # Print Encounter Name
-        name_box_size = (200, 50)
+        name_box_size = (260, 50)
         name_box_center = (int(name_box_size[0] / 2), int(name_box_size[1] / 2))
         name_box_color = green_yellow
 
@@ -613,7 +613,7 @@ class EncounterSelect(object):
         DISPLAYSURF.blit(text_surface, text_rect)
 
         # Print Start Battle
-        start_box_size = (80, 50)
+        start_box_size = (130, 50)
         start_box_center = (int(start_box_size[0] / 2), int(start_box_size[1] / 2))
 
         if self.option_selected == 1:
@@ -623,10 +623,10 @@ class EncounterSelect(object):
 
         start = 'Start Battle'
         start_box = pygame.draw.rect(DISPLAYSURF, start_box_color,
-                                    (3 * window_width_quarter - start_box_center[0],
-                                     topCoord,
-                                     start_box_size[0],
-                                     start_box_size[1]))
+                                     (3 * window_width_quarter + 20 - start_box_center[0],
+                                      topCoord,
+                                      start_box_size[0],
+                                      start_box_size[1]))
 
         text_surface, text_rect = self.__text_object(start, small_text)
         text_rect.center = (start_box.centerx, start_box.centery)
