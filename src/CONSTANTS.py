@@ -6,14 +6,15 @@ class CONSTANTS(object):
 
     # Graphical Constants
     FPS = 30
+    CAM_MOVE_SPEED = 10
+
     WINWIDTH = 800
     WINHEIGHT = 600
     HALF_WINWIDTH = int(WINWIDTH / 2)
     HALF_WINHEIGHT = int(WINHEIGHT / 2)
     THIRD_WINDOW_WIDTH = int(WINWIDTH / 3)
 
-    CAM_MOVE_SPEED = 10
-
+    TILE_SIZE = (50, 50)
     STANDARD_BUTTON_SIZE = (160, 40)
 
     COLORS = {'white': (255, 255, 255),
@@ -45,6 +46,15 @@ class CONSTANTS(object):
               'saddle_brown': (139, 69, 19)}
 
     FONT_DICT = {'sans_bold': 'freesansbold.ttf'}
+
+    IMAGE_DICTIONARY = {'Grass': 'GRASS.png',
+                        'Hill': 'HILL.png',
+                        'Mountain': 'MOUNTAIN.png',
+                        'cursor': 'CURSOR.png',
+                        'selected_cursor': 'SELECTED.png',
+                        'targeting_tile': 'TARGETING_TILE.png',
+                        'player_token': 'PLAYER.png',
+                        'enemy_token': 'ENEMY.png'}
 
     # Game Logic Constants
     MAX_PLAYERS = 4
