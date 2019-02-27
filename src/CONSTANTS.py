@@ -4,6 +4,26 @@ class CONSTANTS(object):
     The intention is to have a "catalogue" of variables set up before they're needed.
     """
 
+    # File Constants
+    JSON_DICT = {'Terrain': 'MapTerrain.json',
+                 'Class': 'ClassLibrary.json',
+                 'Enemy Race': 'EnemyRaceLibrary.json',
+                 'Enemy Role': 'EnemyRoleLibrary.json',
+                 'Encounter': 'Encounter.json',
+                 'Equipment': 'EquipmentLibrary.json',
+                 'Starting Equipment': 'StartingEquipmentLibrary.json',
+                 'Card': 'CardLibrary.json',
+                 'Starting Deck': 'StartingDeck.json'}
+
+    IMAGE_DICTIONARY = {'Grass': 'GRASS.png',
+                        'Hill': 'HILL.png',
+                        'Mountain': 'MOUNTAIN.png',
+                        'cursor': 'CURSOR.png',
+                        'selected_cursor': 'SELECTED.png',
+                        'targeting_tile': 'TARGETING_TILE.png',
+                        'player_token': 'PLAYER.png',
+                        'enemy_token': 'ENEMY.png'}
+
     # Graphical Constants
     FPS = 30
     CAM_MOVE_SPEED = 10
@@ -12,7 +32,7 @@ class CONSTANTS(object):
     WINHEIGHT = 600
     HALF_WINWIDTH = int(WINWIDTH / 2)
     HALF_WINHEIGHT = int(WINHEIGHT / 2)
-    QUARTER_WINHEIGHT = int(window_width_half / 2)
+    QUARTER_WINWIDTH = int(HALF_WINWIDTH / 2)
     THIRD_WINDOW_WIDTH = int(WINWIDTH / 3)
 
     TILE_SIZE = (50, 50)
@@ -48,15 +68,6 @@ class CONSTANTS(object):
 
     FONT_DICT = {'sans_bold': 'freesansbold.ttf'}
 
-    IMAGE_DICTIONARY = {'Grass': 'GRASS.png',
-                        'Hill': 'HILL.png',
-                        'Mountain': 'MOUNTAIN.png',
-                        'cursor': 'CURSOR.png',
-                        'selected_cursor': 'SELECTED.png',
-                        'targeting_tile': 'TARGETING_TILE.png',
-                        'player_token': 'PLAYER.png',
-                        'enemy_token': 'ENEMY.png'}
-
     # Game Logic Constants
     MAX_PLAYERS = 4
 
@@ -64,3 +75,6 @@ class CONSTANTS(object):
                        'Medium',
                        'Hard',
                        'Boss']
+
+    # Map Logic
+    DIRECTION_TUPLES = [(0, 1), (1, 0), (0, -1), (-1, 0)]

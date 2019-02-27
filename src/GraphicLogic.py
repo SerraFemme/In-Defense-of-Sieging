@@ -34,7 +34,7 @@ unselected_color = dark_orange
 
 window_width = CONSTANTS.WINWIDTH
 window_width_half = CONSTANTS.HALF_WINWIDTH
-window_width_quarter = CONSTANTS.QUARTER_WINHEIGHT
+window_width_quarter = CONSTANTS.QUARTER_WINWIDTH
 window_height = CONSTANTS.WINHEIGHT
 window_height_half = CONSTANTS.HALF_WINHEIGHT
 button_size = CONSTANTS.STANDARD_BUTTON_SIZE
@@ -883,7 +883,7 @@ class EncounterSelect(object):
         hm = HordeMaker(self.races, self.roles, self.equipment_list, len(self.player_team))
         self.enemy_team = hm.create_enemy_team(self.chosen_encounter)
 
-    def __parse_encounter_list(self):  # FIXME: sort encounters properly
+    def __parse_encounter_list(self):
         e_l = self.encounter_list.get_list()
         for i in range(len(e_l)):
             encounter = e_l[i]
@@ -936,31 +936,51 @@ class BattleSimulation(object):
         self.map_size = self.battle_map.map_size
         self.map_display_size = (self.map_size[0] * tile_size[0], self.map_size[1] * tile_size[1])
         self.MAX_CAM_PAN = (abs(window_width_half - int(self.map_display_size[0] / 2)) + tile_size[0],
-                       abs(window_width_half - int(self.map_display_size[1] / 2)) + tile_size[1])
+                            abs(window_width_half - int(self.map_display_size[1] / 2)) + tile_size[1])
         self.redraw_map = True
 
     def start(self, DISPLAYSURF, fps_clock):
+        camera_offset_x = 0
+        camera_offset_y = 0
+
+        camera_up = False
+        camera_down = False
+        camera_left = False
+        camera_right = False
+
         while True:  # Main loop for the start screen.
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.__terminate()
                 elif event.type == KEYDOWN:
-                    pass
+                    # FIXME: Camera does not operate at all
+                    self.__move_camera(event, camera_offset_x, camera_offset_y, camera_up, camera_down, camera_left, camera_right)
+                elif event.type == KEYUP:
+                    # Unset the camera move mode.
+                    if event.key == K_UP:
+                        camera_up = False
+                    elif event.key == K_DOWN:
+                        camera_down = False
+                    elif event.key == K_LEFT:
+                        camera_left = False
+                    elif event.key == K_RIGHT:
+                        camera_right = False
+
+            if self.redraw_map:
+                self.redraw_map = False
+                self.__drawMap(self.battle_map)
+                mapSurf = self.__drawMap(self.battle_map)
+
+                mapSurfRect = mapSurf.get_rect()
+                mapSurfRect.center = (window_width_half + camera_offset_x, window_height_half + camera_offset_y)
+
+                DISPLAYSURF.blit(mapSurf, mapSurfRect)
 
             pygame.display.update()
             fps_clock.tick()
 
-    def run_battle(self, DISPLAYSURF, fps_clock, battle_map):
-        # Display Logic
-
-        cameraOffsetX = 0
-        cameraOffsetY = 0
-
-        cameraUp = False
-        cameraDown = False
-        cameraLeft = False
-        cameraRight = False
-
+    def run_battle(self, DISPLAYSURF, fps_clock, battle_map):  # TODO: Remove
+        pass
         # while True:
         #     cursor_move = None
         #     key_pressed = False
@@ -985,55 +1005,33 @@ class BattleSimulation(object):
         #             elif event.key == K_e:
         #                 pass  # Select
         #
-        #             # Set the camera move mode.
-        #             elif event.key == K_UP:
-        #                 cameraUp = True
-        #             elif event.key == K_DOWN:
-        #                 cameraDown = True
-        #             elif event.key == K_LEFT:
-        #                 cameraLeft = True
-        #             elif event.key == K_RIGHT:
-        #                 cameraRight = True
-        #             elif event.key == K_z:
-        #                 cameraOffsetX = 0
-        #                 cameraOffsetY = 0
+
         #
         #             elif event.key == K_ESCAPE:
         #                 pass  # Menu, implement later
-        #
-        #         elif event.type == KEYUP:
-        #             # Unset the camera move mode.
-        #             if event.key == K_UP:
-        #                 cameraUp = False
-        #             elif event.key == K_DOWN:
-        #                 cameraDown = False
-        #             elif event.key == K_LEFT:
-        #                 cameraLeft = False
-        #             elif event.key == K_RIGHT:
-        #                 cameraRight = False
 
-        DISPLAYSURF.fill(bg_color)
+    def __move_camera(self, event, camera_offset_x, camera_offset_y,
+                      camera_up, camera_down, camera_left, camera_right):
+        if event.key == K_UP:
+            camera_up = True
+        elif event.key == K_DOWN:
+            camera_down = True
+        elif event.key == K_LEFT:
+            camera_left = True
+        elif event.key == K_RIGHT:
+            camera_right = True
+        elif event.key == K_z:
+            camera_offset_x = 0
+            camera_offset_y = 0
 
-        if self.redraw_map:
-            mapSurf = self.__drawMap(battle_map)
-            redraw_map = False
-
-        if cameraUp and cameraOffsetY < self.MAX_CAM_PAN[0]:
-            cameraOffsetY += cam_move_speed
-        elif cameraDown and cameraOffsetY > -self.MAX_CAM_PAN[0]:
-            cameraOffsetY -= cam_move_speed
-        if cameraLeft and cameraOffsetX < self.MAX_CAM_PAN[1]:
-            cameraOffsetX += cam_move_speed
-        elif cameraRight and cameraOffsetX > -self.MAX_CAM_PAN[1]:
-            cameraOffsetX -= cam_move_speed
-
-        mapSurfRect = mapSurf.get_rect()
-        mapSurfRect.center = (window_width_half + cameraOffsetX, window_height_half + cameraOffsetY)
-
-        DISPLAYSURF.blit(mapSurf, mapSurfRect)
-
-        pygame.display.update()
-        fps_clock.tick()
+        if camera_up and camera_offset_y < self.MAX_CAM_PAN[0]:
+            camera_offset_y += cam_move_speed
+        elif camera_down and camera_offset_y > -self.MAX_CAM_PAN[0]:
+            camera_offset_y -= cam_move_speed
+        if camera_left and camera_offset_x < self.MAX_CAM_PAN[1]:
+            camera_offset_x += cam_move_speed
+        elif camera_right and camera_offset_x > -self.MAX_CAM_PAN[1]:
+            camera_offset_x -= cam_move_speed
 
     def __drawMap(self, battle_map):
         """

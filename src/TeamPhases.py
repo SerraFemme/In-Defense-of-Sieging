@@ -171,9 +171,9 @@ class HordeMaker(object):
 
     def __init__(self, races, roles, equipment_list, n):
         self.number_of_players = n
-        self.race_list = SubListManager(races)
-        self.role_list = SubListManager(roles)
-        self.equipment_list = SubListManager(equipment_list)
+        self.race_list = races
+        self.role_list = roles
+        self.equipment_list = equipment_list
 
     def create_enemy_team(self, encounter):
         enemy_horde = []

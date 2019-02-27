@@ -1,9 +1,7 @@
 from random import randrange
-from src.ReadGameData import SubListManager
-from src.Unit import Player, Enemy
+from src.CONSTANTS import CONSTANTS
 
-
-DIRECTION = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+DIRECTION = CONSTANTS.DIRECTION_TUPLES
 
 
 class MapInator(object):
@@ -15,7 +13,7 @@ class MapInator(object):
 
     # used to create an X by Y sized Map
     def __init__(self, t, x=12, y=12):
-        self.terrain_list = SubListManager(t)
+        self.terrain_list = t
         self.map_size = (x, y)
         self.main_list = []  # "List of rows"
         for i in range(y):

@@ -1,16 +1,9 @@
 import json
 import os
+from src.CONSTANTS import CONSTANTS
 # from pathlib import Path
 
-MASTER_DICT = {'Terrain': 'MapTerrain.json',
-               'Class': 'ClassLibrary.json',
-               'Enemy Race': 'EnemyRaceLibrary.json',
-               'Enemy Role': 'EnemyRoleLibrary.json',
-               'Encounter': 'Encounter.json',
-               'Equipment': 'EquipmentLibrary.json',
-               'Starting Equipment': 'StartingEquipmentLibrary.json',
-               'Card': 'CardLibrary.json',
-               'Starting Deck': 'StartingDeck.json'}
+MASTER_DICT = CONSTANTS.JSON_DICT
 
 
 class MasterListManager(object):
