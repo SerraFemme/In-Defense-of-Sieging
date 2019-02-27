@@ -2,7 +2,7 @@ import os
 import pygame
 from src.CONSTANTS import CONSTANTS
 from src.ReadGameData import MasterListManager
-from src.GraphicalLogic import StartScreen
+from src.GraphicLogic import StartScreen
 
 # Window Constants
 WINWIDTH = CONSTANTS.WINWIDTH

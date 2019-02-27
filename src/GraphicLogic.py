@@ -3,7 +3,7 @@ import pygame
 from pygame.locals import *
 from src.ReadGameData import SubListManager
 from src.CONSTANTS import CONSTANTS
-from src.TeamPhases import PlayerMaker
+from src.TeamPhases import PlayerMaker, HordeMaker
 from src.BattleMap import MapInator
 from src.GamePhases import BattlePhase
 
@@ -34,10 +34,12 @@ unselected_color = dark_orange
 
 window_width = CONSTANTS.WINWIDTH
 window_width_half = CONSTANTS.HALF_WINWIDTH
-window_width_quarter = int(window_width_half / 2)
+window_width_quarter = CONSTANTS.QUARTER_WINHEIGHT
 window_height = CONSTANTS.WINHEIGHT
+window_height_half = CONSTANTS.HALF_WINHEIGHT
 button_size = CONSTANTS.STANDARD_BUTTON_SIZE
 tile_size = CONSTANTS.TILE_SIZE
+cam_move_speed = CONSTANTS.CAM_MOVE_SPEED
 
 
 class StartScreen(object):  # TODO: assimilate start_screen
@@ -505,6 +507,7 @@ class EncounterSelect(object):
         self.encounter_list = SubListManager(master_list.get_list('Encounter'))
         self.races = SubListManager(master_list.get_list('Enemy Race'))
         self.roles = SubListManager(master_list.get_list('Enemy Role'))
+        self.equipment_list = SubListManager(master_list.get_list('Equipment'))
         self.category_selected = 0
         self.tribe_selected = 0
         self.diff_selected = 0
@@ -873,12 +876,12 @@ class EncounterSelect(object):
                 self.preview_encounter = False
             elif self.option_selected == 1:  # Start Battle
                 self.__finalize_encounter()
-                bi = BattleSimulation(self.master_list, self.player_team, self.enemy_team)
+                bi = BattleSimulation(self.master_list, self.image_dict, self.player_team, self.enemy_team)
                 bi.start(DISPLAYSURF, fps_clock)
 
     def __finalize_encounter(self):
-        # TODO: make enemy team
-        pass
+        hm = HordeMaker(self.races, self.roles, self.equipment_list, len(self.player_team))
+        self.enemy_team = hm.create_enemy_team(self.chosen_encounter)
 
     def __parse_encounter_list(self):  # FIXME: sort encounters properly
         e_l = self.encounter_list.get_list()
@@ -929,29 +932,26 @@ class BattleSimulation(object):
         self.player_team = player_team
         self.enemy_team = enemy_team
         self.initiate = True
+        self.battle_map = MapInator(self.terrain_list)
+        self.map_size = self.battle_map.map_size
+        self.map_display_size = (self.map_size[0] * tile_size[0], self.map_size[1] * tile_size[1])
+        self.MAX_CAM_PAN = (abs(window_width_half - int(self.map_display_size[0] / 2)) + tile_size[0],
+                       abs(window_width_half - int(self.map_display_size[1] / 2)) + tile_size[1])
+        self.redraw_map = True
 
     def start(self, DISPLAYSURF, fps_clock):
         while True:  # Main loop for the start screen.
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.__terminate()
-                else:
-                    self.run_battle(DISPLAYSURF)
-
+                elif event.type == KEYDOWN:
+                    pass
 
             pygame.display.update()
             fps_clock.tick()
 
-    def run_battle(self, DISPLAYSURF):
-        # Game Logic
-        battle_map = MapInator(self.terrain_list)
-        map_size = battle_map.map_size
-
+    def run_battle(self, DISPLAYSURF, fps_clock, battle_map):
         # Display Logic
-        map_display_size = (map_size[0] * tile_size[0], map_size[1] * tile_size[1])
-        MAX_CAM_PAN = (abs(window_width_half - int(map_display_size[0] / 2)) + tile_size[0],
-                       abs(window_width_half - int(map_display_size[1] / 2)) + tile_size[1])
-        redraw_map = True
 
         cameraOffsetX = 0
         cameraOffsetY = 0
@@ -961,81 +961,81 @@ class BattleSimulation(object):
         cameraLeft = False
         cameraRight = False
 
-        while True:
-            cursor_move = None
-            key_pressed = False
-
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    self.__terminate()
-                elif event.type == KEYDOWN:
-                    # Handle key presses
-                    keyPressed = True
-                    # if event.key == K_w:
-                    #     playerMoveTo = UP
-                    # elif event.key == K_s:
-                    #     playerMoveTo = DOWN
-                    # elif event.key == K_a:
-                    #     playerMoveTo = LEFT
-                    # elif event.key == K_d:
-                    #     playerMoveTo = RIGHT
-
-                    if event.key == K_q:
-                        pass  # Cancel
-                    elif event.key == K_e:
-                        pass  # Select
-
-                    # Set the camera move mode.
-                    elif event.key == K_UP:
-                        cameraUp = True
-                    elif event.key == K_DOWN:
-                        cameraDown = True
-                    elif event.key == K_LEFT:
-                        cameraLeft = True
-                    elif event.key == K_RIGHT:
-                        cameraRight = True
-                    elif event.key == K_z:
-                        cameraOffsetX = 0
-                        cameraOffsetY = 0
-
-                    elif event.key == K_ESCAPE:
-                        pass  # Menu, implement later
-
-                elif event.type == KEYUP:
-                    # Unset the camera move mode.
-                    if event.key == K_UP:
-                        cameraUp = False
-                    elif event.key == K_DOWN:
-                        cameraDown = False
-                    elif event.key == K_LEFT:
-                        cameraLeft = False
-                    elif event.key == K_RIGHT:
-                        cameraRight = False
+        # while True:
+        #     cursor_move = None
+        #     key_pressed = False
+        #
+        #     for event in pygame.event.get():
+        #         if event.type == QUIT:
+        #             self.__terminate()
+        #         elif event.type == KEYDOWN:
+        #             # Handle key presses
+        #             keyPressed = True
+        #             # if event.key == K_w:
+        #             #     playerMoveTo = UP
+        #             # elif event.key == K_s:
+        #             #     playerMoveTo = DOWN
+        #             # elif event.key == K_a:
+        #             #     playerMoveTo = LEFT
+        #             # elif event.key == K_d:
+        #             #     playerMoveTo = RIGHT
+        #
+        #             if event.key == K_q:
+        #                 pass  # Cancel
+        #             elif event.key == K_e:
+        #                 pass  # Select
+        #
+        #             # Set the camera move mode.
+        #             elif event.key == K_UP:
+        #                 cameraUp = True
+        #             elif event.key == K_DOWN:
+        #                 cameraDown = True
+        #             elif event.key == K_LEFT:
+        #                 cameraLeft = True
+        #             elif event.key == K_RIGHT:
+        #                 cameraRight = True
+        #             elif event.key == K_z:
+        #                 cameraOffsetX = 0
+        #                 cameraOffsetY = 0
+        #
+        #             elif event.key == K_ESCAPE:
+        #                 pass  # Menu, implement later
+        #
+        #         elif event.type == KEYUP:
+        #             # Unset the camera move mode.
+        #             if event.key == K_UP:
+        #                 cameraUp = False
+        #             elif event.key == K_DOWN:
+        #                 cameraDown = False
+        #             elif event.key == K_LEFT:
+        #                 cameraLeft = False
+        #             elif event.key == K_RIGHT:
+        #                 cameraRight = False
 
         DISPLAYSURF.fill(bg_color)
 
-        if redraw_map:
-            mapSurf = drawMap(battle_map)
+        if self.redraw_map:
+            mapSurf = self.__drawMap(battle_map)
             redraw_map = False
 
-        if cameraUp and cameraOffsetY < MAX_CAM_X_PAN:
-            cameraOffsetY += CAM_MOVE_SPEED
-        elif cameraDown and cameraOffsetY > -MAX_CAM_X_PAN:
-            cameraOffsetY -= CAM_MOVE_SPEED
-        if cameraLeft and cameraOffsetX < MAX_CAM_Y_PAN:
-            cameraOffsetX += CAM_MOVE_SPEED
-        elif cameraRight and cameraOffsetX > -MAX_CAM_Y_PAN:
-            cameraOffsetX -= CAM_MOVE_SPEED
+        if cameraUp and cameraOffsetY < self.MAX_CAM_PAN[0]:
+            cameraOffsetY += cam_move_speed
+        elif cameraDown and cameraOffsetY > -self.MAX_CAM_PAN[0]:
+            cameraOffsetY -= cam_move_speed
+        if cameraLeft and cameraOffsetX < self.MAX_CAM_PAN[1]:
+            cameraOffsetX += cam_move_speed
+        elif cameraRight and cameraOffsetX > -self.MAX_CAM_PAN[1]:
+            cameraOffsetX -= cam_move_speed
 
         mapSurfRect = mapSurf.get_rect()
-        mapSurfRect.center = (HALF_WINWIDTH + cameraOffsetX, HALF_WINHEIGHT + cameraOffsetY)
+        mapSurfRect.center = (window_width_half + cameraOffsetX, window_height_half + cameraOffsetY)
 
         DISPLAYSURF.blit(mapSurf, mapSurfRect)
 
         pygame.display.update()
-        FPSCLOCK.tick(FPS)
+        fps_clock.tick()
 
-    def drawMap(self, battle_map):
+    def __drawMap(self, battle_map):
         """
         Draws the map based on the tiles and their contents.
         """

@@ -12,6 +12,7 @@ class CONSTANTS(object):
     WINHEIGHT = 600
     HALF_WINWIDTH = int(WINWIDTH / 2)
     HALF_WINHEIGHT = int(WINHEIGHT / 2)
+    QUARTER_WINHEIGHT = int(window_width_half / 2)
     THIRD_WINDOW_WIDTH = int(WINWIDTH / 3)
 
     TILE_SIZE = (50, 50)
