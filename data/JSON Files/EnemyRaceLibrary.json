@@ -2,24 +2,28 @@
   "Enemy Race": [
     {
       "ID": "Kobold",
+      "Char": "K",
       "Base_Health": 6,
       "Base_Armor": 0,
       "Stamina_Pool": 4
     },
     {
       "ID": "Goblin",
+      "Char": "G",
       "Base_Health": 12,
       "Base_Armor": 1,
       "Stamina_Pool": 4
     },
     {
       "ID": "Orc",
+      "Char": "O",
       "Base_Health": 20,
       "Base_Armor": 2,
       "Stamina_Pool": 4
     },
     {
-      "ID": "Giant",
+      "ID": "Titan",
+      "Char": "T",
       "Base_Health": 30,
       "Base_Armor": 2,
       "Stamina_Pool": 4,
@@ -29,18 +33,21 @@
     },
     {
       "ID": "Zombie",
+      "Char": "Z",
       "Base_Health": 12,
       "Base_Armor": 0,
       "Stamina_Pool": 3
     },
     {
       "ID": "Skeleton",
+      "Char": "S",
       "Base_Health": 16,
       "Base_Armor": 2,
       "Stamina_Pool": 3
     },
     {
       "ID": "Ghoul",
+      "Char": "G",
       "Base_Health": 22,
       "Base_Armor": 3,
       "Stamina_Pool": 5

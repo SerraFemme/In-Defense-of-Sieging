@@ -78,3 +78,5 @@ class CONSTANTS(object):
 
     # Map Logic
     DIRECTION_TUPLES = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+    STARTING_ROW_PERCENTAGE = 0.25

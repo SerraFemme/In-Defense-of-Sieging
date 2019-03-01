@@ -2,6 +2,7 @@ from random import randrange
 from src.CONSTANTS import CONSTANTS
 
 DIRECTION = CONSTANTS.DIRECTION_TUPLES
+map_percentage = CONSTANTS.STARTING_ROW_PERCENTAGE
 
 
 class MapInator(object):
@@ -144,19 +145,33 @@ class Movement(object):
 
     def __init__(self, map_given):
         self.battle_map = map_given
+        self.map_size = self.battle_map.map_size
+        starting_y = int(self.map_size[1] * map_percentage) - 1
+        if starting_y == 0:
+            starting_y = 1
+        self.starting_range = starting_y
 
     def place_enemy_random(self, enemy):
-        map_size = self.battle_map.map_size
         while True:
-            x = randrange(0, 11)
-            y = randrange(map_size[1]-3, map_size[1]-1)
+            x = randrange(0, self.map_size[0] - 1)
+            y = randrange(self.map_size[1] - self.starting_range, self.map_size[1]) - 1
             if self.battle_map.is_tile_unoccupied(x, y):
                 self.battle_map.set_unit(x, y, enemy)
                 enemy.Position = (x, y)
                 break
 
+    def place_enemy_team_random(self, enemy_team):
+        for enemy in enemy_team:
+            while True:
+                x = randrange(0, self.map_size[0] - 1)
+                y = randrange(self.map_size[1] - self.starting_range, self.map_size[1]) - 1
+                if self.battle_map.is_tile_unoccupied(x, y):
+                    self.battle_map.set_unit(x, y, enemy)
+                    enemy.Position = (x, y)
+                    break
+
     def place_starting_player(self, player):
-        x = self.battle_map.map_size[0]
+        x = self.map_size[0]
         # y = self.battle_map.map_size[1]
         while True:
             print('Choose starting position in the bottom 3 rows:')
@@ -275,17 +290,16 @@ class Movement(object):
         x = coordinate[0]
         y = coordinate[1]
         if unit.Stamina.points > 0:
-            map_size = self.battle_map.map_size
-            if 0 <= x < map_size[0] and 0 <= y + 1 < map_size[1]:
+            if 0 <= x < self.map_size[0] and 0 <= y + 1 < self.map_size[1]:
                 if self.battle_map.is_tile_unoccupied(x, y + 1):
                     return True
-            if 0 <= x + 1 < map_size[0] and 0 <= y < map_size[1]:
+            if 0 <= x + 1 < self.map_size[0] and 0 <= y < self.map_size[1]:
                 if self.battle_map.is_tile_unoccupied(x + 1, y):
                     return True
-            if 0 <= x < map_size[0] and 0 <= y - 1 < map_size[1]:
+            if 0 <= x < self.map_size[0] and 0 <= y - 1 < self.map_size[1]:
                 if self.battle_map.is_tile_unoccupied(x, y - 1):
                     return True
-            if 0 <= x - 1 < map_size[0] and 0 <= y < map_size[1]:
+            if 0 <= x - 1 < self.map_size[0] and 0 <= y < self.map_size[1]:
                 if self.battle_map.is_tile_unoccupied(x - 1, y):
                     return True
         else:

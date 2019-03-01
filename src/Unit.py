@@ -106,7 +106,7 @@ class Enemy(object):
         self.role_info = role
         self.Race_Name = self.race_info['ID']
         self.Role_Name = self.role_info['ID']
-        self.Icon = self.role_info['Char']
+        self.Icon = self.race_info['Char'] + self.role_info['Char'] + str(number)
         self.Enemy_Number = number
         self.Position = None
         self.Alive = True

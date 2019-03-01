@@ -3,8 +3,9 @@ import pygame
 from pygame.locals import *
 from src.ReadGameData import SubListManager
 from src.CONSTANTS import CONSTANTS
+from src.Unit import Enemy, Player
 from src.TeamPhases import PlayerMaker, HordeMaker
-from src.BattleMap import MapInator
+from src.BattleMap import MapInator, Movement
 from src.GamePhases import BattlePhase
 
 pygame.font.init()
@@ -14,6 +15,7 @@ diff_list = CONSTANTS.DIFFICULTY_LIST
 
 default_font = CONSTANTS.FONT_DICT['sans_bold']
 small_text = pygame.font.Font(default_font, 20)
+icon_text = pygame.font.Font(default_font, 16)
 
 black = CONSTANTS.COLORS['black']
 bright_red = CONSTANTS.COLORS['red']
@@ -40,6 +42,7 @@ window_height_half = CONSTANTS.HALF_WINHEIGHT
 button_size = CONSTANTS.STANDARD_BUTTON_SIZE
 tile_size = CONSTANTS.TILE_SIZE
 cam_move_speed = CONSTANTS.CAM_MOVE_SPEED
+fps = CONSTANTS.FPS
 
 
 class StartScreen(object):  # TODO: assimilate start_screen
@@ -938,46 +941,42 @@ class BattleSimulation(object):
         self.MAX_CAM_PAN = (abs(window_width_half - int(self.map_display_size[0] / 2)) + tile_size[0],
                             abs(window_width_half - int(self.map_display_size[1] / 2)) + tile_size[1])
         self.redraw_map = True
+        self.camera_moving = False
+        self.camera_offset_x = 0
+        self.camera_offset_y = 0
+        self.camera_up = False
+        self.camera_down = False
+        self.camera_left = False
+        self.camera_right = False
 
     def start(self, DISPLAYSURF, fps_clock):
-        camera_offset_x = 0
-        camera_offset_y = 0
-
-        camera_up = False
-        camera_down = False
-        camera_left = False
-        camera_right = False
+        movement = Movement(self.battle_map)
+        movement.place_enemy_team_random(self.enemy_team)
 
         while True:  # Main loop for the start screen.
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.__terminate()
                 elif event.type == KEYDOWN:
-                    # FIXME: Camera does not operate at all
-                    self.__move_camera(event, camera_offset_x, camera_offset_y, camera_up, camera_down, camera_left, camera_right)
+                    self.__camera_start_move(event)
+                    self.redraw_map = True
                 elif event.type == KEYUP:
-                    # Unset the camera move mode.
-                    if event.key == K_UP:
-                        camera_up = False
-                    elif event.key == K_DOWN:
-                        camera_down = False
-                    elif event.key == K_LEFT:
-                        camera_left = False
-                    elif event.key == K_RIGHT:
-                        camera_right = False
+                    self.__camera_stop(event)
 
-            if self.redraw_map:
+            if self.redraw_map or self.camera_moving:
+                mapSurf = self.__drawMap(DISPLAYSURF, self.battle_map)
                 self.redraw_map = False
-                self.__drawMap(self.battle_map)
-                mapSurf = self.__drawMap(self.battle_map)
 
-                mapSurfRect = mapSurf.get_rect()
-                mapSurfRect.center = (window_width_half + camera_offset_x, window_height_half + camera_offset_y)
+            self.__camera_move()
 
-                DISPLAYSURF.blit(mapSurf, mapSurfRect)
+            mapSurfRect = mapSurf.get_rect()
+            mapSurfRect.center = (window_width_half + self.camera_offset_x,
+                                  window_height_half + self.camera_offset_y)
+
+            DISPLAYSURF.blit(mapSurf, mapSurfRect)
 
             pygame.display.update()
-            fps_clock.tick()
+            fps_clock.tick(fps)
 
     def run_battle(self, DISPLAYSURF, fps_clock, battle_map):  # TODO: Remove
         pass
@@ -1010,33 +1009,50 @@ class BattleSimulation(object):
         #             elif event.key == K_ESCAPE:
         #                 pass  # Menu, implement later
 
-    def __move_camera(self, event, camera_offset_x, camera_offset_y,
-                      camera_up, camera_down, camera_left, camera_right):
+    def __camera_start_move(self, event):
+        self.camera_moving = True
+
         if event.key == K_UP:
-            camera_up = True
+            self.camera_up = True
         elif event.key == K_DOWN:
-            camera_down = True
+            self.camera_down = True
         elif event.key == K_LEFT:
-            camera_left = True
+            self.camera_left = True
         elif event.key == K_RIGHT:
-            camera_right = True
+            self.camera_right = True
         elif event.key == K_z:
-            camera_offset_x = 0
-            camera_offset_y = 0
+            self.camera_offset_x = 0
+            self.camera_offset_y = 0
 
-        if camera_up and camera_offset_y < self.MAX_CAM_PAN[0]:
-            camera_offset_y += cam_move_speed
-        elif camera_down and camera_offset_y > -self.MAX_CAM_PAN[0]:
-            camera_offset_y -= cam_move_speed
-        if camera_left and camera_offset_x < self.MAX_CAM_PAN[1]:
-            camera_offset_x += cam_move_speed
-        elif camera_right and camera_offset_x > -self.MAX_CAM_PAN[1]:
-            camera_offset_x -= cam_move_speed
+    def __camera_move(self):
+        if self.camera_up and self.camera_offset_y < self.MAX_CAM_PAN[0]:
+            self.camera_offset_y += cam_move_speed
+        elif self.camera_down and self.camera_offset_y > -self.MAX_CAM_PAN[0]:
+            self.camera_offset_y -= cam_move_speed
 
-    def __drawMap(self, battle_map):
+        if self.camera_left and self.camera_offset_x < self.MAX_CAM_PAN[1]:
+            self.camera_offset_x += cam_move_speed
+        elif self.camera_right and self.camera_offset_x > -self.MAX_CAM_PAN[1]:
+            self.camera_offset_x -= cam_move_speed
+
+    def __camera_stop(self, event):
+        self.camera_moving = True
+
+        if event.key == K_UP:
+            self.camera_up = False
+        elif event.key == K_DOWN:
+            self.camera_down = False
+        elif event.key == K_LEFT:
+            self.camera_left = False
+        elif event.key == K_RIGHT:
+            self.camera_right = False
+
+    def __drawMap(self, DISPLAYSURF, battle_map):
         """
         Draws the map based on the tiles and their contents.
         """
+
+        DISPLAYSURF.fill(bg_color)
 
         map_size = battle_map.map_size
         mapSurfWidth = map_size[0] * tile_size[0]
@@ -1046,16 +1062,17 @@ class BattleSimulation(object):
 
         # Draw the tile sprites onto this surface.
         for x in range(map_size[0]):
-            for y in range(map_size[1]):
-                spaceRect = pygame.Rect((x * tile_size[0], y * tile_size[1],
+            for y in range(map_size[1]):  #
+                y_invert = map_size[1] - 1 - y
+                spaceRect = pygame.Rect((x * tile_size[0], y_invert * tile_size[1],
                                          tile_size[0], tile_size[1]))
                 tile = battle_map.get_tile(x, y)
+                unit = tile.unit
                 terrain_type = tile.get_terrain_type()
                 baseTile = self.image_dict[terrain_type]
 
                 mapSurf.blit(baseTile, spaceRect)
 
-                # TODO: draw units on tiles
                 # if mapObj[x][y] in OUTSIDEDECOMAPPING:
                 #     # Draw any tree/rock decorations that are on this tile.
                 #     mapSurf.blit(OUTSIDEDECOMAPPING[mapObj[x][y]], spaceRect)
@@ -1076,12 +1093,16 @@ class BattleSimulation(object):
                 #     # specific player image we want to show.
                 #     mapSurf.blit(PLAYERIMAGES[currentImage], spaceRect)
 
-                # if tile.unit != 'Invalid':
-                #     char = tile.unit.char
-                #     if isinstance(char, int):
-                #         mapSurf.blit(UNITIMAGES['P'], spaceRect)
-                #     else:
-                #         mapSurf.blit(UNITIMAGES[char], spaceRect)
+                # TODO: draw units on tiles
+                if unit is not None:
+                    if unit != 'Invalid':
+                        if isinstance(unit, Player):
+                            mapSurf.blit(self.image_dict['player_token'], spaceRect)
+                        elif isinstance(unit, Enemy):
+                            mapSurf.blit(self.image_dict['enemy_token'], spaceRect)
+                        text_surface, text_rect = self.__text_object(unit.Icon, icon_text)
+                        text_rect.center = (spaceRect.centerx, spaceRect.centery)
+                        mapSurf.blit(text_surface, text_rect)
 
         return mapSurf
 
