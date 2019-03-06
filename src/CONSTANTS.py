@@ -24,7 +24,9 @@ class CONSTANTS(object):
                         'player_token': 'PLAYER.png',
                         'enemy_token': 'ENEMY.png',
                         'invalid_move_tile': 'INVALID_MOVE_TILE.png',
-                        'valid_move_tile': 'VALID_MOVE_TILE.png'}
+                        'valid_move_tile': 'VALID_MOVE_TILE.png',
+                        'active_player': 'ACTIVE_PLAYER.png',
+                        'insuf_stam_tile': 'INSUFFICIENT_STAMINA_TILE.png'}
 
     # Graphical Constants
     FPS = 60
@@ -80,5 +82,10 @@ class CONSTANTS(object):
 
     # Map Logic
     DIRECTION_TUPLES = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+    DIRECTION_DICT = {'up': (0, 1),
+                      'down': (0, -1),
+                      'left': (-1, 0),
+                      'right': (1, 0)}
 
     STARTING_ROW_PERCENTAGE = 0.25

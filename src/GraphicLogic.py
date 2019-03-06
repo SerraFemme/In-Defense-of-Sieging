@@ -12,6 +12,7 @@ pygame.font.init()
 
 max_team_size = CONSTANTS.MAX_PLAYERS
 diff_list = CONSTANTS.DIFFICULTY_LIST
+direction_dict = CONSTANTS.DIRECTION_DICT
 
 default_font = CONSTANTS.FONT_DICT['sans_bold']
 small_text = pygame.font.Font(default_font, 20)
@@ -937,6 +938,7 @@ class BattleSimulation(object):
         self.initiate = True
         self.battle_map = MapInator(self.terrain_list)
         self.map_size = self.battle_map.map_size
+        self.movement = None
         self.map_display_size = (self.map_size[0] * tile_size[0], self.map_size[1] * tile_size[1])
         self.MAX_CAM_PAN = (abs(window_width_half - int(self.map_display_size[0] / 2)) + tile_size[0],
                             abs(window_width_half - int(self.map_display_size[1] / 2)) + tile_size[1])
@@ -950,11 +952,16 @@ class BattleSimulation(object):
         self.camera_right = False
 
         self.tile_selected = None
-        self.placing_player = 0
+        self.active_player_number = 0
+        self.active_player = None
+        self.adjacent_tiles = None
+
+        self.movement_mode = False
 
     def start(self, DISPLAYSURF, fps_clock):
-        movement = Movement(self.battle_map)
-        movement.place_enemy_team_random(self.enemy_team)
+        if self.movement is None:
+            self.movement = Movement(self.battle_map)
+            self.movement.place_enemy_team_random(self.enemy_team)
 
         if self.tile_selected is None:
             x = int(self.map_size[0] / 2)
@@ -972,8 +979,8 @@ class BattleSimulation(object):
                 elif event.type == KEYUP:
                     self.__camera_stop(event)
 
-            if self.placing_player >= len(self.player_team):
-                self.initiate = False
+            if self.active_player_number >= len(self.player_team) and self.initiate:
+                self.__next_player_turn()
 
             if self.redraw_map or self.camera_moving:
                 mapSurf = self.__draw_map(DISPLAYSURF)
@@ -987,8 +994,7 @@ class BattleSimulation(object):
 
             DISPLAYSURF.blit(mapSurf, mapSurfRect)
 
-            if self.initiate:
-                self.__draw_title(DISPLAYSURF)
+            self.__draw_title(DISPLAYSURF)
 
             pygame.display.update()
             fps_clock.tick(fps)
@@ -1032,24 +1038,46 @@ class BattleSimulation(object):
             self.camera_right = False
 
     def __cursor(self, event):
-        if event.key == K_w:  # Up
-            if self.initiate:
-                if self.tile_selected[1] < self.battle_map.starting_range:
+        if self.movement_mode is False:
+            if event.key == K_w:  # Up
+                if self.initiate:
+                    if self.tile_selected[1] < self.battle_map.starting_range:
+                        self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
+                elif self.tile_selected[1] < self.map_size[0] - 1:
                     self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
-            elif self.tile_selected[1] < self.map_size[0] - 1:
-                self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
-        elif event.key == K_s:  # Down
-            if self.tile_selected[1] > 0:
-                self.tile_selected = (self.tile_selected[0], self.tile_selected[1] - 1)
-        elif event.key == K_d:  # Right
-            if self.tile_selected[0] < self.map_size[0] - 1:
-                self.tile_selected = (self.tile_selected[0] + 1, self.tile_selected[1])
-        elif event.key == K_a:  # Left
-            if self.tile_selected[0] > 0:
-                self.tile_selected = (self.tile_selected[0] - 1, self.tile_selected[1])
-        elif event.key == K_e or event.key == K_RETURN:
-            if self.initiate:
-                self.__place_player()
+            elif event.key == K_s:  # Down
+                if self.tile_selected[1] > 0:
+                    self.tile_selected = (self.tile_selected[0], self.tile_selected[1] - 1)
+            elif event.key == K_d:  # Right
+                if self.tile_selected[0] < self.map_size[0] - 1:
+                    self.tile_selected = (self.tile_selected[0] + 1, self.tile_selected[1])
+            elif event.key == K_a:  # Left
+                if self.tile_selected[0] > 0:
+                    self.tile_selected = (self.tile_selected[0] - 1, self.tile_selected[1])
+            elif event.key == K_e or event.key == K_RETURN:
+                if self.initiate:
+                    self.__place_player()
+
+            elif event.key == K_SPACE:
+                if self.initiate is False:
+                    self.movement_mode = True
+                    self.adjacent_tiles = self.__calculate_adjacent_tiles(self.active_player.Position)
+                    self.tile_selected = self.active_player.Position
+
+        else:
+            if event.key == K_w and 'up' in self.adjacent_tiles:
+                self.tile_selected = self.adjacent_tiles['up']
+            elif event.key == K_s and 'down' in self.adjacent_tiles:
+                self.tile_selected = self.adjacent_tiles['down']
+            elif event.key == K_d and 'right' in self.adjacent_tiles:
+                self.tile_selected = self.adjacent_tiles['right']
+            elif event.key == K_a and 'left' in self.adjacent_tiles:
+                self.tile_selected = self.adjacent_tiles['left']
+            elif event.key == K_e or event.key == K_RETURN:
+                self.movement.move_unit(self.active_player, self.tile_selected)
+                self.adjacent_tiles = self.__calculate_adjacent_tiles(self.active_player.Position)
+            elif event.key == K_SPACE:
+                self.movement_mode = False
 
     def __draw_map(self, DISPLAYSURF):
         """
@@ -1070,6 +1098,7 @@ class BattleSimulation(object):
                                          tile_size[0], tile_size[1]))
                 tile = self.battle_map.get_tile(x, y)
                 unit = tile.unit
+
                 terrain_type = tile.get_terrain_type()
                 tile_image = self.image_dict[terrain_type]
 
@@ -1080,6 +1109,19 @@ class BattleSimulation(object):
                         mapSurf.blit(self.image_dict['valid_move_tile'], spaceRect)
                     else:  # Tile Occupied
                         mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
+                elif self.movement_mode:
+                    for i in self.adjacent_tiles:
+                        if tile.coordinate == self.adjacent_tiles[i]:
+                            if tile.get_terrain_movement_cost() is not None:
+                                # if tile.get_terrain_movement_cost() > self.active_player.Stamina.points:
+                                if self.active_player.Stamina.can_spend(tile.get_terrain_movement_cost()) is False:
+                                    mapSurf.blit(self.image_dict['insuf_stam_tile'], spaceRect)
+                                elif unit is None:  # Tile Empty
+                                    mapSurf.blit(self.image_dict['valid_move_tile'], spaceRect)
+                                else:  # Tile Occupied
+                                    mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
+                            else:  # Tile Occupied
+                                mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
 
                 if self.tile_selected is not None:
                     if self.tile_selected[0] == x and self.tile_selected[1] == y:
@@ -1091,6 +1133,9 @@ class BattleSimulation(object):
                         if isinstance(unit, Player):
                             mapSurf.blit(self.image_dict['player_token'], spaceRect)
                             text = small_text
+                            if self.initiate is False and unit.Player_Number == self.active_player_number + 1:
+                                mapSurf.blit(self.image_dict['active_player'], spaceRect)
+
                         elif isinstance(unit, Enemy):
                             mapSurf.blit(self.image_dict['enemy_token'], spaceRect)
                         text_surface, text_rect = self.__text_object(unit.Icon, text)
@@ -1101,43 +1146,77 @@ class BattleSimulation(object):
 
     def __draw_title(self, DISPLAYSURF):
         topCoord = 0
-        title_color = green_yellow
-        title_text = "Select Starting Position"
-        title_box_size = (260, 30)
-        title_box_center = (int(title_box_size[0] / 2), int(title_box_size[1] / 2))
-        title_box = pygame.draw.rect(DISPLAYSURF, title_color,
-                                     (window_width_half - title_box_center[0],
-                                      topCoord,
-                                      title_box_size[0],
-                                      title_box_size[1]))
+        box_color = green_yellow
+        player = self.player_team[self.active_player_number]
+        if self.initiate:
+            boxes = [{'text': 'Select Starting Position',
+                      'size': (260, 30)},
+                     {'text': player.Player_Name,
+                      'size': (120, 30)}]
+        elif self.movement_mode:
+            boxes = [{'text': 'Turn: ' + player.Player_Name,
+                      'size': (160, 30)},
+                     {'text': 'Mode: Movement',
+                      'size': (180, 30)}]
+        else:
+            boxes = [{'text': 'Turn: ' + player.Player_Name,
+                      'size': (160, 30)},
+                     {'text': 'Mode: Cursor',
+                      'size': (144, 30)}]
 
-        text_surface, text_rect = self.__text_object(title_text, small_text)
-        text_rect.center = (title_box.centerx, title_box.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+        for box in boxes:
+            text = box['text']
+            size = box['size']
 
-        topCoord = title_box_size[1] + 10
-        player = self.player_team[self.placing_player]
-        player_text = player.Player_Name
-        player_box_size = (120, 30)
-        player_box_center = (int(player_box_size[0] / 2), int(player_box_size[1] / 2))
-        player_box = pygame.draw.rect(DISPLAYSURF, title_color,
-                                      (window_width_half - player_box_center[0],
-                                       topCoord,
-                                       player_box_size[0],
-                                       player_box_size[1]))
+            box_one_center = (int(size[0] / 2), int(size[1] / 2))
+            box_one = pygame.draw.rect(DISPLAYSURF, box_color,
+                                       (window_width_half - box_one_center[0],
+                                        topCoord,
+                                        size[0],
+                                        size[1]))
 
-        text_surface, text_rect = self.__text_object(player_text, small_text)
-        text_rect.center = (player_box.centerx, player_box.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+            text_surface, text_rect = self.__text_object(text, small_text)
+            text_rect.center = (box_one.centerx, box_one.centery)
+            DISPLAYSURF.blit(text_surface, text_rect)
+
+            if len(boxes) > 0:
+                topCoord = size[1] + 5
 
     def __place_player(self):
-        if self.placing_player < len(self.player_team):
+        if self.active_player_number < len(self.player_team):
             tile = self.battle_map.get_tile(self.tile_selected[0], self.tile_selected[1])
             if tile.unit is None:
-                player = self.player_team[self.placing_player]
+                player = self.player_team[self.active_player_number]
                 tile.unit = player
                 player.Position = self.tile_selected
-                self.placing_player += 1
+                self.active_player_number += 1
+
+    def __calculate_adjacent_tiles(self, location):
+        adjacent_dict = {}
+        for i in direction_dict:
+            coordinate = direction_dict[i]
+            x = location[0] + coordinate[0]
+            y = location[1] + coordinate[1]
+            if 0 <= x < self.map_size[0] and 0 <= y < self.map_size[1]:
+                adjacent_dict[i] = (x, y)
+
+        return adjacent_dict
+
+    def __next_player_turn(self):  # TODO: Clean Up
+        if self.initiate:
+            if self.active_player_number >= len(self.player_team):
+                self.initiate = False
+                self.__cycle_players(0)
+        else:
+            if self.active_player_number >= len(self.player_team):
+                self.__cycle_players(0)
+            else:
+                self.__cycle_players(self.active_player_number + 1)
+
+    def __cycle_players(self, number):
+        self.active_player_number = number
+        self.active_player = self.player_team[self.active_player_number]
+        self.active_player.turn_beginning()
 
     def __text_object(self, text, font):
         text_surface = font.render(text, True, black)

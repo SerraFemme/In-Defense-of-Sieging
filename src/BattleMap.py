@@ -82,7 +82,10 @@ class Tile(object):
         return self.terrain['ID']
 
     def get_terrain_movement_cost(self):
-        return self.terrain['Movement_Cost']
+        if 'Movement_Cost' in self.terrain:
+            return self.terrain['Movement_Cost']
+        else:
+            return None
 
     # def get_whatever(self): # getter for other misc. terrain info
 
@@ -106,18 +109,6 @@ class Tile(object):
 
     def is_unoccupied(self):
         return self.unit is None
-
-    def print_info(self):
-        print('Type:', self.terrain['ID'])
-        print('Icon: [' + self.terrain['Char'] + ']')
-        if 'Movement_Cost' in self.terrain:
-            print('Movement Cost:', self.terrain['Movement_Cost'])
-        else:
-            print('Cannot be moved onto')
-        if self.unit == 'Invalid':
-            print('Cannot be occupied')
-        else:
-            print('Occupied:', type(self.unit))  # Change output
 
 
 class TerrainGenerator(object):
@@ -144,111 +135,59 @@ class Movement(object):
 
     def place_enemy_team_random(self, enemy_team):
         for enemy in enemy_team:
-            while True:
-                x = randrange(0, self.map_size[0] - 1)
-                y = randrange(self.map_size[1] - self.battle_map.starting_range, self.map_size[1] + 1) - 1
-                if self.battle_map.is_tile_unoccupied(x, y):
-                    self.battle_map.set_unit(x, y, enemy)
-                    enemy.Position = (x, y)
-                    break
+            self.place_enemy_random(enemy)
 
-    def place_starting_player(self, player):
-        x = self.map_size[0]
-        # y = self.battle_map.map_size[1]
-        while True:
-            print('Choose starting position in the bottom 3 rows:')
-
-            while True:
-                try:
-                    print('Enter a value 0 to', x - 1, end='')
-                    x_place = int(input(' for X: '))
-                except ValueError:
-                    print('Invalid input, try again' + '\n')
-                else:
-                    if 0 <= x_place < x:
-                        break
-                    else:
-                        print(x_place, 'is invalid for X')
-
-            while True:
-                try:
-                    y_place = int(input('Enter a value 0 to 2 for Y: '))
-                except ValueError:
-                    print('Invalid input, try again' + '\n')
-                else:
-                    if 0 <= y_place <= 2:
-                        break
-                    else:
-                        print(y_place, 'is invalid for y')
-
-            if self.battle_map.is_tile_unoccupied(x_place, y_place):
-                self.battle_map.set_unit(x_place, y_place, player)
-                player.Position = (x_place, y_place)
-                break
-            else:
-                print(x_place, ',', y_place, 'is occupied.')
-
-    # def teleport_unit(self):  # teleports unit
-    #     value = True
-    #     print('\n' + 'Choose a new unoccupied position:')
-    #     while value:
-    #         x_place = int(input('Enter a value 0 to 11 for X: '))
-    #         while x_place < 0 or x_place > 11:
-    #             print(x_place, 'is invalid for X')
-    #             x_place = int(input('Enter a value 0 to 11 for X: '))
-    #         y_place = int(input('Enter a value 0 to 11 for Y: '))
-    #         while y_place < 0 or y_place > 11:
-    #             print(y_place, 'is invalid for Y')
-    #             y_place = int(input('Enter a value 0 to 11 for Y: '))
-    #         if self.battle_map.is_tile_unoccupied(x_place, y_place):
-    #             self.battle_map.set_unit(x_place, y_place, 1)
-    #             value = False
-    #         else:
-    #             print(x_place, ',', y_place, 'is occupied.')
-    #             value = True
-    #     return x_place, y_place
-
-    def teleport(self, unit, destination):
+    def move_unit(self, unit, destination, cost=True):
         start = unit.Position
         x = destination[0]
         y = destination[1]
+        dest_tile = self.battle_map.get_tile(x, y)
         if self.battle_map.is_tile_unoccupied(x, y):
-            self.battle_map.set_unit(unit)
-            self.battle_map.set_tile_unoccupied(start[0], start[1])
-
-    def move_player(self, player):
-        print('Which direction would you like to go?')
-        print('1: Up')
-        print('2: Right')
-        print('3: Down')
-        print('4: Left')
-        while True:
-            try:
-                v = int(input('Select Direction: '))
-            except ValueError:
-                print('Invalid input, try again' + '\n')
+            destination_cost = dest_tile.get_terrain_movement_cost()
+            if cost:
+                if unit.Stamina.can_spend(destination_cost):
+                    self.battle_map.set_unit(x, y, unit)
+                    unit.Position = (x, y)
+                    unit.Stamina.spend_stamina_points(destination_cost)
+                    self.battle_map.set_tile_unoccupied(start[0], start[1])
             else:
-                if 0 < v <= 4:
-                    break
-                else:
-                    print(v, 'is not a valid selection, try again' + '\n')
-        while True:
-            try:
-                distance = int(input('Enter distance: '))
-            except ValueError:
-                print('Invalid input, try again')
-            else:
-                break
-        self.move_unit(player, DIRECTION[v-1], distance)
+                self.battle_map.set_unit(x, y, unit)
+                unit.Position = (x, y)
+                self.battle_map.set_tile_unoccupied(start[0], start[1])
 
-    def move_unit(self, unit, direction, distance):
-        for i in range(distance):  # Move Up
-            if self.can_move_onto_tile(unit, direction[0], direction[1]):
-                self.move_onto_tile(unit, direction[0], direction[1])
-            else:
-                break
+    # def move_player(self, player):  # TODO: Delete
+    #     print('Which direction would you like to go?')
+    #     print('1: Up')
+    #     print('2: Right')
+    #     print('3: Down')
+    #     print('4: Left')
+    #     while True:
+    #         try:
+    #             v = int(input('Select Direction: '))
+    #         except ValueError:
+    #             print('Invalid input, try again' + '\n')
+    #         else:
+    #             if 0 < v <= 4:
+    #                 break
+    #             else:
+    #                 print(v, 'is not a valid selection, try again' + '\n')
+    #     while True:
+    #         try:
+    #             distance = int(input('Enter distance: '))
+    #         except ValueError:
+    #             print('Invalid input, try again')
+    #         else:
+    #             break
+    #     self.move_unit(player, DIRECTION[v-1], distance)
 
-    def move_onto_tile(self, unit, x, y):  # clean up?
+    # def move_unit(self, unit, direction, distance):  # TODO: Delete
+    #     for i in range(distance):  # Move Up
+    #         if self.can_move_onto_tile(unit, direction[0], direction[1]):
+    #             self.move_onto_tile(unit, direction[0], direction[1])
+    #         else:
+    #             break
+
+    def move_onto_tile(self, unit, x, y):  # TODO: Delete
         coordinate = unit.Position
         if self.can_move(unit):
             new_position = (coordinate[0] + x, coordinate[1] + y)
@@ -267,7 +206,7 @@ class Movement(object):
             else:
                 print(destination.coordinate, 'is occupied.')
 
-    def can_move(self, unit):  # clean up?
+    def can_move(self, unit):  # FIXME: Convert for use by Enemies only
         coordinate = unit.Position
         x = coordinate[0]
         y = coordinate[1]
@@ -288,7 +227,7 @@ class Movement(object):
             print('Unit has', unit.Stamina.points, 'and cannot move.')
         return False
 
-    def can_move_onto_tile(self, unit, x, y):  # clean up
+    def can_move_onto_tile(self, unit, x, y):  # FIXME: Convert for use by Enemies only
         coordinate = unit.Position
         if 0 <= coordinate[0] + x < self.battle_map.map_size[0]\
                 and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
@@ -300,7 +239,7 @@ class Movement(object):
 
         return False
 
-    def move_enemy(self, enemy, destination):  # Must Improve
+    def move_enemy(self, enemy, destination):  # FIXME: change to use new functions
         x_distance = abs(enemy.Position[0] - destination[0])
         y_distance = abs(enemy.Position[1] - destination[1])
         i = 0
