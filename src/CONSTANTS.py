@@ -22,10 +22,12 @@ class CONSTANTS(object):
                         'selected_cursor': 'SELECTED.png',
                         'targeting_tile': 'TARGETING_TILE.png',
                         'player_token': 'PLAYER.png',
-                        'enemy_token': 'ENEMY.png'}
+                        'enemy_token': 'ENEMY.png',
+                        'invalid_move_tile': 'INVALID_MOVE_TILE.png',
+                        'valid_move_tile': 'VALID_MOVE_TILE.png'}
 
     # Graphical Constants
-    FPS = 30
+    FPS = 60
     CAM_MOVE_SPEED = 10
 
     WINWIDTH = 800

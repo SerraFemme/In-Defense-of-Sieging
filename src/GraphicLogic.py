@@ -949,9 +949,17 @@ class BattleSimulation(object):
         self.camera_left = False
         self.camera_right = False
 
+        self.tile_selected = None
+        self.placing_player = 0
+
     def start(self, DISPLAYSURF, fps_clock):
         movement = Movement(self.battle_map)
         movement.place_enemy_team_random(self.enemy_team)
+
+        if self.tile_selected is None:
+            x = int(self.map_size[0] / 2)
+            y = int(self.battle_map.starting_range / 2)
+            self.tile_selected = (x, y)
 
         while True:  # Main loop for the start screen.
             for event in pygame.event.get():
@@ -959,12 +967,16 @@ class BattleSimulation(object):
                     self.__terminate()
                 elif event.type == KEYDOWN:
                     self.__camera_start_move(event)
+                    self.__cursor(event)
                     self.redraw_map = True
                 elif event.type == KEYUP:
                     self.__camera_stop(event)
 
+            if self.placing_player >= len(self.player_team):
+                self.initiate = False
+
             if self.redraw_map or self.camera_moving:
-                mapSurf = self.__drawMap(DISPLAYSURF, self.battle_map)
+                mapSurf = self.__draw_map(DISPLAYSURF)
                 self.redraw_map = False
 
             self.__camera_move()
@@ -975,39 +987,11 @@ class BattleSimulation(object):
 
             DISPLAYSURF.blit(mapSurf, mapSurfRect)
 
+            if self.initiate:
+                self.__draw_title(DISPLAYSURF)
+
             pygame.display.update()
             fps_clock.tick(fps)
-
-    def run_battle(self, DISPLAYSURF, fps_clock, battle_map):  # TODO: Remove
-        pass
-        # while True:
-        #     cursor_move = None
-        #     key_pressed = False
-        #
-        #     for event in pygame.event.get():
-        #         if event.type == QUIT:
-        #             self.__terminate()
-        #         elif event.type == KEYDOWN:
-        #             # Handle key presses
-        #             keyPressed = True
-        #             # if event.key == K_w:
-        #             #     playerMoveTo = UP
-        #             # elif event.key == K_s:
-        #             #     playerMoveTo = DOWN
-        #             # elif event.key == K_a:
-        #             #     playerMoveTo = LEFT
-        #             # elif event.key == K_d:
-        #             #     playerMoveTo = RIGHT
-        #
-        #             if event.key == K_q:
-        #                 pass  # Cancel
-        #             elif event.key == K_e:
-        #                 pass  # Select
-        #
-
-        #
-        #             elif event.key == K_ESCAPE:
-        #                 pass  # Menu, implement later
 
     def __camera_start_move(self, event):
         self.camera_moving = True
@@ -1047,64 +1031,113 @@ class BattleSimulation(object):
         elif event.key == K_RIGHT:
             self.camera_right = False
 
-    def __drawMap(self, DISPLAYSURF, battle_map):
+    def __cursor(self, event):
+        if event.key == K_w:  # Up
+            if self.initiate:
+                if self.tile_selected[1] < self.battle_map.starting_range:
+                    self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
+            elif self.tile_selected[1] < self.map_size[0] - 1:
+                self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
+        elif event.key == K_s:  # Down
+            if self.tile_selected[1] > 0:
+                self.tile_selected = (self.tile_selected[0], self.tile_selected[1] - 1)
+        elif event.key == K_d:  # Right
+            if self.tile_selected[0] < self.map_size[0] - 1:
+                self.tile_selected = (self.tile_selected[0] + 1, self.tile_selected[1])
+        elif event.key == K_a:  # Left
+            if self.tile_selected[0] > 0:
+                self.tile_selected = (self.tile_selected[0] - 1, self.tile_selected[1])
+        elif event.key == K_e or event.key == K_RETURN:
+            if self.initiate:
+                self.__place_player()
+
+    def __draw_map(self, DISPLAYSURF):
         """
         Draws the map based on the tiles and their contents.
         """
 
         DISPLAYSURF.fill(bg_color)
 
-        map_size = battle_map.map_size
-        mapSurfWidth = map_size[0] * tile_size[0]
-        mapSurfHeight = map_size[1] * tile_size[1]
+        mapSurfWidth = self.map_size[0] * tile_size[0]
+        mapSurfHeight = self.map_size[1] * tile_size[1]
         mapSurf = pygame.Surface((mapSurfWidth, mapSurfHeight))
         mapSurf.fill(bg_color)
 
-        # Draw the tile sprites onto this surface.
-        for x in range(map_size[0]):
-            for y in range(map_size[1]):  #
-                y_invert = map_size[1] - 1 - y
+        for x in range(self.map_size[0]):
+            for y in range(self.map_size[1]):
+                y_invert = self.map_size[1] - 1 - y
                 spaceRect = pygame.Rect((x * tile_size[0], y_invert * tile_size[1],
                                          tile_size[0], tile_size[1]))
-                tile = battle_map.get_tile(x, y)
+                tile = self.battle_map.get_tile(x, y)
                 unit = tile.unit
                 terrain_type = tile.get_terrain_type()
-                baseTile = self.image_dict[terrain_type]
+                tile_image = self.image_dict[terrain_type]
 
-                mapSurf.blit(baseTile, spaceRect)
+                mapSurf.blit(tile_image, spaceRect)
 
-                # if mapObj[x][y] in OUTSIDEDECOMAPPING:
-                #     # Draw any tree/rock decorations that are on this tile.
-                #     mapSurf.blit(OUTSIDEDECOMAPPING[mapObj[x][y]], spaceRect)
-                # elif (x, y) in gameStateObj['stars']:
-                #     if (x, y) in goals:
-                #         # A goal AND star are on this space, draw goal first.
-                #         mapSurf.blit(IMAGESDICT['covered goal'], spaceRect)
-                #     # Then draw the star sprite.
-                #     mapSurf.blit(IMAGESDICT['star'], spaceRect)
-                # elif (x, y) in goals:
-                #     # Draw a goal without a star on it.
-                #     mapSurf.blit(IMAGESDICT['uncovered goal'], spaceRect)
+                if self.initiate and tile.coordinate[1] <= self.battle_map.starting_range:
+                    if unit is None:  # Tile Empty
+                        mapSurf.blit(self.image_dict['valid_move_tile'], spaceRect)
+                    else:  # Tile Occupied
+                        mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
 
-                # Last draw the player on the board.
-                # if (x, y) == gameStateObj['player']:
-                #     # Note: The value "currentImage" refers
-                #     # to a key in "PLAYERIMAGES" which has the
-                #     # specific player image we want to show.
-                #     mapSurf.blit(PLAYERIMAGES[currentImage], spaceRect)
+                if self.tile_selected is not None:
+                    if self.tile_selected[0] == x and self.tile_selected[1] == y:
+                        mapSurf.blit(self.image_dict['cursor'], spaceRect)
 
-                # TODO: draw units on tiles
                 if unit is not None:
                     if unit != 'Invalid':
+                        text = icon_text
                         if isinstance(unit, Player):
                             mapSurf.blit(self.image_dict['player_token'], spaceRect)
+                            text = small_text
                         elif isinstance(unit, Enemy):
                             mapSurf.blit(self.image_dict['enemy_token'], spaceRect)
-                        text_surface, text_rect = self.__text_object(unit.Icon, icon_text)
+                        text_surface, text_rect = self.__text_object(unit.Icon, text)
                         text_rect.center = (spaceRect.centerx, spaceRect.centery)
                         mapSurf.blit(text_surface, text_rect)
 
         return mapSurf
+
+    def __draw_title(self, DISPLAYSURF):
+        topCoord = 0
+        title_color = green_yellow
+        title_text = "Select Starting Position"
+        title_box_size = (260, 30)
+        title_box_center = (int(title_box_size[0] / 2), int(title_box_size[1] / 2))
+        title_box = pygame.draw.rect(DISPLAYSURF, title_color,
+                                     (window_width_half - title_box_center[0],
+                                      topCoord,
+                                      title_box_size[0],
+                                      title_box_size[1]))
+
+        text_surface, text_rect = self.__text_object(title_text, small_text)
+        text_rect.center = (title_box.centerx, title_box.centery)
+        DISPLAYSURF.blit(text_surface, text_rect)
+
+        topCoord = title_box_size[1] + 10
+        player = self.player_team[self.placing_player]
+        player_text = player.Player_Name
+        player_box_size = (120, 30)
+        player_box_center = (int(player_box_size[0] / 2), int(player_box_size[1] / 2))
+        player_box = pygame.draw.rect(DISPLAYSURF, title_color,
+                                      (window_width_half - player_box_center[0],
+                                       topCoord,
+                                       player_box_size[0],
+                                       player_box_size[1]))
+
+        text_surface, text_rect = self.__text_object(player_text, small_text)
+        text_rect.center = (player_box.centerx, player_box.centery)
+        DISPLAYSURF.blit(text_surface, text_rect)
+
+    def __place_player(self):
+        if self.placing_player < len(self.player_team):
+            tile = self.battle_map.get_tile(self.tile_selected[0], self.tile_selected[1])
+            if tile.unit is None:
+                player = self.player_team[self.placing_player]
+                tile.unit = player
+                player.Position = self.tile_selected
+                self.placing_player += 1
 
     def __text_object(self, text, font):
         text_surface = font.render(text, True, black)

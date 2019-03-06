@@ -13,15 +13,22 @@ class MapInator(object):
     """
 
     # used to create an X by Y sized Map
-    def __init__(self, t, x=12, y=12):
+    def __init__(self, t, x=12, y=12, generator=None):
         self.terrain_list = t
         self.map_size = (x, y)
         self.main_list = []  # "List of rows"
-        for i in range(y):
-            sub_list = []  # List of Tiles
-            self.main_list.append(sub_list)
-            for j in range(x):
-                sub_list.append(Tile(j, i, self.terrain_list.get_item(self.basic_map_generator())))
+        if generator is None:
+            for i in range(y):
+                sub_list = []  # List of Tiles
+                self.main_list.append(sub_list)
+                for j in range(x):
+                    sub_list.append(Tile(j, i, self.terrain_list.get_item(self.basic_map_generator())))
+        else:  # TODO: Add premade and other random map generators
+            pass
+        starting_y = int(self.map_size[1] * map_percentage) - 1
+        if starting_y == 0:
+            starting_y = 1
+        self.starting_range = starting_y
 
     def basic_map_generator(self):
         basic_map_list = ['Grass', 'Hill', 'Mountain']
@@ -54,27 +61,6 @@ class MapInator(object):
     def set_tile_unoccupied(self, x, y):
         tile = self.get_tile(x, y)
         tile.set_unit_empty()
-
-    def print_map(self):
-        x = self.map_size[0]
-        print('\n' + 'Map:')
-        print('*' * (x + 2))
-        for self.sub_list in reversed(self.main_list):
-            print('*', end='')
-            for tile in self.sub_list:
-                self.__print_tile(tile)
-            print('*')
-        print('*' * (x + 2))
-
-    def __print_tile(self, tile):  # Fix
-        if tile.is_unoccupied():
-            print(tile.get_terrain_char(), end='')
-        elif tile.unit == 'Invalid':
-            print(tile.get_terrain_char(), end='')
-        else:
-            print(tile.unit.Icon, end='')
-
-    # Find Unit Function?
 
 
 class Tile(object):
@@ -146,15 +132,11 @@ class Movement(object):
     def __init__(self, map_given):
         self.battle_map = map_given
         self.map_size = self.battle_map.map_size
-        starting_y = int(self.map_size[1] * map_percentage) - 1
-        if starting_y == 0:
-            starting_y = 1
-        self.starting_range = starting_y
 
     def place_enemy_random(self, enemy):
         while True:
             x = randrange(0, self.map_size[0] - 1)
-            y = randrange(self.map_size[1] - self.starting_range, self.map_size[1]) - 1
+            y = randrange(self.map_size[1] - self.battle_map.starting_range, self.map_size[1]) - 1
             if self.battle_map.is_tile_unoccupied(x, y):
                 self.battle_map.set_unit(x, y, enemy)
                 enemy.Position = (x, y)
@@ -164,7 +146,7 @@ class Movement(object):
         for enemy in enemy_team:
             while True:
                 x = randrange(0, self.map_size[0] - 1)
-                y = randrange(self.map_size[1] - self.starting_range, self.map_size[1]) - 1
+                y = randrange(self.map_size[1] - self.battle_map.starting_range, self.map_size[1] + 1) - 1
                 if self.battle_map.is_tile_unoccupied(x, y):
                     self.battle_map.set_unit(x, y, enemy)
                     enemy.Position = (x, y)
