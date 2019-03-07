@@ -42,7 +42,7 @@ class PlayerMaker(object):
             player.add_equipment(e)
 
 
-class PlayerTurn(object):
+class PlayerTurn(object):  # TODO: Update to new system
     """
     Contains all functions needed for a player to take their turn.
     """
@@ -202,7 +202,7 @@ class HordeMaker(object):
         return enemy_horde
 
 
-class EnemyTurn(object):
+class EnemyTurn(object):  # TODO: Update to new system
     """
     Controls the enemy during their phase
     """

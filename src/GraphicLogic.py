@@ -6,7 +6,6 @@ from src.CONSTANTS import CONSTANTS
 from src.Unit import Enemy, Player
 from src.TeamPhases import PlayerMaker, HordeMaker
 from src.BattleMap import MapInator, Movement
-from src.GamePhases import BattlePhase
 
 pygame.font.init()
 
@@ -26,6 +25,7 @@ dark_orange = CONSTANTS.COLORS['dark_orange']
 green_yellow = CONSTANTS.COLORS['green_yellow']
 bright_green = CONSTANTS.COLORS['green']
 medium_green = CONSTANTS.COLORS['medium_green']
+light_grey = CONSTANTS.COLORS['light_grey']
 grey = CONSTANTS.COLORS['grey']
 blue = CONSTANTS.COLORS['blue']
 pale_turquoise = CONSTANTS.COLORS['pale_turquoise']
@@ -84,7 +84,7 @@ class StartScreen(object):  # TODO: assimilate start_screen
             topCoord += instRect.height  # Adjust for the height of the line.
             DISPLAYSURF.blit(instSurf, instRect)
 
-        while True:  # Main loop for the start screen.
+        while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.__terminate()
@@ -134,7 +134,7 @@ class MainMenu(object):
 
         selected = 0
 
-        while True:  # Main loop for the start screen.
+        while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.__terminate()
@@ -452,7 +452,6 @@ class CreateTeam(object):
             if self.team_size < max_team_size:
                 self.column_selected = 0
 
-        # TODO: reselect class for player, take current class and put at top of available class list
         elif event.key == K_e or event.key == K_RETURN:
             self.player_reset = True
             player = self.player_list[self.player_selected]
@@ -537,7 +536,7 @@ class EncounterSelect(object):
             encounter = encounter_dict[key]
             self.displayed_encounters.append(encounter)
 
-        while True:  # Main loop for the start screen.
+        while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.__terminate()
@@ -862,7 +861,7 @@ class EncounterSelect(object):
                 if self.top_displayed + self.max_displayed < len(self.displayed_encounters):
                     self.top_displayed += 1
 
-        elif event.key == K_e or event.key == K_RETURN:
+        elif event.key == K_e or event.key == K_RETURN:  # FIXME: Do nothing when no valid encounter can be selected
             self.chosen_encounter = self.displayed_encounters[self.encounter_selected]
             self.category_selected = 2
             self.preview_encounter = True
@@ -956,7 +955,14 @@ class BattleSimulation(object):
         self.active_player = None
         self.adjacent_tiles = None
 
-        self.movement_mode = False
+        self.player_mode = 0
+        self.mode_list = ['Cursor',
+                          'Movement',
+                          'Action']
+        self.action_selected = 0
+        self.category_list = ['Hand',
+                              'Passive',
+                              'End Turn']
 
     def start(self, DISPLAYSURF, fps_clock):
         if self.movement is None:
@@ -968,13 +974,13 @@ class BattleSimulation(object):
             y = int(self.battle_map.starting_range / 2)
             self.tile_selected = (x, y)
 
-        while True:  # Main loop for the start screen.
+        while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.__terminate()
                 elif event.type == KEYDOWN:
                     self.__camera_start_move(event)
-                    self.__cursor(event)
+                    self.__player_input(event)
                     self.redraw_map = True
                 elif event.type == KEYUP:
                     self.__camera_stop(event)
@@ -995,6 +1001,11 @@ class BattleSimulation(object):
             DISPLAYSURF.blit(mapSurf, mapSurfRect)
 
             self.__draw_title(DISPLAYSURF)
+            if self.initiate is False:
+                if self.player_mode == 2:
+                    self.__draw_action_bar(DISPLAYSURF)
+                else:
+                    self.__draw_player_info(DISPLAYSURF)
 
             pygame.display.update()
             fps_clock.tick(fps)
@@ -1037,47 +1048,58 @@ class BattleSimulation(object):
         elif event.key == K_RIGHT:
             self.camera_right = False
 
-    def __cursor(self, event):
-        if self.movement_mode is False:
-            if event.key == K_w:  # Up
-                if self.initiate:
-                    if self.tile_selected[1] < self.battle_map.starting_range:
-                        self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
-                elif self.tile_selected[1] < self.map_size[0] - 1:
+    def __player_input(self, event):
+        if self.player_mode == 0:  # Cursor
+            self.__cursor_mode(event)
+        elif self.player_mode == 1:  # Movement
+            self.__movement_cursor(event)
+        elif self.player_mode == 2:
+            self.__action_mode(event)
+
+    def __cursor_mode(self, event):
+        if event.key == K_w:  # Up
+            if self.initiate:
+                if self.tile_selected[1] < self.battle_map.starting_range:
                     self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
-            elif event.key == K_s:  # Down
-                if self.tile_selected[1] > 0:
-                    self.tile_selected = (self.tile_selected[0], self.tile_selected[1] - 1)
-            elif event.key == K_d:  # Right
-                if self.tile_selected[0] < self.map_size[0] - 1:
-                    self.tile_selected = (self.tile_selected[0] + 1, self.tile_selected[1])
-            elif event.key == K_a:  # Left
-                if self.tile_selected[0] > 0:
-                    self.tile_selected = (self.tile_selected[0] - 1, self.tile_selected[1])
-            elif event.key == K_e or event.key == K_RETURN:
-                if self.initiate:
-                    self.__place_player()
+            elif self.tile_selected[1] < self.map_size[0] - 1:
+                self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
+        elif event.key == K_s:  # Down
+            if self.tile_selected[1] > 0:
+                self.tile_selected = (self.tile_selected[0], self.tile_selected[1] - 1)
+        elif event.key == K_d:  # Right
+            if self.tile_selected[0] < self.map_size[0] - 1:
+                self.tile_selected = (self.tile_selected[0] + 1, self.tile_selected[1])
+        elif event.key == K_a:  # Left
+            if self.tile_selected[0] > 0:
+                self.tile_selected = (self.tile_selected[0] - 1, self.tile_selected[1])
+        elif event.key == K_e or event.key == K_RETURN:
+            if self.initiate:
+                self.__place_player()
 
-            elif event.key == K_SPACE:
-                if self.initiate is False:
-                    self.movement_mode = True
-                    self.adjacent_tiles = self.__calculate_adjacent_tiles(self.active_player.Position)
-                    self.tile_selected = self.active_player.Position
-
-        else:
-            if event.key == K_w and 'up' in self.adjacent_tiles:
-                self.tile_selected = self.adjacent_tiles['up']
-            elif event.key == K_s and 'down' in self.adjacent_tiles:
-                self.tile_selected = self.adjacent_tiles['down']
-            elif event.key == K_d and 'right' in self.adjacent_tiles:
-                self.tile_selected = self.adjacent_tiles['right']
-            elif event.key == K_a and 'left' in self.adjacent_tiles:
-                self.tile_selected = self.adjacent_tiles['left']
-            elif event.key == K_e or event.key == K_RETURN:
-                self.movement.move_unit(self.active_player, self.tile_selected)
+        elif event.key == K_SPACE:
+            if self.initiate is False:
+                self.player_mode = 1
                 self.adjacent_tiles = self.__calculate_adjacent_tiles(self.active_player.Position)
-            elif event.key == K_SPACE:
-                self.movement_mode = False
+                self.tile_selected = self.active_player.Position
+
+    def __movement_cursor(self, event):
+        if event.key == K_w and 'up' in self.adjacent_tiles:
+            self.tile_selected = self.adjacent_tiles['up']
+        elif event.key == K_s and 'down' in self.adjacent_tiles:
+            self.tile_selected = self.adjacent_tiles['down']
+        elif event.key == K_d and 'right' in self.adjacent_tiles:
+            self.tile_selected = self.adjacent_tiles['right']
+        elif event.key == K_a and 'left' in self.adjacent_tiles:
+            self.tile_selected = self.adjacent_tiles['left']
+        elif event.key == K_e or event.key == K_RETURN:
+            self.movement.move_unit(self.active_player, self.tile_selected)
+            self.adjacent_tiles = self.__calculate_adjacent_tiles(self.active_player.Position)
+        elif event.key == K_SPACE:
+            self.player_mode = 2
+
+    def __action_mode(self, event):
+        if event.key == K_SPACE:
+            self.player_mode = 0
 
     def __draw_map(self, DISPLAYSURF):
         """
@@ -1109,7 +1131,7 @@ class BattleSimulation(object):
                         mapSurf.blit(self.image_dict['valid_move_tile'], spaceRect)
                     else:  # Tile Occupied
                         mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
-                elif self.movement_mode:
+                elif self.player_mode == 1:  # Movement Mode
                     for i in self.adjacent_tiles:
                         if tile.coordinate == self.adjacent_tiles[i]:
                             if tile.get_terrain_movement_cost() is not None:
@@ -1123,7 +1145,7 @@ class BattleSimulation(object):
                             else:  # Tile Occupied
                                 mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
 
-                if self.tile_selected is not None:
+                if self.tile_selected is not None and self.player_mode != 2:
                     if self.tile_selected[0] == x and self.tile_selected[1] == y:
                         mapSurf.blit(self.image_dict['cursor'], spaceRect)
 
@@ -1153,16 +1175,21 @@ class BattleSimulation(object):
                       'size': (260, 30)},
                      {'text': player.Player_Name,
                       'size': (120, 30)}]
-        elif self.movement_mode:
-            boxes = [{'text': 'Turn: ' + player.Player_Name,
-                      'size': (160, 30)},
-                     {'text': 'Mode: Movement',
-                      'size': (180, 30)}]
-        else:
+        elif self.player_mode == 0:  # Cursor
             boxes = [{'text': 'Turn: ' + player.Player_Name,
                       'size': (160, 30)},
                      {'text': 'Mode: Cursor',
                       'size': (144, 30)}]
+        elif self.player_mode == 1:  # Movement
+            boxes = [{'text': 'Turn: ' + player.Player_Name,
+                      'size': (160, 30)},
+                     {'text': 'Mode: Movement',
+                      'size': (180, 30)}]
+        elif self.player_mode == 2:  # Action Mode
+            boxes = [{'text': 'Turn: ' + player.Player_Name,
+                      'size': (160, 30)},
+                     {'text': 'Mode: Action',
+                      'size': (150, 30)}]
 
         for box in boxes:
             text = box['text']
@@ -1181,6 +1208,87 @@ class BattleSimulation(object):
 
             if len(boxes) > 0:
                 topCoord = size[1] + 5
+
+    def __draw_player_info(self, DISPLAYSURF, top_coordinate=None):
+        info_box_height = 50
+        if top_coordinate is None:
+            top_coordinate = window_height - info_box_height
+        info_box_color = light_grey
+        info_box_size = (window_width, info_box_height)
+        info_box_center = (int(info_box_size[0] / 2), int(info_box_size[1] / 2))
+
+        info_box = pygame.draw.rect(DISPLAYSURF, info_box_color,
+                                    (window_width_half - info_box_center[0],
+                                     top_coordinate,
+                                     info_box_size[0],
+                                     info_box_size[1]))
+
+        pygame.draw.rect(DISPLAYSURF, black, (window_width_half - info_box_center[0],
+                                              top_coordinate,
+                                              info_box_size[0],
+                                              info_box_size[1]), 1)
+
+        # TODO: Complete info display
+        health_x = 70
+        stamina_x = 190
+        stamina_fraction_x = stamina_x + 56
+        if self.active_player.Stamina.get_pool_size() < 10:
+            dash_offset = stamina_fraction_x - 8
+            dash_box_size = (16, 1)
+        else:
+            dash_offset = stamina_fraction_x - 8
+            dash_box_size = (20, 1)
+
+        # Health
+        text = 'Health: N/A'
+        text_surface, text_rect = self.__text_object(text, small_text)
+        text_rect.center = (health_x, info_box.centery)
+        DISPLAYSURF.blit(text_surface, text_rect)
+
+        # Stamina
+        text = 'Stamina:'
+        text_surface, text_rect = self.__text_object(text, small_text)
+        text_rect.center = (stamina_x, info_box.centery)
+        DISPLAYSURF.blit(text_surface, text_rect)
+
+        top_number = str(self.active_player.Stamina.points)
+        bottom_number = str(self.active_player.Stamina.get_pool_size())
+        text_surface, text_rect = self.__text_object(top_number, small_text)
+        text_rect.center = (stamina_fraction_x, info_box.centery - 10)
+        DISPLAYSURF.blit(text_surface, text_rect)
+
+        text_surface, text_rect = self.__text_object(bottom_number, small_text)
+        text_rect.center = (stamina_fraction_x, info_box.centery + 10)
+        DISPLAYSURF.blit(text_surface, text_rect)
+
+        # Used for the numerical display of Stamina values
+        dash_box = pygame.draw.rect(DISPLAYSURF, black,
+                                    (dash_offset,
+                                     info_box.centery - 2,
+                                     dash_box_size[0],
+                                     dash_box_size[1]))
+
+    def __draw_action_bar(self, DISPLAYSURF):
+        action_bar_height = 120
+        top_coordinate = window_height - action_bar_height
+        action_bar_color = light_grey
+        action_bar_size = (window_width, action_bar_height)
+        action_bar_center = (int(action_bar_size[0] / 2), int(action_bar_size[1] / 2))
+
+        action_box = pygame.draw.rect(DISPLAYSURF, action_bar_color,
+                                      (window_width_half - action_bar_center[0],
+                                       top_coordinate,
+                                       action_bar_size[0],
+                                       action_bar_size[1]))
+
+        pygame.draw.rect(DISPLAYSURF, black, (window_width_half - action_bar_center[0],
+                                              top_coordinate,
+                                              action_bar_size[0],
+                                              action_bar_size[1]), 1)
+
+        # TODO: add action categories
+
+        # TODO: print cards to screen when hand selected
 
     def __place_player(self):
         if self.active_player_number < len(self.player_team):

@@ -187,80 +187,80 @@ class Movement(object):
     #         else:
     #             break
 
-    def move_onto_tile(self, unit, x, y):  # TODO: Delete
-        coordinate = unit.Position
-        if self.can_move(unit):
-            new_position = (coordinate[0] + x, coordinate[1] + y)
-            destination = self.battle_map.get_tile(new_position[0],
-                                                   new_position[1])
-            if destination.is_unoccupied():
-                destination_cost = destination.get_terrain_movement_cost()
-                if unit.Stamina.can_spend(destination_cost):
-                    unit.Position = new_position
-                    destination.unit = unit
-                    unit.Stamina.spend_stamina_points(destination_cost)
-                    self.battle_map.set_tile_unoccupied(coordinate[0],
-                                                        coordinate[1])
-                else:
-                    print('Insufficient Stamina')
-            else:
-                print(destination.coordinate, 'is occupied.')
+    # def move_onto_tile(self, unit, x, y):  # TODO: Delete
+    #     coordinate = unit.Position
+    #     if self.can_move(unit):
+    #         new_position = (coordinate[0] + x, coordinate[1] + y)
+    #         destination = self.battle_map.get_tile(new_position[0],
+    #                                                new_position[1])
+    #         if destination.is_unoccupied():
+    #             destination_cost = destination.get_terrain_movement_cost()
+    #             if unit.Stamina.can_spend(destination_cost):
+    #                 unit.Position = new_position
+    #                 destination.unit = unit
+    #                 unit.Stamina.spend_stamina_points(destination_cost)
+    #                 self.battle_map.set_tile_unoccupied(coordinate[0],
+    #                                                     coordinate[1])
+    #             else:
+    #                 print('Insufficient Stamina')
+    #         else:
+    #             print(destination.coordinate, 'is occupied.')
 
-    def can_move(self, unit):  # FIXME: Convert for use by Enemies only
-        coordinate = unit.Position
-        x = coordinate[0]
-        y = coordinate[1]
-        if unit.Stamina.points > 0:
-            if 0 <= x < self.map_size[0] and 0 <= y + 1 < self.map_size[1]:
-                if self.battle_map.is_tile_unoccupied(x, y + 1):
-                    return True
-            if 0 <= x + 1 < self.map_size[0] and 0 <= y < self.map_size[1]:
-                if self.battle_map.is_tile_unoccupied(x + 1, y):
-                    return True
-            if 0 <= x < self.map_size[0] and 0 <= y - 1 < self.map_size[1]:
-                if self.battle_map.is_tile_unoccupied(x, y - 1):
-                    return True
-            if 0 <= x - 1 < self.map_size[0] and 0 <= y < self.map_size[1]:
-                if self.battle_map.is_tile_unoccupied(x - 1, y):
-                    return True
-        else:
-            print('Unit has', unit.Stamina.points, 'and cannot move.')
-        return False
+    # def can_move(self, unit):  # FIXME: Convert for use by Enemies only
+    #     coordinate = unit.Position
+    #     x = coordinate[0]
+    #     y = coordinate[1]
+    #     if unit.Stamina.points > 0:
+    #         if 0 <= x < self.map_size[0] and 0 <= y + 1 < self.map_size[1]:
+    #             if self.battle_map.is_tile_unoccupied(x, y + 1):
+    #                 return True
+    #         if 0 <= x + 1 < self.map_size[0] and 0 <= y < self.map_size[1]:
+    #             if self.battle_map.is_tile_unoccupied(x + 1, y):
+    #                 return True
+    #         if 0 <= x < self.map_size[0] and 0 <= y - 1 < self.map_size[1]:
+    #             if self.battle_map.is_tile_unoccupied(x, y - 1):
+    #                 return True
+    #         if 0 <= x - 1 < self.map_size[0] and 0 <= y < self.map_size[1]:
+    #             if self.battle_map.is_tile_unoccupied(x - 1, y):
+    #                 return True
+    #     else:
+    #         print('Unit has', unit.Stamina.points, 'and cannot move.')
+    #     return False
 
-    def can_move_onto_tile(self, unit, x, y):  # FIXME: Convert for use by Enemies only
-        coordinate = unit.Position
-        if 0 <= coordinate[0] + x < self.battle_map.map_size[0]\
-                and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
-            destination = self.battle_map.get_tile(coordinate[0] + x,
-                                                   coordinate[1] + y)
-            if destination.is_unoccupied():
-                if unit.Stamina.points >= destination.get_terrain_movement_cost():
-                    return True
+    # def can_move_onto_tile(self, unit, x, y):  # FIXME: Convert for use by Enemies only
+    #     coordinate = unit.Position
+    #     if 0 <= coordinate[0] + x < self.battle_map.map_size[0]\
+    #             and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
+    #         destination = self.battle_map.get_tile(coordinate[0] + x,
+    #                                                coordinate[1] + y)
+    #         if destination.is_unoccupied():
+    #             if unit.Stamina.points >= destination.get_terrain_movement_cost():
+    #                 return True
+    #
+    #     return False
 
-        return False
-
-    def move_enemy(self, enemy, destination):  # FIXME: change to use new functions
-        x_distance = abs(enemy.Position[0] - destination[0])
-        y_distance = abs(enemy.Position[1] - destination[1])
-        i = 0
-        while i <= enemy.Stamina.get_pool_size():
-            if x_distance != 0:
-                if enemy.Position[0] < destination[0] and self.can_move_onto_tile(enemy, 1, 0):
-                    self.move_unit(enemy, DIRECTION[1], 1)
-                elif enemy.Position[0] > destination[0] and self.can_move_onto_tile(enemy, -1, 0):
-                    self.move_unit(enemy, DIRECTION[3], 1)
-            if y_distance != 0:
-                if enemy.Position[1] < destination[1] and self.can_move_onto_tile(enemy, 0, 1):
-                    self.move_unit(enemy, DIRECTION[0], 1)
-                elif enemy.Position[1] > destination[1] and self.can_move_onto_tile(enemy, 0, -1):
-                    self.move_unit(enemy, DIRECTION[2], 1)
-            if enemy.Stamina.points == 0:
-                break
-
-            x_distance = abs(enemy.Position[0] - destination[0])
-            y_distance = abs(enemy.Position[1] - destination[1])
-
-            i += 1
+    # def move_enemy(self, enemy, destination):  # FIXME: change to use new functions
+    #     x_distance = abs(enemy.Position[0] - destination[0])
+    #     y_distance = abs(enemy.Position[1] - destination[1])
+    #     i = 0
+    #     while i <= enemy.Stamina.get_pool_size():
+    #         if x_distance != 0:
+    #             if enemy.Position[0] < destination[0] and self.can_move_onto_tile(enemy, 1, 0):
+    #                 self.move_unit(enemy, DIRECTION[1], 1)
+    #             elif enemy.Position[0] > destination[0] and self.can_move_onto_tile(enemy, -1, 0):
+    #                 self.move_unit(enemy, DIRECTION[3], 1)
+    #         if y_distance != 0:
+    #             if enemy.Position[1] < destination[1] and self.can_move_onto_tile(enemy, 0, 1):
+    #                 self.move_unit(enemy, DIRECTION[0], 1)
+    #             elif enemy.Position[1] > destination[1] and self.can_move_onto_tile(enemy, 0, -1):
+    #                 self.move_unit(enemy, DIRECTION[2], 1)
+    #         if enemy.Stamina.points == 0:
+    #             break
+    #
+    #         x_distance = abs(enemy.Position[0] - destination[0])
+    #         y_distance = abs(enemy.Position[1] - destination[1])
+    #
+    #         i += 1
 
 
 class RangeInator(object):

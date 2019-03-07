@@ -18,10 +18,3 @@ class Equipment(object):
             for key in stats:
                 self.Equipment_Stats[key] = stats[key]
         self.Abilities = None
-
-    def print_info(self):
-        print('Name', self.Name)
-        print('Type:', self.Faction_Type, self.Equipment_Type)
-        if len(self.Equipment_Stats) > 0:
-            for i in self.Equipment_Stats:
-                print(i, self.Equipment_Stats[i], sep=': ')

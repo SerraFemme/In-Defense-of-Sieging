@@ -50,39 +50,6 @@ class StatTracker(object):
         return b
 
 
-# class Stamina(StatTracker):  # Conversion to inheritance
-#     """
-#     Used by Units to keep track of Stamina Points, Pool, and effects
-#     """
-#
-#     def __init__(self, value=10):
-#         self.pool = super().__init__(value)  # Pool Capacity
-#         self.points = value  # Unspent Stamina
-#
-#     # Stamina Point Functions
-#     def gain_stamina_points(self, value):
-#         self.points += value
-#
-#     def spend_stamina_points(self, value):
-#         if self.can_spend(value):  # may be redundant?
-#             self.points -= value
-#         else:
-#             self.points = 0  # may need to change later
-#
-#     def reset_stamina_points(self):
-#         self.points = self.get_pool_size()
-#
-#     def can_spend(self, value):
-#         if value > self.points:
-#             return False
-#         else:
-#             return True
-#
-#     # Stamina Pool Functions
-#     def get_pool_size(self):
-#         return self.pool.get_value()
-
-
 class Stamina(object):
     """
     Used by Units to keep track of Stamina Points, Pool, and effects
@@ -96,7 +63,7 @@ class Stamina(object):
     def gain_stamina_points(self, value):
         self.points += value
 
-    def spend_stamina_points(self, value):
+    def spend_stamina_points(self, value):  # TODO: Clean Up
         if self.can_spend(value):  # may be redundant?
             self.points -= value
         else:
