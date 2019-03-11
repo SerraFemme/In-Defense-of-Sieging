@@ -110,6 +110,8 @@ class Tile(object):
     def is_unoccupied(self):
         return self.unit is None
 
+    # TODO: add dict of adjacent tiles?
+
 
 class TerrainGenerator(object):
     pass

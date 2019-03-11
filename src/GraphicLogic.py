@@ -40,18 +40,80 @@ window_width_half = CONSTANTS.HALF_WINWIDTH
 window_width_quarter = CONSTANTS.QUARTER_WINWIDTH
 window_height = CONSTANTS.WINHEIGHT
 window_height_half = CONSTANTS.HALF_WINHEIGHT
-button_size = CONSTANTS.STANDARD_BUTTON_SIZE
 tile_size = CONSTANTS.TILE_SIZE
 cam_move_speed = CONSTANTS.CAM_MOVE_SPEED
 fps = CONSTANTS.FPS
 
+standard_button_size = (160, 40)
+standard_button_center = (int(standard_button_size[0] / 2), int(standard_button_size[1] / 2))
 
-class StartScreen(object):  # TODO: assimilate start_screen
-    def __init__(self, master_list, image_dict):
+
+class Graphics(object):  # TODO: complete and integrate
+    def __init__(self, master_list, image_dict, display, fps_clock):
         self.master_list = master_list
         self.image_dict = image_dict
+        self.display_surface = display
+        self.fps_clock = fps_clock
 
-    def start(self, DISPLAYSURF, FPSCLOCK):
+    def make_title(self):  # TODO: rename, finish
+        pass
+
+    def background(self, color):  # TODO: finish
+        pass
+
+    def box_with_text(self, text, box_color, position, size):
+        box = self.draw_box(box_color, position, size)
+        self.write_text(text, box)
+
+    def draw_box(self, box_color, position, size):
+        return pygame.draw.rect(self.display_surface, box_color,
+                                (position[0], position[1], size[0], size[1]))
+
+    def draw_bordered_box(self, box_color, position, size, border_color=black, border_size=1):
+        box = self.draw_box(box_color, position, size)
+        pygame.draw.rect(self.display_surface, border_color,
+                         (position[0], position[1], size[0], size[1]), border_size)
+        return box
+
+    def write_text(self, text, box, text_writer=small_text, surface=None):
+        text_surface, text_rect = self.__text_object(text, text_writer)
+        if isinstance(box, Rect):
+            text_rect.center = (box.centerx, box.centery)
+        elif isinstance(box, tuple):
+            text_rect.center = (box[0], box[1])
+        if surface is None:
+            self.display_surface.blit(text_surface, text_rect)
+        else:
+            surface.blit(text_surface, text_rect)
+
+    def write_fraction(self, top_number, bottom_number, position):
+        dash_offset = position[0] - 8
+        dash_width = 16 + 4 * int(bottom_number / 10)
+        dash_box_size = (dash_width, 1)
+
+        top_string = str(top_number)
+        bottom_string = str(bottom_number)
+
+        self.write_text(top_string, (position[0], position[1] - 10))
+
+        self.write_text(bottom_string, (position[0], position[1] + 10))
+
+        self.draw_box(black, (dash_offset, position[1] - 2), dash_box_size)
+
+    def __text_object(self, text, font):
+        text_surface = font.render(text, True, black)
+        return text_surface, text_surface.get_rect()
+
+    def terminate(self):
+        pygame.quit()
+        sys.exit()
+
+
+class StartScreen(object):
+    def __init__(self, graphics):
+        self.graphics = graphics
+
+    def start(self):
         """
         Display the start screen (which has the title and instructions)
         until the player presses a key. Returns None.
@@ -71,8 +133,8 @@ class StartScreen(object):  # TODO: assimilate start_screen
                            '',
                            'Press any key to continue']
 
-        DISPLAYSURF.fill(bg_color)  # Start with drawing a blank color to the entire window:
-        DISPLAYSURF.blit(titleSurf, titleRect)  # Draw the title image to the window:
+        self.graphics.display_surface.fill(bg_color)  # Start with drawing a blank color to the entire window:
+        self.graphics.display_surface.blit(titleSurf, titleRect)  # Draw the title image to the window:
 
         # Position and draw the text.
         for i in range(len(title_text_info)):
@@ -82,37 +144,28 @@ class StartScreen(object):  # TODO: assimilate start_screen
             instRect.top = topCoord
             instRect.centerx = window_width_half
             topCoord += instRect.height  # Adjust for the height of the line.
-            DISPLAYSURF.blit(instSurf, instRect)
+            self.graphics.display_surface.blit(instSurf, instRect)
 
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    self.__terminate()
+                    self.graphics.terminate()
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
-                        self.__terminate()
+                        self.graphics.terminate()
                     else:
-                        mm = MainMenu(self.master_list, self.image_dict)
-                        mm.start(DISPLAYSURF, FPSCLOCK)
+                        mm = MainMenu(self.graphics)
+                        mm.start()
 
             pygame.display.update()
-            FPSCLOCK.tick()
-
-    def __text_object(self, text, font):
-        text_surface = font.render(text, True, black)
-        return text_surface, text_surface.get_rect()
-
-    def __terminate(self):
-        pygame.quit()
-        sys.exit()
+            self.graphics.fps_clock.tick()
 
 
 class MainMenu(object):
-    def __init__(self, master_list, image_dict):
-        self.master_list = master_list
-        self.image_dict = image_dict
+    def __init__(self, graphics):
+        self.graphics = graphics
 
-    def start(self, DISPLAYSURF, FPSCLOCK):  # TODO: assimilate main_menu
+    def start(self):
         title = 'In Defense of Sieging'
         title_font = pygame.font.Font(default_font, 40)
 
@@ -123,8 +176,8 @@ class MainMenu(object):
         titleRect.centerx = window_width_half
         topCoord += titleRect.height
 
-        DISPLAYSURF.fill(bg_color)  # Start with drawing a blank color to the entire window:
-        DISPLAYSURF.blit(titleSurf, titleRect)  # Draw the title image to the window:
+        self.graphics.display_surface.fill(bg_color)  # Start with drawing a blank color to the entire window:
+        self.graphics.display_surface.blit(titleSurf, titleRect)  # Draw the title image to the window:
 
         button_size = (120, 50)
         button_center = (button_size[0] / 2, button_size[1] / 2)
@@ -137,7 +190,7 @@ class MainMenu(object):
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    self.__terminate()
+                    self.graphics.terminate()
                 elif event.type == KEYDOWN:
                     # Handle key presses
                     if event.key == K_w or event.key == K_UP:
@@ -150,11 +203,10 @@ class MainMenu(object):
                             selected = 1
                     elif event.key == K_e or event.key == K_RETURN:
                         if selected == 1:
-                            self.__terminate()
+                            self.graphics.terminate()
                         elif selected == 0:
-                            ct = CreateTeam(self.master_list, self.image_dict)
-                            ct.start(DISPLAYSURF, FPSCLOCK)
-                            # run_battle()
+                            ct = CreateTeam(self.graphics)
+                            ct.start()
 
             # Start Button
             if selected == 0:
@@ -164,15 +216,12 @@ class MainMenu(object):
                 start_color = medium_green
                 start_text = 'START'
 
-            start_button = pygame.draw.rect(DISPLAYSURF, start_color,
-                                            (window_width_half - button_center[0],
-                                             start_top_coordinate,
-                                             button_size[0],
-                                             button_size[1]))
+            start_button = self.graphics.draw_box(start_color,
+                                                  (window_width_half - button_center[0],
+                                                   start_top_coordinate),
+                                                  button_size)
 
-            text_surface, text_rect = self.__text_object(start_text, small_text)
-            text_rect.center = (start_button.centerx, start_button.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
+            self.graphics.write_text(start_text, start_button)
 
             # FIXME: "Exit" word shifts slightly when selected
             if selected == 1:
@@ -182,26 +231,15 @@ class MainMenu(object):
                 exit_color = red
                 exit_text = 'EXIT'
 
-            exit_button = pygame.draw.rect(DISPLAYSURF, exit_color,
-                                           (window_width_half - button_center[0],
-                                            exit_top_coordinate,
-                                            button_size[0],
-                                            button_size[1]))
+            exit_button = self.graphics.draw_box(exit_color,
+                                                 (window_width_half - button_center[0],
+                                                  exit_top_coordinate),
+                                                 button_size)
 
-            text_surface, text_rect = self.__text_object(exit_text, small_text)
-            text_rect.center = (exit_button.centerx, exit_button.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
+            self.graphics.write_text(exit_text, exit_button)
 
             pygame.display.update()
-            FPSCLOCK.tick()
-
-    def __text_object(self, text, font):
-        text_surface = font.render(text, True, black)
-        return text_surface, text_surface.get_rect()
-
-    def __terminate(self):
-        pygame.quit()
-        sys.exit()
+            self.graphics.fps_clock.tick()
 
 
 class CreateTeam(object):
@@ -209,14 +247,13 @@ class CreateTeam(object):
     Creates the player team
     """
 
-    def __init__(self, master_list, image_dict):
-        self.image_dict = image_dict
-        self.master_list = master_list
-        self.class_list = SubListManager(master_list.get_list('Class'))
-        self.equipment_list = SubListManager(master_list.get_list('Equipment'))
-        self.starting_equipment = SubListManager(master_list.get_list('Starting Equipment'))
-        self.card_library = SubListManager(master_list.get_list('Card'))
-        self.starting_deck = SubListManager(master_list.get_list('Starting Deck'))
+    def __init__(self, graphics):
+        self.graphics = graphics
+        self.class_list = SubListManager(graphics.master_list.get_list('Class'))
+        self.equipment_list = SubListManager(graphics.master_list.get_list('Equipment'))
+        self.starting_equipment = SubListManager(graphics.master_list.get_list('Starting Equipment'))
+        self.card_library = SubListManager(graphics.master_list.get_list('Card'))
+        self.starting_deck = SubListManager(graphics.master_list.get_list('Starting Deck'))
         self.column_selected = 0
         self.class_selected = 0
         self.player_selected = 0
@@ -232,7 +269,7 @@ class CreateTeam(object):
         self.available_list = []
         self.player_team = None
 
-    def start(self, DISPLAYSURF, fps_clock):
+    def start(self):
         available_classes = self.class_list.get_list()
 
         for i in available_classes:
@@ -245,23 +282,22 @@ class CreateTeam(object):
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    self.__terminate()
+                    self.graphics.terminate()
                 elif event.type == KEYDOWN:
                     if self.column_selected == 0:
                         self.__cycle_classes(event)
                     elif self.column_selected == 1:
                         self.__cycle_players(event)
                     elif self.column_selected == 2:
-                        self.__cycle_options(event, DISPLAYSURF, fps_clock)
+                        self.__cycle_options(event)
 
-            self.__draw_screen(DISPLAYSURF)
+            self.__draw_screen()
 
             pygame.display.update()
-            fps_clock.tick()
+            self.graphics.fps_clock.tick()
 
-    def __draw_screen(self, DISPLAYSURF):
+    def __draw_screen(self):
         pygame.font.init()
-        small_text = pygame.font.Font(default_font, 20)
 
         title = 'Player Team Creation'
         title_font = pygame.font.Font(default_font, 30)
@@ -273,21 +309,21 @@ class CreateTeam(object):
         titleRect.centerx = window_width_half
         topCoord += titleRect.height + 20
 
-        DISPLAYSURF.fill(bg_color)
-        DISPLAYSURF.blit(titleSurf, titleRect)
+        self.graphics.display_surface.fill(bg_color)
+        self.graphics.display_surface.blit(titleSurf, titleRect)
 
         class_top_coordinate = topCoord
         player_top_coordinate = topCoord
         option_top_coordinate = topCoord
 
-        class_button_size = button_size
-        class_button_center = (class_button_size[0] / 2, class_button_size[1] / 2)
+        class_button_size = standard_button_size
+        class_button_center = standard_button_center
 
-        player_button_size = (button_size[0], button_size[1] + 20)
-        player_button_center = (player_button_size[0] / 2, player_button_size[1] / 2)
+        player_button_size = (standard_button_size[0], standard_button_size[1] + 20)
+        player_button_center = (int(player_button_size[0] / 2), int(player_button_size[1] / 2))
 
-        option_button_size = button_size
-        option_button_center = (option_button_size[0] / 2, option_button_size[1] / 2)
+        option_button_size = standard_button_size
+        option_button_center = standard_button_center
 
         quarter_width = int(window_width_half / 2)
 
@@ -313,19 +349,15 @@ class CreateTeam(object):
                 button_color = grey
             else:  # cursor can be on class
                 button_color = dark_orange
-            class_button = pygame.draw.rect(DISPLAYSURF, button_color,
-                                            (quarter_width - class_button_center[0],
-                                             class_top_coordinate,
-                                             class_button_size[0],
-                                             class_button_size[1]))
 
-            text_surface, text_rect = self.__text_object(display_string, small_text)
-            text_rect.center = (quarter_width, class_button.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
+            class_button = self.graphics.draw_box(button_color,
+                                                  (quarter_width - class_button_center[0],
+                                                   class_top_coordinate),
+                                                  class_button_size)
+
+            self.graphics.write_text(display_string, class_button)
 
             class_top_coordinate += class_button_size[1] + 10
-
-        # class_top_coordinate = topCoord
 
         # Players
         for i in self.player_list:
@@ -341,27 +373,25 @@ class CreateTeam(object):
                 button_color = medium_green
             else:
                 button_color = dark_orange  # can have cursor on player
-            player_button = pygame.draw.rect(DISPLAYSURF, button_color,
-                                             (window_width_half - player_button_center[0],
-                                              player_top_coordinate,
-                                              player_button_size[0],
-                                              player_button_size[1]))
 
-            text_surface, text_rect = self.__text_object(player_name, small_text)
-            text_rect.center = (window_width_half, player_button.centery - int(player_button_size[1] / 4))
-            DISPLAYSURF.blit(text_surface, text_rect)
+            player_button = self.graphics.draw_box(button_color,
+                                                   (window_width_half - player_button_center[0],
+                                                    player_top_coordinate),
+                                                   player_button_size)
+
+            self.graphics.write_text(player_name,
+                                     (window_width_half, player_button.centery - int(player_button_size[1] / 4)))
 
             if player_class is None:
                 class_string = 'Empty'
             else:
                 class_string = player_class
-            text_surface, text_rect = self.__text_object(class_string, small_text)
-            text_rect.center = (window_width_half, player_button.centery + int(player_button_size[1] / 4))
-            DISPLAYSURF.blit(text_surface, text_rect)
+
+            self.graphics.write_text(class_string,
+                                     (window_width_half,
+                                      player_button.centery + int(player_button_size[1] / 4)))
 
             player_top_coordinate += player_button_size[1] + 10
-
-        # player_top_coordinate = topCoord
 
         # options selection
         option_color = dark_orange
@@ -370,15 +400,13 @@ class CreateTeam(object):
         elif self.column_selected == 2:
             option_color = orange_red
         display_string = 'Encounter -->'
-        mission_select = pygame.draw.rect(DISPLAYSURF, option_color,
-                                          (3 * quarter_width - option_button_center[0],
-                                           option_top_coordinate,
-                                           option_button_size[0],
-                                           option_button_size[1]))
 
-        text_surface, text_rect = self.__text_object(display_string, small_text)
-        text_rect.center = (3 * quarter_width, mission_select.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+        mission_select = self.graphics.draw_box(option_color,
+                                                (3 * quarter_width - option_button_center[0],
+                                                 option_top_coordinate),
+                                                option_button_size)
+
+        self.graphics.write_text(display_string, mission_select)
 
     def __cycle_classes(self, event):
         if event.key == K_w or event.key == K_UP:
@@ -461,7 +489,7 @@ class CreateTeam(object):
             self.column_selected = 0
             self.reset_number = self.player_selected
 
-    def __cycle_options(self, event, DISPLAYSURF, fps_clock):
+    def __cycle_options(self, event):
         if event.key == K_w or event.key == K_UP:
             if self.option_selected > 0:
                 self.option_selected -= 1
@@ -473,8 +501,8 @@ class CreateTeam(object):
         elif event.key == K_e or event.key == K_RETURN:
             if self.option_selected == 0 and self.player_team is None:
                 self.player_team = self.__finalize_team()
-                es = EncounterSelect(self.master_list, self.image_dict, self.player_team)
-                es.start(DISPLAYSURF, fps_clock)
+                es = EncounterSelect(self.graphics, self.player_team)
+                es.start()
             # TODO: add team reset option
 
     def __finalize_team(self):
@@ -487,14 +515,6 @@ class CreateTeam(object):
 
         return self.player_team
 
-    def __text_object(self, text, font):
-        text_surface = font.render(text, True, black)
-        return text_surface, text_surface.get_rect()
-
-    def __terminate(self):
-        pygame.quit()
-        sys.exit()
-
 
 class EncounterSelect(object):
     """
@@ -502,15 +522,14 @@ class EncounterSelect(object):
     Select encounter
     """
 
-    def __init__(self, master_list, image_dict, player_team):
-        self.master_list = master_list
-        self.image_dict = image_dict
+    def __init__(self, graphics, player_team):
+        self.graphics = graphics
         self.player_team = player_team
         self.enemy_team = None
-        self.encounter_list = SubListManager(master_list.get_list('Encounter'))
-        self.races = SubListManager(master_list.get_list('Enemy Race'))
-        self.roles = SubListManager(master_list.get_list('Enemy Role'))
-        self.equipment_list = SubListManager(master_list.get_list('Equipment'))
+        self.encounter_list = SubListManager(graphics.master_list.get_list('Encounter'))
+        self.races = SubListManager(graphics.master_list.get_list('Enemy Race'))
+        self.roles = SubListManager(graphics.master_list.get_list('Enemy Role'))
+        self.equipment_list = SubListManager(graphics.master_list.get_list('Equipment'))
         self.category_selected = 0
         self.tribe_selected = 0
         self.diff_selected = 0
@@ -527,7 +546,7 @@ class EncounterSelect(object):
         self.change_displayed = False
         self.preview_encounter = False
 
-    def start(self, DISPLAYSURF, fps_clock):
+    def start(self):
         self.__parse_encounter_list()
 
         tribe = self.tribe_dict[self.tribe_list[self.tribe_selected]]
@@ -539,24 +558,24 @@ class EncounterSelect(object):
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    self.__terminate()
+                    self.graphics.terminate()
                 elif event.type == KEYDOWN:
                     if self.category_selected == 0:
                         self.__cycle_tribes(event)
                     elif self.category_selected == 1:
                         self.__cycle_encounters(event)
                     elif self.category_selected == 2:
-                        self.__cycle_options(event, DISPLAYSURF, fps_clock)
+                        self.__cycle_options(event)
 
             if self.preview_encounter:
-                self.__draw_preview(DISPLAYSURF)
+                self.__draw_preview()
             else:
-                self.__draw_screen(DISPLAYSURF)
+                self.__draw_screen()
 
             pygame.display.update()
-            fps_clock.tick()
+            self.graphics.fps_clock.tick()
 
-    def __draw_screen(self, DISPLAYSURF):
+    def __draw_screen(self):
         pygame.font.init()
         small_text = pygame.font.Font(default_font, 20)
 
@@ -570,30 +589,25 @@ class EncounterSelect(object):
         titleRect.centerx = window_width_half
         topCoord += titleRect.height + 20
 
-        DISPLAYSURF.fill(bg_color)
-        DISPLAYSURF.blit(titleSurf, titleRect)
+        self.graphics.display_surface.fill(bg_color)
+        self.graphics.display_surface.blit(titleSurf, titleRect)
 
         # Print Tribe Label
         arrow_box_size = (60, 30)
         arrow_box_center = (int(arrow_box_size[0] / 2), int(arrow_box_size[1] / 2))
         arrow_color = green_yellow
 
-        tribe_button_size = button_size
-        tribe_button_center = (int(tribe_button_size[0] / 2), int(tribe_button_size[1] / 2))
+        tribe_button_size = standard_button_size
+        tribe_button_center = standard_button_center
 
         tribe_top = topCoord
 
+        # TODO: make proper functions for making left and right arrows
         if self.tribe_selected > 0:
-            right_arrow = '<--'
-            right_box = pygame.draw.rect(DISPLAYSURF, arrow_color,
-                                         (window_width_quarter - arrow_box_center[0],
-                                          tribe_top,
-                                          arrow_box_size[0],
-                                          arrow_box_size[1]))
-
-            text_surface, text_rect = self.__text_object(right_arrow, small_text)
-            text_rect.center = (right_box.centerx, right_box.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
+            self.__right_arrow(arrow_color,
+                               (window_width_quarter - arrow_box_center[0],
+                                tribe_top),
+                               arrow_box_size)
 
         tribe_name = self.tribe_list[self.tribe_selected]
 
@@ -602,68 +616,40 @@ class EncounterSelect(object):
         else:  # cursor can be on button
             button_color = unselected_color
 
-        tribe_button = pygame.draw.rect(DISPLAYSURF, button_color,
-                                        (window_width_half - tribe_button_center[0],
-                                         tribe_top,
-                                         tribe_button_size[0],
-                                         tribe_button_size[1]))
-
-        text_surface, text_rect = self.__text_object(tribe_name, small_text)
-        text_rect.center = (tribe_button.centerx, tribe_button.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+        self.graphics.box_with_text(tribe_name, button_color,
+                                    (window_width_half - tribe_button_center[0],
+                                     tribe_top),
+                                    tribe_button_size)
 
         if self.tribe_selected < len(self.tribe_list) - 1:
-            left_arrow = '-->'
-            left_box = pygame.draw.rect(DISPLAYSURF, arrow_color,
-                                        (3 * window_width_quarter - arrow_box_center[0],
-                                         tribe_top,
-                                         arrow_box_size[0],
-                                         arrow_box_size[1]))
-
-            text_surface, text_rect = self.__text_object(left_arrow, small_text)
-            text_rect.center = (left_box.centerx, left_box.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
+            self.__right_arrow(arrow_color,
+                               (3 * window_width_quarter - arrow_box_center[0],
+                                tribe_top),
+                               arrow_box_size)
 
         # Print Difficulty Label
         diff_top = tribe_top + tribe_button_size[1] + 10
 
-        diff_button_size = (button_size[0] - 40, button_size[1])
+        diff_button_size = (standard_button_size[0] - 40, standard_button_size[1])
         diff_button_center = (int(diff_button_size[0] / 2), int(diff_button_size[1] / 2))
 
         if self.diff_selected > 0:
-            right_arrow = '<--'
-            right_box = pygame.draw.rect(DISPLAYSURF, arrow_color,
-                                         (window_width_quarter - arrow_box_center[0],
-                                          diff_top,
-                                          arrow_box_size[0],
-                                          arrow_box_size[1]))
-
-            text_surface, text_rect = self.__text_object(right_arrow, small_text)
-            text_rect.center = (right_box.centerx, right_box.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
+            self.__left_arrow(arrow_color,
+                              (window_width_quarter - arrow_box_center[0],
+                               diff_top),
+                              arrow_box_size)
 
         button_color = green_yellow
-        diff_box = pygame.draw.rect(DISPLAYSURF, button_color,
+        self.graphics.box_with_text(diff_list[self.diff_selected], button_color,
                                     (window_width_half - diff_button_center[0],
-                                     diff_top,
-                                     diff_button_size[0],
-                                     diff_button_size[1]))
-
-        text_surface, text_rect = self.__text_object(diff_list[self.diff_selected], small_text)
-        text_rect.center = (diff_box.centerx, diff_box.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+                                     diff_top),
+                                    diff_button_size)
 
         if self.diff_selected < len(diff_list) - 1:
-            left_arrow = '-->'
-            left_box = pygame.draw.rect(DISPLAYSURF, arrow_color,
-                                        (3 * window_width_quarter - arrow_box_center[0],
-                                         diff_top,
-                                         arrow_box_size[0],
-                                         arrow_box_size[1]))
-
-            text_surface, text_rect = self.__text_object(left_arrow, small_text)
-            text_rect.center = (left_box.centerx, left_box.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
+            self.__right_arrow(arrow_color,
+                               (3 * window_width_quarter - arrow_box_center[0],
+                                diff_top),
+                               arrow_box_size)
 
         # TODO: Print Encounters to screen
         encounter_top = diff_top + diff_button_size[1] + 10
@@ -707,29 +693,19 @@ class EncounterSelect(object):
 
                 encounter = self.displayed_encounters[i]
                 encounter_text = encounter['Name']
-                encounter_box = pygame.draw.rect(DISPLAYSURF, button_color,
-                                                 (window_width_half - encounter_box_center[0],
-                                                  encounter_top,
-                                                  encounter_box_size[0],
-                                                  encounter_box_size[1]))
-
-                text_surface, text_rect = self.__text_object(encounter_text, small_text)
-                text_rect.center = (encounter_box.centerx, encounter_box.centery)
-                DISPLAYSURF.blit(text_surface, text_rect)
+                self.graphics.box_with_text(encounter_text, button_color,
+                                            (window_width_half - encounter_box_center[0],
+                                             encounter_top),
+                                            encounter_box_size)
 
                 encounter_top += encounter_box_size[1] + 10
         else:
-            encounter_box = pygame.draw.rect(DISPLAYSURF, grey,
-                                             (window_width_half - encounter_box_center[0],
-                                              encounter_top,
-                                              encounter_box_size[0],
-                                              encounter_box_size[1]))
+            self.graphics.box_with_text('None', grey,
+                                        (window_width_half - encounter_box_center[0],
+                                         encounter_top),
+                                        encounter_box_size)
 
-            text_surface, text_rect = self.__text_object('None', small_text)
-            text_rect.center = (encounter_box.centerx, encounter_box.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
-
-    def __draw_preview(self, DISPLAYSURF):
+    def __draw_preview(self):
         pygame.font.init()
         small_text = pygame.font.Font(default_font, 20)
 
@@ -743,8 +719,8 @@ class EncounterSelect(object):
         titleRect.centerx = window_width_half
         topCoord += titleRect.height + 20
 
-        DISPLAYSURF.fill(bg_color)
-        DISPLAYSURF.blit(titleSurf, titleRect)
+        self.graphics.display_surface.fill(bg_color)
+        self.graphics.display_surface.blit(titleSurf, titleRect)
 
         # Print Encounter Name
         name_box_size = (260, 50)
@@ -753,15 +729,10 @@ class EncounterSelect(object):
 
         selected = self.chosen_encounter
         encounter_name = selected['Name']
-        encounter_name_box = pygame.draw.rect(DISPLAYSURF, name_box_color,
-                                              (window_width_half - name_box_center[0],
-                                               topCoord,
-                                               name_box_size[0],
-                                               name_box_size[1]))
-
-        text_surface, text_rect = self.__text_object(encounter_name, small_text)
-        text_rect.center = (encounter_name_box.centerx, encounter_name_box.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+        self.graphics.box_with_text(encounter_name, name_box_color,
+                                    (window_width_half - name_box_center[0],
+                                     topCoord),
+                                    name_box_size)
 
         # Print Back
         back_box_size = (60, 50)
@@ -773,15 +744,10 @@ class EncounterSelect(object):
             back_box_color = unselected_color
 
         back = 'Back'
-        back_box = pygame.draw.rect(DISPLAYSURF, back_box_color,
+        self.graphics.box_with_text(back, back_box_color,
                                     (window_width_quarter - back_box_center[0],
-                                     topCoord,
-                                     back_box_size[0],
-                                     back_box_size[1]))
-
-        text_surface, text_rect = self.__text_object(back, small_text)
-        text_rect.center = (back_box.centerx, back_box.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+                                     topCoord),
+                                    back_box_size)
 
         # Print Start Battle
         start_box_size = (130, 50)
@@ -793,19 +759,22 @@ class EncounterSelect(object):
             start_box_color = unselected_color
 
         start = 'Start Battle'
-        start_box = pygame.draw.rect(DISPLAYSURF, start_box_color,
-                                     (3 * window_width_quarter + 20 - start_box_center[0],
-                                      topCoord,
-                                      start_box_size[0],
-                                      start_box_size[1]))
-
-        text_surface, text_rect = self.__text_object(start, small_text)
-        text_rect.center = (start_box.centerx, start_box.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+        self.graphics.box_with_text(start, start_box_color,
+                                    (3 * window_width_quarter + 20 - start_box_center[0],
+                                     topCoord),
+                                    start_box_size)
 
         topCoord += name_box_size[1] + 20
 
         # Print Enemies
+
+    def __left_arrow(self, arrow_color, position, size):
+        left_arrow = '<--'
+        self.graphics.box_with_text(left_arrow, arrow_color, position, size)
+
+    def __right_arrow(self, arrow_color, position, size):
+        right_arrow = '-->'
+        self.graphics.box_with_text(right_arrow, arrow_color, position, size)
 
     def __cycle_tribes(self, event):
         if event.key == K_d or event.key == K_RIGHT:
@@ -866,7 +835,7 @@ class EncounterSelect(object):
             self.category_selected = 2
             self.preview_encounter = True
 
-    def __cycle_options(self, event, DISPLAYSURF, fps_clock):
+    def __cycle_options(self, event):
         if event.key == K_d or event.key == K_RIGHT:
             self.option_selected = 1
         elif event.key == K_a or event.key == K_LEFT:
@@ -879,8 +848,8 @@ class EncounterSelect(object):
                 self.preview_encounter = False
             elif self.option_selected == 1:  # Start Battle
                 self.__finalize_encounter()
-                bi = BattleSimulation(self.master_list, self.image_dict, self.player_team, self.enemy_team)
-                bi.start(DISPLAYSURF, fps_clock)
+                bi = BattleSimulation(self.graphics, self.player_team, self.enemy_team)
+                bi.start()
 
     def __finalize_encounter(self):
         hm = HordeMaker(self.races, self.roles, self.equipment_list, len(self.player_team))
@@ -911,14 +880,6 @@ class EncounterSelect(object):
             diff_dict[i] = {}
         return diff_dict
 
-    def __text_object(self, text, font):
-        text_surface = font.render(text, True, black)
-        return text_surface, text_surface.get_rect()
-
-    def __terminate(self):
-        pygame.quit()
-        sys.exit()
-
 
 class BattleSimulation(object):
     """
@@ -928,10 +889,10 @@ class BattleSimulation(object):
     go to run_battle()
     """
 
-    def __init__(self, master_list, image_dict, player_team, enemy_team):
-        self.master_list = master_list
-        self.image_dict = image_dict
-        self.terrain_list = SubListManager(master_list.get_list('Terrain'))
+    def __init__(self, graphics, player_team, enemy_team):
+        self.graphics = graphics
+        self.image_dict = graphics.image_dict
+        self.terrain_list = SubListManager(graphics.master_list.get_list('Terrain'))
         self.player_team = player_team
         self.enemy_team = enemy_team
         self.initiate = True
@@ -951,20 +912,34 @@ class BattleSimulation(object):
         self.camera_right = False
 
         self.tile_selected = None
-        self.active_player_number = 0
-        self.active_player = None
         self.adjacent_tiles = None
 
+        self.turn_counter = 1
+
+        self.active_team = 0
+        self.team_turn = ['Player Team',
+                          'Enemy Team']
+
+        self.active_player_number = 0
+        self.active_player = None
         self.player_mode = 0
         self.mode_list = ['Cursor',
                           'Movement',
                           'Action']
+
+        self.active_enemy_number = 0
+        self.active_enemy = None
+        self.enemy_mode = 0
+        self.enemy_mode_list = ['Movement',
+                                'Action']
+
         self.action_selected = 0
-        self.category_list = ['Hand',
+        self.category_list = ['Hand',  # TODO: add 'enchantment' tab
                               'Passive',
+                              'Player Info',
                               'End Turn']
 
-    def start(self, DISPLAYSURF, fps_clock):
+    def start(self):
         if self.movement is None:
             self.movement = Movement(self.battle_map)
             self.movement.place_enemy_team_random(self.enemy_team)
@@ -977,7 +952,7 @@ class BattleSimulation(object):
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    self.__terminate()
+                    self.graphics.terminate()
                 elif event.type == KEYDOWN:
                     self.__camera_start_move(event)
                     self.__player_input(event)
@@ -989,7 +964,7 @@ class BattleSimulation(object):
                 self.__next_player_turn()
 
             if self.redraw_map or self.camera_moving:
-                mapSurf = self.__draw_map(DISPLAYSURF)
+                mapSurf = self.__draw_map()
                 self.redraw_map = False
 
             self.__camera_move()
@@ -998,17 +973,17 @@ class BattleSimulation(object):
             mapSurfRect.center = (window_width_half + self.camera_offset_x,
                                   window_height_half + self.camera_offset_y)
 
-            DISPLAYSURF.blit(mapSurf, mapSurfRect)
+            self.graphics.display_surface.blit(mapSurf, mapSurfRect)
 
-            self.__draw_title(DISPLAYSURF)
+            self.__draw_title()
             if self.initiate is False:
                 if self.player_mode == 2:
-                    self.__draw_action_bar(DISPLAYSURF)
+                    self.__draw_action_bar()
                 else:
-                    self.__draw_player_info(DISPLAYSURF)
+                    self.__draw_player_info()
 
             pygame.display.update()
-            fps_clock.tick(fps)
+            self.graphics.fps_clock.tick(fps)
 
     def __camera_start_move(self, event):
         self.camera_moving = True
@@ -1098,15 +1073,44 @@ class BattleSimulation(object):
             self.player_mode = 2
 
     def __action_mode(self, event):
-        if event.key == K_SPACE:
+        if event.key == K_w:  # Up
+            if self.action_selected > 0:
+                self.action_selected -= 1
+        elif event.key == K_s:  # Down
+            if self.action_selected < len(self.category_list) - 1:
+                self.action_selected += 1
+        elif event.key == K_d:  # Right
+            if self.action_selected == 0:
+                pass  # TODO: cycle card selected
+            elif self.action_selected == 1:
+                pass  # TODO: cycle passive button selected
+            elif self.action_selected == 2:
+                pass  # TODO: cycle info tab
+        elif event.key == K_a:  # Left
+            if self.action_selected == 0:
+                pass  # TODO: cycle card selected
+            elif self.action_selected == 1:
+                pass  # TODO: cycle passive button selected
+            elif self.action_selected == 2:
+                pass  # TODO: cycle info tab
+
+        elif event.key == K_e or event.key == K_RETURN:
+            if self.action_selected == 0:
+                pass  # TODO: use selected card
+            elif self.action_selected == 1:
+                pass  # TODO: use selected passive button
+            elif self.action_selected == 2:
+                pass  # TODO: info tab action?
+
+        elif event.key == K_SPACE:
             self.player_mode = 0
 
-    def __draw_map(self, DISPLAYSURF):
+    def __draw_map(self):
         """
         Draws the map based on the tiles and their contents.
         """
 
-        DISPLAYSURF.fill(bg_color)
+        self.graphics.display_surface.fill(bg_color)
 
         mapSurfWidth = self.map_size[0] * tile_size[0]
         mapSurfHeight = self.map_size[1] * tile_size[1]
@@ -1160,56 +1164,57 @@ class BattleSimulation(object):
 
                         elif isinstance(unit, Enemy):
                             mapSurf.blit(self.image_dict['enemy_token'], spaceRect)
-                        text_surface, text_rect = self.__text_object(unit.Icon, text)
-                        text_rect.center = (spaceRect.centerx, spaceRect.centery)
-                        mapSurf.blit(text_surface, text_rect)
+                        self.graphics.write_text(unit.Icon, spaceRect, text, mapSurf)
 
         return mapSurf
 
-    def __draw_title(self, DISPLAYSURF):
+    def __draw_title(self):
         topCoord = 0
         box_color = green_yellow
-        player = self.player_team[self.active_player_number]
+        boxes = None
+        if self.active_team == 0:
+            player = self.player_team[self.active_player_number]
+        elif self.active_team == 1:
+            enemy = self.enemy_team[self.active_enemy_number]
         if self.initiate:
             boxes = [{'text': 'Select Starting Position',
                       'size': (260, 30)},
                      {'text': player.Player_Name,
                       'size': (120, 30)}]
-        elif self.player_mode == 0:  # Cursor
-            boxes = [{'text': 'Turn: ' + player.Player_Name,
-                      'size': (160, 30)},
-                     {'text': 'Mode: Cursor',
-                      'size': (144, 30)}]
-        elif self.player_mode == 1:  # Movement
-            boxes = [{'text': 'Turn: ' + player.Player_Name,
-                      'size': (160, 30)},
-                     {'text': 'Mode: Movement',
-                      'size': (180, 30)}]
-        elif self.player_mode == 2:  # Action Mode
-            boxes = [{'text': 'Turn: ' + player.Player_Name,
-                      'size': (160, 30)},
-                     {'text': 'Mode: Action',
-                      'size': (150, 30)}]
+        elif self.active_team == 0:  # Player Team Turn
+            if self.player_mode == 0:  # Cursor
+                boxes = [{'text': 'Mode: Cursor',
+                          'size': (144, 30)}]
+            elif self.player_mode == 1:  # Movement
+                boxes = [{'text': 'Mode: Movement',
+                          'size': (180, 30)}]
+            elif self.player_mode == 2:  # Action Mode
+                boxes = [{'text': 'Mode: Action',
+                          'size': (150, 30)}]
+            boxes.insert(0, {'text': player.Player_Name + ': ' + player.Class_Name,
+                             'size': (160, 30)})
+            boxes.insert(0, {'text': self.team_turn[0] + ': Turn ' + str(self.turn_counter),
+                             'size': (260, 30)})
+
+        elif self.active_team == 1:  # Enemy Team Turn
+            boxes = [{'text': self.team_turn[0] + ': Turn ' + str(self.turn_counter),
+                      'size': (260, 30)},
+                     {'text': enemy.Race_Name + ' ' + enemy.Role_Name + ' ' + enemy.Enemy_Number,
+                      'size': (160, 30)}]
 
         for box in boxes:
             text = box['text']
             size = box['size']
 
             box_one_center = (int(size[0] / 2), int(size[1] / 2))
-            box_one = pygame.draw.rect(DISPLAYSURF, box_color,
-                                       (window_width_half - box_one_center[0],
-                                        topCoord,
-                                        size[0],
-                                        size[1]))
+            self.graphics.box_with_text(text, box_color,
+                                        (window_width_half - box_one_center[0],
+                                         topCoord),
+                                        size)
 
-            text_surface, text_rect = self.__text_object(text, small_text)
-            text_rect.center = (box_one.centerx, box_one.centery)
-            DISPLAYSURF.blit(text_surface, text_rect)
+            topCoord += size[1] + 5
 
-            if len(boxes) > 0:
-                topCoord = size[1] + 5
-
-    def __draw_player_info(self, DISPLAYSURF, top_coordinate=None):
+    def __draw_player_info(self, top_coordinate=None):
         info_box_height = 50
         if top_coordinate is None:
             top_coordinate = window_height - info_box_height
@@ -1217,78 +1222,59 @@ class BattleSimulation(object):
         info_box_size = (window_width, info_box_height)
         info_box_center = (int(info_box_size[0] / 2), int(info_box_size[1] / 2))
 
-        info_box = pygame.draw.rect(DISPLAYSURF, info_box_color,
-                                    (window_width_half - info_box_center[0],
-                                     top_coordinate,
-                                     info_box_size[0],
-                                     info_box_size[1]))
-
-        pygame.draw.rect(DISPLAYSURF, black, (window_width_half - info_box_center[0],
-                                              top_coordinate,
-                                              info_box_size[0],
-                                              info_box_size[1]), 1)
+        info_box = self.graphics.draw_bordered_box(info_box_color,
+                                                   (window_width_half - info_box_center[0],
+                                                    top_coordinate),
+                                                   info_box_size)
 
         # TODO: Complete info display
         health_x = 70
         stamina_x = 190
         stamina_fraction_x = stamina_x + 56
-        if self.active_player.Stamina.get_pool_size() < 10:
-            dash_offset = stamina_fraction_x - 8
-            dash_box_size = (16, 1)
-        else:
-            dash_offset = stamina_fraction_x - 8
-            dash_box_size = (20, 1)
 
         # Health
         text = 'Health: N/A'
-        text_surface, text_rect = self.__text_object(text, small_text)
-        text_rect.center = (health_x, info_box.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+        self.graphics.write_text(text, (health_x, info_box.centery))
 
         # Stamina
         text = 'Stamina:'
-        text_surface, text_rect = self.__text_object(text, small_text)
-        text_rect.center = (stamina_x, info_box.centery)
-        DISPLAYSURF.blit(text_surface, text_rect)
+        self.graphics.write_text(text, (stamina_x, info_box.centery))
 
-        top_number = str(self.active_player.Stamina.points)
-        bottom_number = str(self.active_player.Stamina.get_pool_size())
-        text_surface, text_rect = self.__text_object(top_number, small_text)
-        text_rect.center = (stamina_fraction_x, info_box.centery - 10)
-        DISPLAYSURF.blit(text_surface, text_rect)
+        top_number = self.active_player.Stamina.points
+        bottom_number = self.active_player.Stamina.get_pool_size()
+        self.graphics.write_fraction(top_number, bottom_number, (stamina_fraction_x, info_box.centery))
 
-        text_surface, text_rect = self.__text_object(bottom_number, small_text)
-        text_rect.center = (stamina_fraction_x, info_box.centery + 10)
-        DISPLAYSURF.blit(text_surface, text_rect)
+        # TODO: print weapon damage
 
-        # Used for the numerical display of Stamina values
-        dash_box = pygame.draw.rect(DISPLAYSURF, black,
-                                    (dash_offset,
-                                     info_box.centery - 2,
-                                     dash_box_size[0],
-                                     dash_box_size[1]))
+        # TODO: print bonus range
 
-    def __draw_action_bar(self, DISPLAYSURF):
+        # TODO: print armor
+
+        # TODO: print cards in hand
+
+    def __draw_action_bar(self):
         action_bar_height = 120
         top_coordinate = window_height - action_bar_height
         action_bar_color = light_grey
         action_bar_size = (window_width, action_bar_height)
         action_bar_center = (int(action_bar_size[0] / 2), int(action_bar_size[1] / 2))
 
-        action_box = pygame.draw.rect(DISPLAYSURF, action_bar_color,
-                                      (window_width_half - action_bar_center[0],
-                                       top_coordinate,
-                                       action_bar_size[0],
-                                       action_bar_size[1]))
-
-        pygame.draw.rect(DISPLAYSURF, black, (window_width_half - action_bar_center[0],
-                                              top_coordinate,
-                                              action_bar_size[0],
-                                              action_bar_size[1]), 1)
+        self.graphics.draw_bordered_box(action_bar_color,
+                                        (window_width_half - action_bar_center[0],
+                                         top_coordinate),
+                                        action_bar_size)
 
         # TODO: add action categories
 
         # TODO: print cards to screen when hand selected
+
+        # TODO:
+
+    def __draw_tile_info_bar(self):
+        # TODO: print tile info
+
+        # TODO: print unit info
+        pass
 
     def __place_player(self):
         if self.active_player_number < len(self.player_team):
@@ -1325,11 +1311,3 @@ class BattleSimulation(object):
         self.active_player_number = number
         self.active_player = self.player_team[self.active_player_number]
         self.active_player.turn_beginning()
-
-    def __text_object(self, text, font):
-        text_surface = font.render(text, True, black)
-        return text_surface, text_surface.get_rect()
-
-    def __terminate(self):
-        pygame.quit()
-        sys.exit()

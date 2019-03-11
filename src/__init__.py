@@ -2,7 +2,7 @@ import os
 import pygame
 from src.CONSTANTS import CONSTANTS
 from src.ReadGameData import MasterListManager
-from src.GraphicLogic import StartScreen
+from src.GraphicLogic import Graphics, StartScreen
 
 # Window Constants
 WINWIDTH = CONSTANTS.WINWIDTH
@@ -35,8 +35,10 @@ def main():
 
     pygame.display.set_caption('In Defense of Sieging')
 
-    start_screen = StartScreen(master_list, image_dict)
-    start_screen.start(DISPLAYSURF, FPSCLOCK)
+    graphics = Graphics(master_list, image_dict, DISPLAYSURF, FPSCLOCK)
+
+    start_screen = StartScreen(graphics)
+    start_screen.start()
 
 
 def __read_file(filename):  # TODO: clean up

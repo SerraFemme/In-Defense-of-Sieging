@@ -40,7 +40,6 @@ class CONSTANTS(object):
     THIRD_WINDOW_WIDTH = int(WINWIDTH / 3)
 
     TILE_SIZE = (50, 50)
-    STANDARD_BUTTON_SIZE = (160, 40)
 
     COLORS = {'white': (255, 255, 255),
               'black': (0, 0, 0),
