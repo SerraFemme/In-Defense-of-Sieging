@@ -55,6 +55,8 @@ class Graphics(object):  # TODO: complete and integrate
         self.display_surface = display
         self.fps_clock = fps_clock
 
+    # TODO: Make box size dynamically adjust with text length
+
     def make_title(self):  # TODO: rename, finish
         pass
 
@@ -109,6 +111,20 @@ class Graphics(object):  # TODO: complete and integrate
         sys.exit()
 
 
+# class ValuedList(object):
+#     def __init__(self, given_list):
+#         self.value = 0
+#         self.item_list = given_list
+#
+#     def increment(self):
+#         self.value += 1
+#         if self.value >= len(self.item_list):
+#             self.value = 0
+#
+#     def item(self):
+#         return self.item_list[self.value]
+
+
 class StartScreen(object):
     def __init__(self, graphics):
         self.graphics = graphics
@@ -151,11 +167,8 @@ class StartScreen(object):
                 if event.type == QUIT:
                     self.graphics.terminate()
                 elif event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        self.graphics.terminate()
-                    else:
-                        mm = MainMenu(self.graphics)
-                        mm.start()
+                    mm = MainMenu(self.graphics)
+                    mm.start()
 
             pygame.display.update()
             self.graphics.fps_clock.tick()
@@ -895,11 +908,11 @@ class BattleSimulation(object):
         self.terrain_list = SubListManager(graphics.master_list.get_list('Terrain'))
         self.player_team = player_team
         self.enemy_team = enemy_team
-        self.initiate = True
         self.battle_map = MapInator(self.terrain_list)
         self.map_size = self.battle_map.map_size
         self.movement = None
         self.map_display_size = (self.map_size[0] * tile_size[0], self.map_size[1] * tile_size[1])
+        # TODO: Adjust MAX_CAM_PAN
         self.MAX_CAM_PAN = (abs(window_width_half - int(self.map_display_size[0] / 2)) + tile_size[0],
                             abs(window_width_half - int(self.map_display_size[1] / 2)) + tile_size[1])
         self.redraw_map = True
@@ -911,6 +924,7 @@ class BattleSimulation(object):
         self.camera_left = False
         self.camera_right = False
 
+        self.initiate = True
         self.tile_selected = None
         self.adjacent_tiles = None
 
@@ -933,11 +947,12 @@ class BattleSimulation(object):
         self.enemy_mode_list = ['Movement',
                                 'Action']
 
-        self.action_selected = 0
-        self.category_list = ['Hand',  # TODO: add 'enchantment' tab
-                              'Passive',
-                              'Player Info',
-                              'End Turn']
+        self.option_selected = 0
+        self.option_list = ['Hand',
+                            'Passive',
+                            'Enchantments',  # TODO: rename
+                            'Player Info',
+                            'End Turn']
 
     def start(self):
         if self.movement is None:
@@ -960,7 +975,7 @@ class BattleSimulation(object):
                 elif event.type == KEYUP:
                     self.__camera_stop(event)
 
-            if self.active_player_number >= len(self.player_team) and self.initiate:
+            if self.active_player_number >= len(self.player_team) and self.initiate:  # Start Battle
                 self.__next_player_turn()
 
             if self.redraw_map or self.camera_moving:
@@ -976,11 +991,13 @@ class BattleSimulation(object):
             self.graphics.display_surface.blit(mapSurf, mapSurfRect)
 
             self.__draw_title()
-            if self.initiate is False:
+            if self.initiate is False and self.active_team == 0:
                 if self.player_mode == 2:
                     self.__draw_action_bar()
                 else:
                     self.__draw_player_info()
+            elif self.active_team == 1:  # Enemy Turn
+                pass
 
             pygame.display.update()
             self.graphics.fps_clock.tick(fps)
@@ -1028,7 +1045,7 @@ class BattleSimulation(object):
             self.__cursor_mode(event)
         elif self.player_mode == 1:  # Movement
             self.__movement_cursor(event)
-        elif self.player_mode == 2:
+        elif self.player_mode == 2:  # Action
             self.__action_mode(event)
 
     def __cursor_mode(self, event):
@@ -1074,33 +1091,45 @@ class BattleSimulation(object):
 
     def __action_mode(self, event):
         if event.key == K_w:  # Up
-            if self.action_selected > 0:
-                self.action_selected -= 1
+            if self.option_selected > 0:
+                self.option_selected -= 1
+            else:
+                self.option_selected = len(self.option_list) - 1
         elif event.key == K_s:  # Down
-            if self.action_selected < len(self.category_list) - 1:
-                self.action_selected += 1
+            if self.option_selected < len(self.option_list) - 1:
+                self.option_selected += 1
+            else:
+                self.option_selected = 0
         elif event.key == K_d:  # Right
-            if self.action_selected == 0:
+            if self.option_selected == 0:
                 pass  # TODO: cycle card selected
-            elif self.action_selected == 1:
+            elif self.option_selected == 1:
                 pass  # TODO: cycle passive button selected
-            elif self.action_selected == 2:
+            elif self.option_selected == 2:
+                pass  # TODO: cycle enchantments
+            elif self.option_selected == 3:
                 pass  # TODO: cycle info tab
         elif event.key == K_a:  # Left
-            if self.action_selected == 0:
+            if self.option_selected == 0:
                 pass  # TODO: cycle card selected
-            elif self.action_selected == 1:
+            elif self.option_selected == 1:
                 pass  # TODO: cycle passive button selected
-            elif self.action_selected == 2:
+            elif self.option_selected == 2:
+                pass  # TODO: cycle enchantments
+            elif self.option_selected == 3:
                 pass  # TODO: cycle info tab
 
         elif event.key == K_e or event.key == K_RETURN:
-            if self.action_selected == 0:
+            if self.option_selected == 0:
                 pass  # TODO: use selected card
-            elif self.action_selected == 1:
+            elif self.option_selected == 1:
                 pass  # TODO: use selected passive button
-            elif self.action_selected == 2:
+            elif self.option_selected == 2:
+                pass  # TODO: use selected enchantment enchantments
+            elif self.option_selected == 3:
                 pass  # TODO: info tab action?
+            elif self.option_selected == 4:  # Pass Turn
+                self.__next_player_turn()
 
         elif event.key == K_SPACE:
             self.player_mode = 0
@@ -1172,6 +1201,7 @@ class BattleSimulation(object):
         topCoord = 0
         box_color = green_yellow
         boxes = None
+        team = self.team_turn[self.active_team]
         if self.active_team == 0:
             player = self.player_team[self.active_player_number]
         elif self.active_team == 1:
@@ -1192,14 +1222,14 @@ class BattleSimulation(object):
                 boxes = [{'text': 'Mode: Action',
                           'size': (150, 30)}]
             boxes.insert(0, {'text': player.Player_Name + ': ' + player.Class_Name,
-                             'size': (160, 30)})
-            boxes.insert(0, {'text': self.team_turn[0] + ': Turn ' + str(self.turn_counter),
-                             'size': (260, 30)})
+                             'size': (180, 30)})
+            boxes.insert(0, {'text': team + ': Turn ' + str(self.turn_counter),
+                             'size': (230, 30)})
 
         elif self.active_team == 1:  # Enemy Team Turn
-            boxes = [{'text': self.team_turn[0] + ': Turn ' + str(self.turn_counter),
-                      'size': (260, 30)},
-                     {'text': enemy.Race_Name + ' ' + enemy.Role_Name + ' ' + enemy.Enemy_Number,
+            boxes = [{'text': team + ': Turn ' + str(self.turn_counter),
+                      'size': (230, 30)},
+                     {'text': enemy.get_name(),
                       'size': (160, 30)}]
 
         for box in boxes:
@@ -1218,6 +1248,8 @@ class BattleSimulation(object):
         info_box_height = 50
         if top_coordinate is None:
             top_coordinate = window_height - info_box_height
+        else:
+            top_coordinate -= info_box_height
         info_box_color = light_grey
         info_box_size = (window_width, info_box_height)
         info_box_center = (int(info_box_size[0] / 2), int(info_box_size[1] / 2))
@@ -1227,14 +1259,26 @@ class BattleSimulation(object):
                                                     top_coordinate),
                                                    info_box_size)
 
-        # TODO: Complete info display
-        health_x = 70
-        stamina_x = 190
+        # TODO: make values dynamic based on text length
+        health_x = 50
+        health_value_x = health_x + 60
+        stamina_x = health_value_x + 76
         stamina_fraction_x = stamina_x + 56
+        weapon_x = stamina_fraction_x + 110
+        weapon_value_x = weapon_x + 100
+        range_x = weapon_value_x + 90
+        range_value_x = range_x + 85
+        armor_x = range_value_x + 60
+        armor_value_x = armor_x + 50
+        cards_x = armor_value_x + 60
+        cards_value_x = cards_x + 60
 
         # Health
-        text = 'Health: N/A'
+        text = 'Health:'
         self.graphics.write_text(text, (health_x, info_box.centery))
+
+        text = 'N/A'
+        self.graphics.write_text(text, (health_value_x, info_box.centery))
 
         # Stamina
         text = 'Stamina:'
@@ -1244,16 +1288,36 @@ class BattleSimulation(object):
         bottom_number = self.active_player.Stamina.get_pool_size()
         self.graphics.write_fraction(top_number, bottom_number, (stamina_fraction_x, info_box.centery))
 
-        # TODO: print weapon damage
+        # Weapon Damage
+        text = 'Weapon Damage:'
+        self.graphics.write_text(text, (weapon_x, info_box.centery))
 
-        # TODO: print bonus range
+        damage_number = self.active_player.Weapon_Damage.value
+        self.graphics.write_text(str(damage_number), (weapon_value_x, info_box.centery))
 
-        # TODO: print armor
+        # Bonus Range
+        text = 'Bonus Range:'
+        self.graphics.write_text(text, (range_x, info_box.centery))
 
-        # TODO: print cards in hand
+        range_number = self.active_player.Bonus_Range.value
+        self.graphics.write_text(str(range_number), (range_value_x, info_box.centery))
+
+        # Armor
+        text = 'Armor:'
+        self.graphics.write_text(text, (armor_x, info_box.centery))
+
+        armor_number = self.active_player.Armor.value
+        self.graphics.write_text(str(armor_number), (armor_value_x, info_box.centery))
+
+        # Number of Cards in Hand
+        text = 'Cards:'
+        self.graphics.write_text(text, (cards_x, info_box.centery))
+
+        cards_number = 'N/A'  # TODO: get hand size
+        self.graphics.write_text(cards_number, (cards_value_x, info_box.centery))
 
     def __draw_action_bar(self):
-        action_bar_height = 120
+        action_bar_height = 150
         top_coordinate = window_height - action_bar_height
         action_bar_color = light_grey
         action_bar_size = (window_width, action_bar_height)
@@ -1264,11 +1328,43 @@ class BattleSimulation(object):
                                          top_coordinate),
                                         action_bar_size)
 
+        if self.option_selected != 3:  # If not player info selected
+            self.__draw_player_info(top_coordinate)
+
         # TODO: add action categories
+        option_box_size = (160, 30)
+        option_box_center = (int(option_box_size[0] / 2), int(option_box_size[1] / 2))
+        option_coordinate = top_coordinate
+        for option in self.option_list:
+            if option == self.option_list[self.option_selected]:
+                action_color = selected_color
+            else:
+                action_color = unselected_color
+            action_box = self.graphics.draw_bordered_box(action_color, (0, option_coordinate), option_box_size)
+            self.graphics.write_text(option, action_box)
+            option_coordinate += option_box_size[1]
 
         # TODO: print cards to screen when hand selected
 
-        # TODO:
+        # TODO: print enchantments when selected
+
+        # TODO: print info tabs and info when selected
+
+    def __draw_cards(self):
+        # TODO: print cards in hand, make scrollable
+        pass
+
+    def __draw_passive(self):
+        # TODO: print class passive, either text, bonuses given, and/or buttons
+        pass
+
+    def __draw_enchantment(self):
+        # TODO: print buffs then debuffs, includes buttons of enchantments
+        pass
+
+    def __draw_information_tabs(self):
+        # TODO: draw full character info divided into multiple tabs
+        pass
 
     def __draw_tile_info_bar(self):
         # TODO: print tile info
@@ -1285,7 +1381,7 @@ class BattleSimulation(object):
                 player.Position = self.tile_selected
                 self.active_player_number += 1
 
-    def __calculate_adjacent_tiles(self, location):
+    def __calculate_adjacent_tiles(self, location):  # TODO: move to battle_map?
         adjacent_dict = {}
         for i in direction_dict:
             coordinate = direction_dict[i]
@@ -1301,13 +1397,33 @@ class BattleSimulation(object):
             if self.active_player_number >= len(self.player_team):
                 self.initiate = False
                 self.__cycle_players(0)
+                self.tile_selected = self.active_player.Position
         else:
-            if self.active_player_number >= len(self.player_team):
+            if self.active_player_number == len(self.player_team) - 1:
                 self.__cycle_players(0)
-            else:
+                self.active_team = 1
+            else:  # Change to Enemy Team
                 self.__cycle_players(self.active_player_number + 1)
+                player = self.player_team[self.active_player_number]
+                self.tile_selected = player.Position
+                self.player_mode = 0
+                self.option_selected = 0
 
     def __cycle_players(self, number):
         self.active_player_number = number
         self.active_player = self.player_team[self.active_player_number]
         self.active_player.turn_beginning()
+
+    def __next_enemy_turn(self):
+        if self.active_enemy_number == len(self.enemy_team) - 1:  # Change to Player Team
+            self.__cycle_enemies(0)
+            self.active_team = 0
+        else:
+            self.__cycle_enemies(self.active_enemy_number + 1)
+            enemy = self.enemy_team[self.active_enemy_number]
+            self.tile_selected = enemy.Position
+
+    def __cycle_enemies(self, number):
+        self.active_enemy_number = number
+        self.active_enemy = self.enemy_team[self.active_enemy_number]
+        self.active_enemy.turn_beginning()

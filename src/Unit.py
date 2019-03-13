@@ -44,16 +44,6 @@ class Player(object):
         # discard step
         pass
 
-    def print_info(self):  # fix: prints None at end
-        print('\n' + 'Class:', self.Class_Name)
-        print('Position:', self.Position)
-        print('Stamina Pool:', self.Stamina.get_pool_size())
-        print('Remaining Stamina:', self.Stamina.points)
-        print('Weapon Damage:', self.Weapon_Damage.value)
-        print('Bonus Range:', self.Bonus_Range.value)
-        print('Armor:', self.Armor.value)
-        print('Hand Size:', self.HandSize.value)
-
     def get_name(self):
         return self.Player_Name + ': ' + self.Class_Name
 
@@ -128,18 +118,8 @@ class Enemy(object):
         self.Stamina.reset_stamina_points()
         # upkeep
 
-    def print_info(self):  # fix: prints None at end?
-        print('\n' + self.Race_Name, self.Role_Name)
-        print('Position:', self.Position)
-        print('Health:', self.Health_Points)
-        print('Stamina Pool:', self.Stamina.get_pool_size())
-        print('Remaining Stamina:', self.Stamina.points)
-        print('Weapon Damage:', self.Weapon_Damage.value)
-        print('Bonus Range:', self.Bonus_Range.value)
-        print('Armor:', self.Armor.value)
-
     def get_name(self):
-        return self.Race_Name + ' ' + self.Role_Name
+        return self.Race_Name + ' ' + self.Role_Name + ' ' + str(self.Enemy_Number)
 
     # Equipment Stuff
     def get_equipped_list(self):  # Needed?

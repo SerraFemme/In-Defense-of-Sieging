@@ -75,7 +75,7 @@
       "Enemies": [
         {
           "Number": "N",
-          "Race": "Zombies",
+          "Race": "Zombie",
           "Role": "Grunt",
           "Equipment": [
             "MartialMelee3",
@@ -84,7 +84,7 @@
         },
         {
           "Number": 2,
-          "Race": "Zombies",
+          "Race": "Zombie",
           "Role": "Grunt",
           "Equipment": [
             "MartialMelee4",
