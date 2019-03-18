@@ -60,7 +60,7 @@ class Player(object):
             if i.Name == item:
                 return i
 
-    def add_equipment(self, item):  # TODO: Make Dynamic
+    def add_equipment(self, item):  # TODO: Make Dynamic, "for key in dict"
         self.Equipment.append(item)
         if 'Damage' in item.Equipment_Stats:
             self.Weapon_Damage.add_effect(item.Name, item.Equipment_Stats['Damage'])

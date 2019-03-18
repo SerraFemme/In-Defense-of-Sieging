@@ -2,27 +2,28 @@ from random import randrange
 from src.CONSTANTS import CONSTANTS
 
 DIRECTION = CONSTANTS.DIRECTION_TUPLES
+direction_dict = CONSTANTS.DIRECTION_DICT
 map_percentage = CONSTANTS.STARTING_ROW_PERCENTAGE
 
 
-class MapInator(object):
+class MapCreator(object):
     """
     Creates and manages the Battle Map.
     Calculates then performs movement of units.
     Calls Judge Classes when needed to resolve attacks, effects, etc.
     """
 
-    # used to create an X by Y sized Map
-    def __init__(self, t, x=12, y=12, generator=None):
+    # TODO: convert all functions to use tuples for coordinates instead of separate x and y values
+    def __init__(self, t, size=(12, 12), generator=None):
         self.terrain_list = t
-        self.map_size = (x, y)
+        self.map_size = size
         self.main_list = []  # "List of rows"
-        if generator is None:
-            for i in range(y):
+        if generator is None:  # basic_map_generator
+            for i in range(self.map_size[1]):
                 sub_list = []  # List of Tiles
                 self.main_list.append(sub_list)
-                for j in range(x):
-                    sub_list.append(Tile(j, i, self.terrain_list.get_item(self.basic_map_generator())))
+                for j in range(self.map_size[0]):
+                    sub_list.append(Tile(j, i, self.terrain_list.get_item(self.__basic_map_generator())))
         else:  # TODO: Add premade and other random map generators
             pass
         starting_y = int(self.map_size[1] * map_percentage) - 1
@@ -30,7 +31,14 @@ class MapInator(object):
             starting_y = 1
         self.starting_range = starting_y
 
-    def basic_map_generator(self):
+        # Create dictionary of adjacent tiles for the current tile
+        for x in range(self.map_size[0]):
+            for y in range(self.map_size[1]):
+                position = (x, y)
+                tile = self.get_tile(x, y)
+                tile.adjacent_tile_positions = self.__calculate_adjacent_tiles(position)
+
+    def __basic_map_generator(self):
         basic_map_list = ['Grass', 'Hill', 'Mountain']
         r = randrange(1, 20)
         if 19 <= r <= 20:
@@ -40,6 +48,17 @@ class MapInator(object):
         else:
             value = 0
         return basic_map_list[value]
+
+    def __calculate_adjacent_tiles(self, location):
+        adjacent_dict = {}
+        for i in direction_dict:
+            coordinate = direction_dict[i]
+            x = location[0] + coordinate[0]
+            y = location[1] + coordinate[1]
+            if 0 <= x < self.map_size[0] and 0 <= y < self.map_size[1]:
+                adjacent_dict[i] = (x, y)
+
+        return adjacent_dict
 
     def get_tile(self, x, y):
         y_list = self.main_list[y]  # find the Y value
@@ -69,7 +88,8 @@ class Tile(object):
     def __init__(self, x, y, t):
         self.coordinate = (x, y)
         self.terrain = t  # dict of info
-        self.tileEffects = []
+        self.adjacent_tile_positions = None  # dict of adjacent tile coordinates
+        self.tile_effects = []
         self.unit = None
         if 'Unit' in self.terrain:
             self.unit = self.terrain['Unit']
@@ -86,8 +106,6 @@ class Tile(object):
             return self.terrain['Movement_Cost']
         else:
             return None
-
-    # def get_whatever(self): # getter for other misc. terrain info
 
     # Tile Effects
     # may need to change 'effect' variable
@@ -110,7 +128,7 @@ class Tile(object):
     def is_unoccupied(self):
         return self.unit is None
 
-    # TODO: add dict of adjacent tiles?
+    # TODO: add dict of adjacent tiles
 
 
 class TerrainGenerator(object):
@@ -156,57 +174,6 @@ class Movement(object):
                 self.battle_map.set_unit(x, y, unit)
                 unit.Position = (x, y)
                 self.battle_map.set_tile_unoccupied(start[0], start[1])
-
-    # def move_player(self, player):  # TODO: Delete
-    #     print('Which direction would you like to go?')
-    #     print('1: Up')
-    #     print('2: Right')
-    #     print('3: Down')
-    #     print('4: Left')
-    #     while True:
-    #         try:
-    #             v = int(input('Select Direction: '))
-    #         except ValueError:
-    #             print('Invalid input, try again' + '\n')
-    #         else:
-    #             if 0 < v <= 4:
-    #                 break
-    #             else:
-    #                 print(v, 'is not a valid selection, try again' + '\n')
-    #     while True:
-    #         try:
-    #             distance = int(input('Enter distance: '))
-    #         except ValueError:
-    #             print('Invalid input, try again')
-    #         else:
-    #             break
-    #     self.move_unit(player, DIRECTION[v-1], distance)
-
-    # def move_unit(self, unit, direction, distance):  # TODO: Delete
-    #     for i in range(distance):  # Move Up
-    #         if self.can_move_onto_tile(unit, direction[0], direction[1]):
-    #             self.move_onto_tile(unit, direction[0], direction[1])
-    #         else:
-    #             break
-
-    # def move_onto_tile(self, unit, x, y):  # TODO: Delete
-    #     coordinate = unit.Position
-    #     if self.can_move(unit):
-    #         new_position = (coordinate[0] + x, coordinate[1] + y)
-    #         destination = self.battle_map.get_tile(new_position[0],
-    #                                                new_position[1])
-    #         if destination.is_unoccupied():
-    #             destination_cost = destination.get_terrain_movement_cost()
-    #             if unit.Stamina.can_spend(destination_cost):
-    #                 unit.Position = new_position
-    #                 destination.unit = unit
-    #                 unit.Stamina.spend_stamina_points(destination_cost)
-    #                 self.battle_map.set_tile_unoccupied(coordinate[0],
-    #                                                     coordinate[1])
-    #             else:
-    #                 print('Insufficient Stamina')
-    #         else:
-    #             print(destination.coordinate, 'is occupied.')
 
     # def can_move(self, unit):  # FIXME: Convert for use by Enemies only
     #     coordinate = unit.Position

@@ -5,7 +5,7 @@ from src.ReadGameData import SubListManager
 from src.CONSTANTS import CONSTANTS
 from src.Unit import Enemy, Player
 from src.TeamPhases import PlayerMaker, HordeMaker
-from src.BattleMap import MapInator, Movement
+from src.BattleMap import MapCreator, Movement
 
 pygame.font.init()
 
@@ -48,7 +48,7 @@ standard_button_size = (160, 40)
 standard_button_center = (int(standard_button_size[0] / 2), int(standard_button_size[1] / 2))
 
 
-class Graphics(object):  # TODO: complete and integrate
+class Graphics(object):
     def __init__(self, master_list, image_dict, display, fps_clock):
         self.master_list = master_list
         self.image_dict = image_dict
@@ -60,7 +60,7 @@ class Graphics(object):  # TODO: complete and integrate
     def make_title(self):  # TODO: rename, finish
         pass
 
-    def background(self, color):  # TODO: finish
+    def background(self, color_in):  # TODO: finish
         pass
 
     def box_with_text(self, text, box_color, position, size):
@@ -105,6 +105,9 @@ class Graphics(object):  # TODO: complete and integrate
     def __text_object(self, text, font):
         text_surface = font.render(text, True, black)
         return text_surface, text_surface.get_rect()
+
+    def __calculate_box_size(self):
+        pass
 
     def terminate(self):
         pygame.quit()
@@ -615,12 +618,11 @@ class EncounterSelect(object):
 
         tribe_top = topCoord
 
-        # TODO: make proper functions for making left and right arrows
         if self.tribe_selected > 0:
-            self.__right_arrow(arrow_color,
-                               (window_width_quarter - arrow_box_center[0],
-                                tribe_top),
-                               arrow_box_size)
+            self.__left_arrow(arrow_color,
+                              (window_width_quarter - arrow_box_center[0],
+                               tribe_top),
+                              arrow_box_size)
 
         tribe_name = self.tribe_list[self.tribe_selected]
 
@@ -664,7 +666,6 @@ class EncounterSelect(object):
                                 diff_top),
                                arrow_box_size)
 
-        # TODO: Print Encounters to screen
         encounter_top = diff_top + diff_button_size[1] + 10
 
         encounter_box_size = (400, 50)
@@ -843,7 +844,7 @@ class EncounterSelect(object):
                 if self.top_displayed + self.max_displayed < len(self.displayed_encounters):
                     self.top_displayed += 1
 
-        elif event.key == K_e or event.key == K_RETURN:  # FIXME: Do nothing when no valid encounter can be selected
+        elif event.key == K_e or event.key == K_RETURN:  # FIXME: breaks when chosen encounter is None?
             self.chosen_encounter = self.displayed_encounters[self.encounter_selected]
             self.category_selected = 2
             self.preview_encounter = True
@@ -894,7 +895,7 @@ class EncounterSelect(object):
         return diff_dict
 
 
-class BattleSimulation(object):
+class BattleSimulation(object):  # TODO: strip out game logic and leave only graphical logic
     """
     Create map, size based on player team size
     auto-place enemy team
@@ -908,14 +909,15 @@ class BattleSimulation(object):
         self.terrain_list = SubListManager(graphics.master_list.get_list('Terrain'))
         self.player_team = player_team
         self.enemy_team = enemy_team
-        self.battle_map = MapInator(self.terrain_list)
+        self.battle_map = MapCreator(self.terrain_list)
         self.map_size = self.battle_map.map_size
         self.movement = None
         self.map_display_size = (self.map_size[0] * tile_size[0], self.map_size[1] * tile_size[1])
-        # TODO: Adjust MAX_CAM_PAN
+        self.redraw_map = True
+
+        # TODO: Adjust MAX_CAM_PAN, take into account the info boxes
         self.MAX_CAM_PAN = (abs(window_width_half - int(self.map_display_size[0] / 2)) + tile_size[0],
                             abs(window_width_half - int(self.map_display_size[1] / 2)) + tile_size[1])
-        self.redraw_map = True
         self.camera_moving = False
         self.camera_offset_x = 0
         self.camera_offset_y = 0
@@ -926,7 +928,7 @@ class BattleSimulation(object):
 
         self.initiate = True
         self.tile_selected = None
-        self.adjacent_tiles = None
+        self.adjacent_tiles = None  # TODO: Delete, being moved to BattleMap.Tile
 
         self.turn_counter = 1
 
@@ -995,7 +997,7 @@ class BattleSimulation(object):
                 if self.player_mode == 2:
                     self.__draw_action_bar()
                 else:
-                    self.__draw_player_info()
+                    self.__draw_unit_info()
             elif self.active_team == 1:  # Enemy Turn
                 pass
 
@@ -1209,8 +1211,8 @@ class BattleSimulation(object):
         if self.initiate:
             boxes = [{'text': 'Select Starting Position',
                       'size': (260, 30)},
-                     {'text': player.Player_Name,
-                      'size': (120, 30)}]
+                     {'text': player.Player_Name + ': ' + player.Class_Name,
+                      'size': (180, 30)}]
         elif self.active_team == 0:  # Player Team Turn
             if self.player_mode == 0:  # Cursor
                 boxes = [{'text': 'Mode: Cursor',
@@ -1230,7 +1232,7 @@ class BattleSimulation(object):
             boxes = [{'text': team + ': Turn ' + str(self.turn_counter),
                       'size': (230, 30)},
                      {'text': enemy.get_name(),
-                      'size': (160, 30)}]
+                      'size': (200, 30)}]
 
         for box in boxes:
             text = box['text']
@@ -1244,7 +1246,7 @@ class BattleSimulation(object):
 
             topCoord += size[1] + 5
 
-    def __draw_player_info(self, top_coordinate=None):
+    def __draw_unit_info(self, top_coordinate=None):  # TODO: Clean Up
         info_box_height = 50
         if top_coordinate is None:
             top_coordinate = window_height - info_box_height
@@ -1309,12 +1311,13 @@ class BattleSimulation(object):
         armor_number = self.active_player.Armor.value
         self.graphics.write_text(str(armor_number), (armor_value_x, info_box.centery))
 
-        # Number of Cards in Hand
-        text = 'Cards:'
-        self.graphics.write_text(text, (cards_x, info_box.centery))
+        if self.active_team == 0:
+            # Number of Cards in Hand
+            text = 'Cards:'
+            self.graphics.write_text(text, (cards_x, info_box.centery))
 
-        cards_number = 'N/A'  # TODO: get hand size
-        self.graphics.write_text(cards_number, (cards_value_x, info_box.centery))
+            cards_number = 'N/A'  # TODO: get hand size
+            self.graphics.write_text(cards_number, (cards_value_x, info_box.centery))
 
     def __draw_action_bar(self):
         action_bar_height = 150
@@ -1329,9 +1332,8 @@ class BattleSimulation(object):
                                         action_bar_size)
 
         if self.option_selected != 3:  # If not player info selected
-            self.__draw_player_info(top_coordinate)
+            self.__draw_unit_info(top_coordinate)
 
-        # TODO: add action categories
         option_box_size = (160, 30)
         option_box_center = (int(option_box_size[0] / 2), int(option_box_size[1] / 2))
         option_coordinate = top_coordinate
@@ -1344,13 +1346,22 @@ class BattleSimulation(object):
             self.graphics.write_text(option, action_box)
             option_coordinate += option_box_size[1]
 
-        # TODO: print cards to screen when hand selected
+        if self.option_selected == 0:  # TODO: print cards to screen when hand selected
+            self.__draw_hand()
 
-        # TODO: print enchantments when selected
+        elif self.option_selected == 1:  # TODO: print passive to screen
+            self.__draw_passive()
 
-        # TODO: print info tabs and info when selected
+        elif self.option_selected == 2:  # TODO: print enchantments when selected
+            self.__draw_enchantment()
 
-    def __draw_cards(self):
+        elif self.option_selected == 3:  # TODO: print info tabs and info when selected
+            self.__draw_information_tabs()
+
+        elif self.option_selected == 4:  # TODO: print "end of turn" effects
+            pass
+
+    def __draw_hand(self):
         # TODO: print cards in hand, make scrollable
         pass
 
@@ -1381,7 +1392,7 @@ class BattleSimulation(object):
                 player.Position = self.tile_selected
                 self.active_player_number += 1
 
-    def __calculate_adjacent_tiles(self, location):  # TODO: move to battle_map?
+    def __calculate_adjacent_tiles(self, location):  # TODO: move to BattleMap.Tile
         adjacent_dict = {}
         for i in direction_dict:
             coordinate = direction_dict[i]
