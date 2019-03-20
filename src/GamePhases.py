@@ -12,41 +12,47 @@ class BattlePhase(object):
         self.battle_map = battle_map
         self.active_unit_number = 0
         self.active_unit = None
-        self.active_team_number = 0
         self.active_team = None
+        self.active_team_number = 0
+        self.team_list = ['Player Team',
+                          'Enemy Team']
         self.active_team_size = None
         self.initiate = True
 
     def setup(self):
-        self.__place_enemies()  # TODO: place enemies
+        self.place_enemy_team_random()
 
-        self.__place_players()  # TODO: place players
-        pass
+        self.set_team(0)
+        self.set_unit(0)
 
-    def run(self):
-        if self.active_unit_number == 0:
-            pass
+    def set_unit(self, value):
+        if value <= self.active_team_size:
+            self.active_unit = self.active_team[value]
+            self.active_unit_number = value
 
-        self.__cycle_unit()  # TODO: pass to other team
-        pass
+    def set_team(self, value):
+        if value == 0:
+            self.active_team = self.player_team
+        else:
+            self.active_team = self.enemy_team
 
-    def __place_enemies(self):
-        pass
+        self.active_team_size = len(self.active_team)
 
-    def __place_players(self):
-        pass
-
-    def __cycle_unit(self):
+    def cycle_unit(self, initiate=False):
         """
         Changes active unit to next unit on team.
-        If last unit, switch to other team.
+        If last unit, switches active team.
         """
-
         self.active_unit_number += 1
-        if self.active_unit_number > self.active_team_size:
-            self.__cycle_teams()
+        if initiate is False:
+            if self.active_unit_number >= self.active_team_size:
+                self.__cycle_teams()
+            else:
+                self.active_unit = self.active_team[self.active_unit_number]
+                self.active_unit.turn_beginning()
         else:
-            self.active_unit = self.active_team[self.active_unit_number]
+            if self.active_unit_number < self.active_team_size:
+                self.active_unit = self.active_team[self.active_unit_number]
 
     def __cycle_teams(self):
         """
@@ -65,6 +71,40 @@ class BattlePhase(object):
 
         self.active_team_size = len(self.active_team)
         self.active_unit = self.active_team[self.active_unit_number]
+
+    def place_player(self, position_selected):
+        initiate = False
+        if self.active_unit_number < len(self.player_team):
+            tile = self.battle_map.get_tile(position_selected[0], position_selected[1])
+            if tile.unit is None:
+                player = self.player_team[self.active_unit_number]
+                tile.unit = player
+                player.Position = position_selected
+                if self.active_unit_number < len(self.player_team):
+                    initiate = True
+                self.cycle_unit(True)
+
+        return initiate
+
+    def place_enemy_team_random(self):
+        """
+        In enemy order, randomly places an enemy on an unoccupied tile on their side of the map
+        """
+        for enemy in self.enemy_team:
+            self.place_enemy_random(enemy)
+
+    def place_enemy_random(self, enemy):
+        while True:
+            x = randrange(0, self.battle_map.map_size[0] - 1)
+            y = randrange(self.battle_map.map_size[1] - self.battle_map.starting_range,
+                          self.battle_map.map_size[1]) - 1
+            if self.battle_map.is_tile_unoccupied(x, y):
+                self.battle_map.set_unit(x, y, enemy)
+                enemy.Position = (x, y)
+                break
+
+    def team_string(self):
+        return self.team_list[self.active_team_number]
 
 
 class PlayerTurn(object):  # TODO: Update to new system

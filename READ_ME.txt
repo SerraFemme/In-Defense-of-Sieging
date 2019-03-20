@@ -16,7 +16,7 @@ Menu Controls:
 -Left: Left Arrow Key or A
 -Right: Right Arrow Key or D
 -Select: Enter Key or E
--Back: Q
+-Back: Q (when applicable)
 
 Battle Controls:
 -Camera Up: Up Arrow Key
@@ -60,4 +60,21 @@ Game Menus:
 Battle Phase:
 -In player turn order: select starting position
 --Once a position has been selected, the starting position cannot be altered
--Once all players have selected their starting positions, then game proceeds to the start of battle
+-Once all players have selected their starting positions, then the game proceeds
+        to the start of battle
+
+Player Turn:
+-Modes:
+--Cursor: Display info of the highlighted tile, any effects on it, and info of
+        the unit occupying it (Not yet implemented)
+--Movement: Highlights adjacent tiles of the active player
+---Yellow: available to move onto
+---Red: Occupied, cannot be moved onto
+---Grey: Insufficient stamina to move onto the tile
+--Action:
+---Hand: Displays cards in hand (Not yet implemented)
+---Passive: Displays info, and buttons if available, of the player's class (Not yet implemented)
+---Enchantments: Displays permanent cards affecting the player (Not yet implemented)
+---Player Info: Displays tabs of various info screens about the player (Not yet implemented)
+---End Turn: Passes turn to next player. Instead passes turn to enemy team if
+        last player ends their turn.

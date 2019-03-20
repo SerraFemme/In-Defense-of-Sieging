@@ -53,6 +53,7 @@ class StatTracker(object):
 class Stamina(object):
     """
     Used by Units to keep track of Stamina Points, Pool, and effects
+    Unique in the fact that it has both a pool value and a point value
     """
 
     def __init__(self, value=10):

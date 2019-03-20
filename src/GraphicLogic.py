@@ -4,8 +4,9 @@ from pygame.locals import *
 from src.ReadGameData import SubListManager
 from src.CONSTANTS import CONSTANTS
 from src.Unit import Enemy, Player
-from src.TeamPhases import PlayerMaker, HordeMaker
-from src.BattleMap import MapCreator, Movement
+from src.TeamCreator import PlayerMaker, HordeMaker
+from src.BattleMap import MapManager
+from src.GamePhases import BattlePhase
 
 pygame.font.init()
 
@@ -909,9 +910,10 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
         self.terrain_list = SubListManager(graphics.master_list.get_list('Terrain'))
         self.player_team = player_team
         self.enemy_team = enemy_team
-        self.battle_map = MapCreator(self.terrain_list)
+        self.battle_map = MapManager(self.terrain_list)
         self.map_size = self.battle_map.map_size
-        self.movement = None
+        self.battle_phase = BattlePhase(player_team, enemy_team, self.battle_map)  # TODO: incorporate into class
+
         self.map_display_size = (self.map_size[0] * tile_size[0], self.map_size[1] * tile_size[1])
         self.redraw_map = True
 
@@ -927,24 +929,16 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
         self.camera_right = False
 
         self.initiate = True
-        self.tile_selected = None
-        self.adjacent_tiles = None  # TODO: Delete, being moved to BattleMap.Tile
+        self.players_placed = 0
+        self.position_selected = None  # Tuple
 
         self.turn_counter = 1
 
-        self.active_team = 0
-        self.team_turn = ['Player Team',
-                          'Enemy Team']
-
-        self.active_player_number = 0
-        self.active_player = None
         self.player_mode = 0
         self.mode_list = ['Cursor',
                           'Movement',
                           'Action']
 
-        self.active_enemy_number = 0
-        self.active_enemy = None
         self.enemy_mode = 0
         self.enemy_mode_list = ['Movement',
                                 'Action']
@@ -957,14 +951,12 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                             'End Turn']
 
     def start(self):
-        if self.movement is None:
-            self.movement = Movement(self.battle_map)
-            self.movement.place_enemy_team_random(self.enemy_team)
+        self.battle_phase.setup()
 
-        if self.tile_selected is None:
+        if self.position_selected is None:
             x = int(self.map_size[0] / 2)
             y = int(self.battle_map.starting_range / 2)
-            self.tile_selected = (x, y)
+            self.position_selected = (x, y)
 
         while True:
             for event in pygame.event.get():
@@ -977,8 +969,8 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                 elif event.type == KEYUP:
                     self.__camera_stop(event)
 
-            if self.active_player_number >= len(self.player_team) and self.initiate:  # Start Battle
-                self.__next_player_turn()
+            active_team = self.battle_phase.active_team_number
+            # cycle unit?
 
             if self.redraw_map or self.camera_moving:
                 mapSurf = self.__draw_map()
@@ -993,12 +985,12 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             self.graphics.display_surface.blit(mapSurf, mapSurfRect)
 
             self.__draw_title()
-            if self.initiate is False and self.active_team == 0:
+            if self.initiate is False and active_team == 0:
                 if self.player_mode == 2:
                     self.__draw_action_bar()
                 else:
                     self.__draw_unit_info()
-            elif self.active_team == 1:  # Enemy Turn
+            elif active_team == 1:  # Enemy Turn
                 pass
 
             pygame.display.update()
@@ -1043,51 +1035,63 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             self.camera_right = False
 
     def __player_input(self, event):
-        if self.player_mode == 0:  # Cursor
-            self.__cursor_mode(event)
-        elif self.player_mode == 1:  # Movement
-            self.__movement_cursor(event)
-        elif self.player_mode == 2:  # Action
-            self.__action_mode(event)
+        unit = self.battle_phase.active_unit
+        if isinstance(unit, Player):
+            if self.player_mode == 0:  # Cursor
+                self.__cursor_mode(event)
+            elif self.player_mode == 1:  # Movement
+                self.__movement_cursor(event)
+            elif self.player_mode == 2:  # Action
+                self.__action_mode(event)
 
-    def __cursor_mode(self, event):
+    def __cursor_mode(self, event):  # TODO: clean up
         if event.key == K_w:  # Up
             if self.initiate:
-                if self.tile_selected[1] < self.battle_map.starting_range:
-                    self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
-            elif self.tile_selected[1] < self.map_size[0] - 1:
-                self.tile_selected = (self.tile_selected[0], self.tile_selected[1] + 1)
+                if self.position_selected[1] < self.battle_map.starting_range:
+                    self.position_selected = (self.position_selected[0], self.position_selected[1] + 1)
+            elif self.position_selected[1] < self.map_size[0] - 1:
+                self.position_selected = (self.position_selected[0], self.position_selected[1] + 1)
         elif event.key == K_s:  # Down
-            if self.tile_selected[1] > 0:
-                self.tile_selected = (self.tile_selected[0], self.tile_selected[1] - 1)
+            if self.position_selected[1] > 0:
+                self.position_selected = (self.position_selected[0], self.position_selected[1] - 1)
         elif event.key == K_d:  # Right
-            if self.tile_selected[0] < self.map_size[0] - 1:
-                self.tile_selected = (self.tile_selected[0] + 1, self.tile_selected[1])
+            if self.position_selected[0] < self.map_size[0] - 1:
+                self.position_selected = (self.position_selected[0] + 1, self.position_selected[1])
         elif event.key == K_a:  # Left
-            if self.tile_selected[0] > 0:
-                self.tile_selected = (self.tile_selected[0] - 1, self.tile_selected[1])
+            if self.position_selected[0] > 0:
+                self.position_selected = (self.position_selected[0] - 1, self.position_selected[1])
         elif event.key == K_e or event.key == K_RETURN:
             if self.initiate:
-                self.__place_player()
+                self.battle_phase.place_player(self.position_selected)
+                self.players_placed += 1
+                # FIXME: active unit number resets before initiate can be set to false
+                if self.players_placed == len(self.player_team):
+                    self.initiate = False
+                    self.battle_phase.set_team(0)
+                    self.battle_phase.set_unit(0)
+                    self.position_selected = self.battle_phase.active_unit.Position
+                    self.battle_phase.active_unit.turn_beginning()
 
         elif event.key == K_SPACE:
             if self.initiate is False:
                 self.player_mode = 1
-                self.adjacent_tiles = self.__calculate_adjacent_tiles(self.active_player.Position)
-                self.tile_selected = self.active_player.Position
+                self.position_selected = self.battle_phase.active_unit.Position
 
     def __movement_cursor(self, event):
-        if event.key == K_w and 'up' in self.adjacent_tiles:
-            self.tile_selected = self.adjacent_tiles['up']
-        elif event.key == K_s and 'down' in self.adjacent_tiles:
-            self.tile_selected = self.adjacent_tiles['down']
-        elif event.key == K_d and 'right' in self.adjacent_tiles:
-            self.tile_selected = self.adjacent_tiles['right']
-        elif event.key == K_a and 'left' in self.adjacent_tiles:
-            self.tile_selected = self.adjacent_tiles['left']
+        player = self.battle_phase.active_unit
+        position = player.Position
+        tile = self.battle_map.get_tile(position[0], position[1])
+        adjacent_tiles = tile.adjacent_tile_positions
+        if event.key == K_w and 'up' in adjacent_tiles:
+            self.position_selected = adjacent_tiles['up']
+        elif event.key == K_s and 'down' in adjacent_tiles:
+            self.position_selected = adjacent_tiles['down']
+        elif event.key == K_d and 'right' in adjacent_tiles:
+            self.position_selected = adjacent_tiles['right']
+        elif event.key == K_a and 'left' in adjacent_tiles:
+            self.position_selected = adjacent_tiles['left']
         elif event.key == K_e or event.key == K_RETURN:
-            self.movement.move_unit(self.active_player, self.tile_selected)
-            self.adjacent_tiles = self.__calculate_adjacent_tiles(self.active_player.Position)
+            self.battle_map.move_unit(player, self.position_selected)
         elif event.key == K_SPACE:
             self.player_mode = 2
 
@@ -1131,7 +1135,10 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             elif self.option_selected == 3:
                 pass  # TODO: info tab action?
             elif self.option_selected == 4:  # Pass Turn
-                self.__next_player_turn()
+                self.battle_phase.cycle_unit()
+                self.position_selected = self.battle_phase.active_unit.Position
+                self.player_mode = 0
+                self.option_selected = 0
 
         elif event.key == K_SPACE:
             self.player_mode = 0
@@ -1154,7 +1161,6 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                 spaceRect = pygame.Rect((x * tile_size[0], y_invert * tile_size[1],
                                          tile_size[0], tile_size[1]))
                 tile = self.battle_map.get_tile(x, y)
-                unit = tile.unit
 
                 terrain_type = tile.get_terrain_type()
                 tile_image = self.image_dict[terrain_type]
@@ -1162,40 +1168,44 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                 mapSurf.blit(tile_image, spaceRect)
 
                 if self.initiate and tile.coordinate[1] <= self.battle_map.starting_range:
-                    if unit is None:  # Tile Empty
+                    if tile.unit is None:  # Tile Empty
                         mapSurf.blit(self.image_dict['valid_move_tile'], spaceRect)
                     else:  # Tile Occupied
                         mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
                 elif self.player_mode == 1:  # Movement Mode
-                    for i in self.adjacent_tiles:
-                        if tile.coordinate == self.adjacent_tiles[i]:
+                    unit_position = self.battle_phase.active_unit.Position
+                    unit_tile = self.battle_map.get_tile(unit_position[0], unit_position[1])
+                    adjacent_tiles = unit_tile.adjacent_tile_positions
+                    for i in adjacent_tiles:
+                        if tile.coordinate == adjacent_tiles[i]:
                             if tile.get_terrain_movement_cost() is not None:
                                 # if tile.get_terrain_movement_cost() > self.active_player.Stamina.points:
-                                if self.active_player.Stamina.can_spend(tile.get_terrain_movement_cost()) is False:
+                                if self.battle_phase.active_unit.Stamina.can_spend(tile.get_terrain_movement_cost()) is False:
                                     mapSurf.blit(self.image_dict['insuf_stam_tile'], spaceRect)
-                                elif unit is None:  # Tile Empty
+                                elif tile.unit is None:  # Tile Empty
                                     mapSurf.blit(self.image_dict['valid_move_tile'], spaceRect)
                                 else:  # Tile Occupied
                                     mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
                             else:  # Tile Occupied
                                 mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
 
-                if self.tile_selected is not None and self.player_mode != 2:
-                    if self.tile_selected[0] == x and self.tile_selected[1] == y:
+                if self.position_selected is not None and self.player_mode != 2:  # Draw Cursor
+                    if self.position_selected[0] == x and self.position_selected[1] == y:
                         mapSurf.blit(self.image_dict['cursor'], spaceRect)
 
-                if unit is not None:
-                    if unit != 'Invalid':
+                if tile.unit is not None:  # Draw Unit Icon
+                    if tile.unit != 'Invalid':
                         text = icon_text
-                        if isinstance(unit, Player):
+                        if isinstance(tile.unit, Player):
                             mapSurf.blit(self.image_dict['player_token'], spaceRect)
                             text = small_text
-                            if self.initiate is False and unit.Player_Number == self.active_player_number + 1:
+                            if self.initiate is False and tile.unit.Player_Number\
+                                    == self.battle_phase.active_unit_number + 1:
                                 mapSurf.blit(self.image_dict['active_player'], spaceRect)
 
-                        elif isinstance(unit, Enemy):
+                        elif isinstance(tile.unit, Enemy):
                             mapSurf.blit(self.image_dict['enemy_token'], spaceRect)
-                        self.graphics.write_text(unit.Icon, spaceRect, text, mapSurf)
+                        self.graphics.write_text(tile.unit.Icon, spaceRect, text, mapSurf)
 
         return mapSurf
 
@@ -1203,36 +1213,35 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
         topCoord = 0
         box_color = green_yellow
         boxes = None
-        team = self.team_turn[self.active_team]
-        if self.active_team == 0:
-            player = self.player_team[self.active_player_number]
-        elif self.active_team == 1:
-            enemy = self.enemy_team[self.active_enemy_number]
-        if self.initiate:
-            boxes = [{'text': 'Select Starting Position',
-                      'size': (260, 30)},
-                     {'text': player.Player_Name + ': ' + player.Class_Name,
-                      'size': (180, 30)}]
-        elif self.active_team == 0:  # Player Team Turn
-            if self.player_mode == 0:  # Cursor
-                boxes = [{'text': 'Mode: Cursor',
-                          'size': (144, 30)}]
-            elif self.player_mode == 1:  # Movement
-                boxes = [{'text': 'Mode: Movement',
+        team = self.battle_phase.team_string()
+        unit = self.battle_phase.active_unit
+
+        if isinstance(unit, Player):  # Player Team active
+            if self.initiate:
+                boxes = [{'text': 'Select Starting Position',
+                          'size': (260, 30)},
+                         {'text': unit.Player_Name + ': ' + unit.Class_Name,
                           'size': (180, 30)}]
-            elif self.player_mode == 2:  # Action Mode
-                boxes = [{'text': 'Mode: Action',
-                          'size': (150, 30)}]
-            boxes.insert(0, {'text': player.Player_Name + ': ' + player.Class_Name,
-                             'size': (180, 30)})
+            else:
+                if self.player_mode == 0:  # Cursor
+                    boxes = [{'text': 'Mode: Cursor',
+                              'size': (144, 30)}]
+                elif self.player_mode == 1:  # Movement
+                    boxes = [{'text': 'Mode: Movement',
+                              'size': (180, 30)}]
+                elif self.player_mode == 2:  # Action Mode
+                    boxes = [{'text': 'Mode: Action',
+                              'size': (150, 30)}]
+                boxes.insert(0, {'text': unit.Player_Name + ': ' + unit.Class_Name,
+                                 'size': (180, 30)})
+
+        elif isinstance(unit, Enemy):
+            boxes = [{'text': unit.get_name(),
+                      'size': (200, 30)}]
+
+        if self.initiate is False:
             boxes.insert(0, {'text': team + ': Turn ' + str(self.turn_counter),
                              'size': (230, 30)})
-
-        elif self.active_team == 1:  # Enemy Team Turn
-            boxes = [{'text': team + ': Turn ' + str(self.turn_counter),
-                      'size': (230, 30)},
-                     {'text': enemy.get_name(),
-                      'size': (200, 30)}]
 
         for box in boxes:
             text = box['text']
@@ -1247,6 +1256,8 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             topCoord += size[1] + 5
 
     def __draw_unit_info(self, top_coordinate=None):  # TODO: Clean Up
+        unit = self.battle_phase.active_unit
+
         info_box_height = 50
         if top_coordinate is None:
             top_coordinate = window_height - info_box_height
@@ -1279,39 +1290,42 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
         text = 'Health:'
         self.graphics.write_text(text, (health_x, info_box.centery))
 
-        text = 'N/A'
+        if isinstance(unit, Player):
+            text = 'N/A'
+        elif isinstance(unit, Enemy):
+            text = str(unit.Health_Points)
         self.graphics.write_text(text, (health_value_x, info_box.centery))
 
         # Stamina
         text = 'Stamina:'
         self.graphics.write_text(text, (stamina_x, info_box.centery))
 
-        top_number = self.active_player.Stamina.points
-        bottom_number = self.active_player.Stamina.get_pool_size()
+        top_number = unit.Stamina.points
+        bottom_number = unit.Stamina.get_pool_size()
         self.graphics.write_fraction(top_number, bottom_number, (stamina_fraction_x, info_box.centery))
 
         # Weapon Damage
         text = 'Weapon Damage:'
         self.graphics.write_text(text, (weapon_x, info_box.centery))
 
-        damage_number = self.active_player.Weapon_Damage.value
+        damage_number = unit.Weapon_Damage.value
         self.graphics.write_text(str(damage_number), (weapon_value_x, info_box.centery))
 
         # Bonus Range
         text = 'Bonus Range:'
         self.graphics.write_text(text, (range_x, info_box.centery))
 
-        range_number = self.active_player.Bonus_Range.value
+        range_number = unit.Bonus_Range.value
         self.graphics.write_text(str(range_number), (range_value_x, info_box.centery))
 
         # Armor
         text = 'Armor:'
         self.graphics.write_text(text, (armor_x, info_box.centery))
 
-        armor_number = self.active_player.Armor.value
+        armor_number = unit.Armor.value
         self.graphics.write_text(str(armor_number), (armor_value_x, info_box.centery))
 
-        if self.active_team == 0:
+        if isinstance(unit, Player):
             # Number of Cards in Hand
             text = 'Cards:'
             self.graphics.write_text(text, (cards_x, info_box.centery))
@@ -1382,59 +1396,3 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
 
         # TODO: print unit info
         pass
-
-    def __place_player(self):
-        if self.active_player_number < len(self.player_team):
-            tile = self.battle_map.get_tile(self.tile_selected[0], self.tile_selected[1])
-            if tile.unit is None:
-                player = self.player_team[self.active_player_number]
-                tile.unit = player
-                player.Position = self.tile_selected
-                self.active_player_number += 1
-
-    def __calculate_adjacent_tiles(self, location):  # TODO: move to BattleMap.Tile
-        adjacent_dict = {}
-        for i in direction_dict:
-            coordinate = direction_dict[i]
-            x = location[0] + coordinate[0]
-            y = location[1] + coordinate[1]
-            if 0 <= x < self.map_size[0] and 0 <= y < self.map_size[1]:
-                adjacent_dict[i] = (x, y)
-
-        return adjacent_dict
-
-    def __next_player_turn(self):  # TODO: Clean Up
-        if self.initiate:
-            if self.active_player_number >= len(self.player_team):
-                self.initiate = False
-                self.__cycle_players(0)
-                self.tile_selected = self.active_player.Position
-        else:
-            if self.active_player_number == len(self.player_team) - 1:
-                self.__cycle_players(0)
-                self.active_team = 1
-            else:  # Change to Enemy Team
-                self.__cycle_players(self.active_player_number + 1)
-                player = self.player_team[self.active_player_number]
-                self.tile_selected = player.Position
-                self.player_mode = 0
-                self.option_selected = 0
-
-    def __cycle_players(self, number):
-        self.active_player_number = number
-        self.active_player = self.player_team[self.active_player_number]
-        self.active_player.turn_beginning()
-
-    def __next_enemy_turn(self):
-        if self.active_enemy_number == len(self.enemy_team) - 1:  # Change to Player Team
-            self.__cycle_enemies(0)
-            self.active_team = 0
-        else:
-            self.__cycle_enemies(self.active_enemy_number + 1)
-            enemy = self.enemy_team[self.active_enemy_number]
-            self.tile_selected = enemy.Position
-
-    def __cycle_enemies(self, number):
-        self.active_enemy_number = number
-        self.active_enemy = self.enemy_team[self.active_enemy_number]
-        self.active_enemy.turn_beginning()
