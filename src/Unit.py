@@ -40,7 +40,7 @@ class Player(object):
         # upkeep
 
     def turn_ending(self):
-        # end step
+        # end step effects
         # discard step
         pass
 
@@ -118,6 +118,10 @@ class Enemy(object):
         self.Stamina.reset_stamina_points()
         # upkeep
 
+    def turn_ending(self):
+        # end step effects
+        pass
+
     def get_name(self):
         return self.Race_Name + ' ' + self.Role_Name + ' ' + str(self.Enemy_Number)
 
@@ -153,4 +157,3 @@ class Enemy(object):
             self.Alive = False
         else:
             self.Health_Points -= value
-

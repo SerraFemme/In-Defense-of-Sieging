@@ -6,7 +6,7 @@ from src.CONSTANTS import CONSTANTS
 from src.Unit import Enemy, Player
 from src.TeamCreator import PlayerMaker, HordeMaker
 from src.BattleMap import MapManager
-from src.GamePhases import BattlePhase
+from src.GamePhases import BattlePhase, EnemyTurn
 
 pygame.font.init()
 
@@ -720,7 +720,7 @@ class EncounterSelect(object):
                                          encounter_top),
                                         encounter_box_size)
 
-    def __draw_preview(self):
+    def __draw_preview(self):  # TODO: complete
         pygame.font.init()
         small_text = pygame.font.Font(default_font, 20)
 
@@ -903,7 +903,6 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
     players select starting position
     go to run_battle()
     """
-
     def __init__(self, graphics, player_team, enemy_team):
         self.graphics = graphics
         self.image_dict = graphics.image_dict
@@ -912,7 +911,8 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
         self.enemy_team = enemy_team
         self.battle_map = MapManager(self.terrain_list)
         self.map_size = self.battle_map.map_size
-        self.battle_phase = BattlePhase(player_team, enemy_team, self.battle_map)  # TODO: incorporate into class
+        self.battle_phase = BattlePhase(player_team, enemy_team, self.battle_map)
+        self.enemy_turn = EnemyTurn(self.battle_map, self.player_team)
 
         self.map_display_size = (self.map_size[0] * tile_size[0], self.map_size[1] * tile_size[1])
         self.redraw_map = True
@@ -950,6 +950,14 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                             'Player Info',
                             'End Turn']
 
+        self.info_box_height = 50
+
+        self.action_bar_height = 150
+        self.action_bar_top = window_height - self.action_bar_height
+        self.side_bar_width = 200
+        self.side_bar_y = window_width - self.side_bar_width
+        self.side_bar_displayed = False
+
     def start(self):
         self.battle_phase.setup()
 
@@ -959,18 +967,18 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             self.position_selected = (x, y)
 
         while True:
-            for event in pygame.event.get():
+            active_team = self.battle_phase.active_team_number
+
+            for event in pygame.event.get():  # TODO: Add pause menu option
                 if event.type == QUIT:
                     self.graphics.terminate()
                 elif event.type == KEYDOWN:
                     self.__camera_start_move(event)
-                    self.__player_input(event)
+                    if active_team == 0:
+                        self.__player_input(event)
                     self.redraw_map = True
                 elif event.type == KEYUP:
                     self.__camera_stop(event)
-
-            active_team = self.battle_phase.active_team_number
-            # cycle unit?
 
             if self.redraw_map or self.camera_moving:
                 mapSurf = self.__draw_map()
@@ -986,12 +994,17 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
 
             self.__draw_title()
             if self.initiate is False and active_team == 0:
+                self.__draw_tile_info_bar()
                 if self.player_mode == 2:
                     self.__draw_action_bar()
                 else:
                     self.__draw_unit_info()
             elif active_team == 1:  # Enemy Turn
-                pass
+                enemy = self.battle_phase.active_unit
+                take_turn = self.enemy_turn.start_turn(enemy)
+                if take_turn:
+                    self.enemy_turn.take_turn(enemy)
+                self.battle_phase.cycle_unit()
 
             pygame.display.update()
             self.graphics.fps_clock.tick(fps)
@@ -1037,6 +1050,11 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
     def __player_input(self, event):
         unit = self.battle_phase.active_unit
         if isinstance(unit, Player):
+            if event.key == K_TAB:
+                if self.side_bar_displayed:
+                    self.side_bar_displayed = False
+                else:
+                    self.side_bar_displayed = True
             if self.player_mode == 0:  # Cursor
                 self.__cursor_mode(event)
             elif self.player_mode == 1:  # Movement
@@ -1064,7 +1082,6 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             if self.initiate:
                 self.battle_phase.place_player(self.position_selected)
                 self.players_placed += 1
-                # FIXME: active unit number resets before initiate can be set to false
                 if self.players_placed == len(self.player_team):
                     self.initiate = False
                     self.battle_phase.set_team(0)
@@ -1180,7 +1197,8 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                         if tile.coordinate == adjacent_tiles[i]:
                             if tile.get_terrain_movement_cost() is not None:
                                 # if tile.get_terrain_movement_cost() > self.active_player.Stamina.points:
-                                if self.battle_phase.active_unit.Stamina.can_spend(tile.get_terrain_movement_cost()) is False:
+                                if self.battle_phase.active_unit.Stamina.can_spend(tile.get_terrain_movement_cost())\
+                                        is False:
                                     mapSurf.blit(self.image_dict['insuf_stam_tile'], spaceRect)
                                 elif tile.unit is None:  # Tile Empty
                                     mapSurf.blit(self.image_dict['valid_move_tile'], spaceRect)
@@ -1237,6 +1255,8 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
 
         elif isinstance(unit, Enemy):
             boxes = [{'text': unit.get_name(),
+                      'size': (200, 30)},
+                     {'text': 'Target',
                       'size': (200, 30)}]
 
         if self.initiate is False:
@@ -1258,13 +1278,12 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
     def __draw_unit_info(self, top_coordinate=None):  # TODO: Clean Up
         unit = self.battle_phase.active_unit
 
-        info_box_height = 50
         if top_coordinate is None:
-            top_coordinate = window_height - info_box_height
+            top_coordinate = window_height - self.info_box_height
         else:
-            top_coordinate -= info_box_height
+            top_coordinate -= self.info_box_height
         info_box_color = light_grey
-        info_box_size = (window_width, info_box_height)
+        info_box_size = (window_width, self.info_box_height)
         info_box_center = (int(info_box_size[0] / 2), int(info_box_size[1] / 2))
 
         info_box = self.graphics.draw_bordered_box(info_box_color,
@@ -1334,23 +1353,21 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             self.graphics.write_text(cards_number, (cards_value_x, info_box.centery))
 
     def __draw_action_bar(self):
-        action_bar_height = 150
-        top_coordinate = window_height - action_bar_height
         action_bar_color = light_grey
-        action_bar_size = (window_width, action_bar_height)
+        action_bar_size = (window_width, self.action_bar_height)
         action_bar_center = (int(action_bar_size[0] / 2), int(action_bar_size[1] / 2))
 
         self.graphics.draw_bordered_box(action_bar_color,
                                         (window_width_half - action_bar_center[0],
-                                         top_coordinate),
+                                         self.action_bar_top),
                                         action_bar_size)
 
         if self.option_selected != 3:  # If not player info selected
-            self.__draw_unit_info(top_coordinate)
+            self.__draw_unit_info(self.action_bar_top)
 
         option_box_size = (160, 30)
         option_box_center = (int(option_box_size[0] / 2), int(option_box_size[1] / 2))
-        option_coordinate = top_coordinate
+        option_coordinate = self.action_bar_top
         for option in self.option_list:
             if option == self.option_list[self.option_selected]:
                 action_color = selected_color
@@ -1392,7 +1409,36 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
         pass
 
     def __draw_tile_info_bar(self):
-        # TODO: print tile info
+        info_bar_color = light_grey
+        text = 'Tile Info'
 
-        # TODO: print unit info
-        pass
+        if self.side_bar_displayed is False:
+            closed_size = (100, 24)
+            # closed_center = (int(closed_size[0] / 2), int(closed_size[1] / 2))
+            closed_x = window_width - closed_size[0]
+            closed_y = 0
+            closed_position = (closed_x, closed_y)
+            closed_box = self.graphics.draw_bordered_box(info_bar_color, closed_position, closed_size)
+            self.graphics.write_text(text, closed_box)
+        else:
+            if self.player_mode == 2 and self.option_selected == 3:
+                opened_size_y = window_height - self.action_bar_height
+            elif self.player_mode == 2:
+                opened_size_y = window_height - self.action_bar_height - self.info_box_height
+            else:
+                opened_size_y = window_height - self.info_box_height
+            opened_size = (200, opened_size_y)
+            opened_x = window_width - opened_size[0]
+            opened_y = 0
+            opened_position = (opened_x, opened_y)
+            self.graphics.draw_bordered_box(info_bar_color, opened_position, opened_size)
+            self.graphics.write_text(text, (opened_x + int(opened_size[0] / 2), 12))
+            # TODO: print tile info
+            # Tile Picture
+            # Tile Name
+            # Movement Cost, if available
+            # If occupied
+
+            # TODO: print unit info
+            # If Player, print player info
+            # If Enemy, print enemy info

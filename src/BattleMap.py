@@ -1,7 +1,6 @@
 from random import randrange
 from src.CONSTANTS import CONSTANTS
 
-DIRECTION = CONSTANTS.DIRECTION_TUPLES
 direction_dict = CONSTANTS.DIRECTION_DICT
 map_percentage = CONSTANTS.STARTING_ROW_PERCENTAGE
 
@@ -113,9 +112,6 @@ class Tile(object):
             self.unit = self.terrain['Unit']
 
     # Terrain Info and Effects
-    def get_terrain_char(self):
-        return self.terrain['Char']
-
     def get_terrain_type(self):
         return self.terrain['ID']
 
@@ -124,6 +120,12 @@ class Tile(object):
             return self.terrain['Movement_Cost']
         else:
             return None
+
+    def set_unit_empty(self):
+        self.unit = None
+
+    def is_unoccupied(self):
+        return self.unit is None
 
     # Tile Effects
     # may need to change 'effect' variable
@@ -140,118 +142,9 @@ class Tile(object):
     # return true
     # return false
 
-    def set_unit_empty(self):
-        self.unit = None
-
-    def is_unoccupied(self):
-        return self.unit is None
-
-    # TODO: add dict of adjacent tiles
-
 
 class TerrainGenerator(object):
     pass
-
-
-# TODO: Delete Movement Class when fully decommissioned
-# class Movement(object):
-#     """
-#     Calculates then performs ALL movement of units
-#     """
-#
-#     def __init__(self, map_given):
-#         self.battle_map = map_given
-#         self.map_size = self.battle_map.map_size
-#
-#     def place_enemy_random(self, enemy):
-#         while True:
-#             x = randrange(0, self.map_size[0] - 1)
-#             y = randrange(self.map_size[1] - self.battle_map.starting_range, self.map_size[1]) - 1
-#             if self.battle_map.is_tile_unoccupied(x, y):
-#                 self.battle_map.set_unit(x, y, enemy)
-#                 enemy.Position = (x, y)
-#                 break
-#
-#     def place_enemy_team_random(self, enemy_team):
-#         for enemy in enemy_team:
-#             self.place_enemy_random(enemy)
-#
-#     def move_unit(self, unit, destination, cost=True):
-#         start = unit.Position
-#         x = destination[0]
-#         y = destination[1]
-#         dest_tile = self.battle_map.get_tile(x, y)
-#         if self.battle_map.is_tile_unoccupied(x, y):
-#             destination_cost = dest_tile.get_terrain_movement_cost()
-#             if cost:
-#                 if unit.Stamina.can_spend(destination_cost):
-#                     self.battle_map.set_unit(x, y, unit)
-#                     unit.Position = (x, y)
-#                     unit.Stamina.spend_stamina_points(destination_cost)
-#                     self.battle_map.set_tile_unoccupied(start[0], start[1])
-#             else:
-#                 self.battle_map.set_unit(x, y, unit)
-#                 unit.Position = (x, y)
-#                 self.battle_map.set_tile_unoccupied(start[0], start[1])
-#
-    # FIXME: Convert for use by Enemies only, then move to GamePhases.BattlePhase
-    # def can_move(self, unit):
-    #     coordinate = unit.Position
-    #     x = coordinate[0]
-    #     y = coordinate[1]
-    #     if unit.Stamina.points > 0:
-    #         if 0 <= x < self.map_size[0] and 0 <= y + 1 < self.map_size[1]:
-    #             if self.battle_map.is_tile_unoccupied(x, y + 1):
-    #                 return True
-    #         if 0 <= x + 1 < self.map_size[0] and 0 <= y < self.map_size[1]:
-    #             if self.battle_map.is_tile_unoccupied(x + 1, y):
-    #                 return True
-    #         if 0 <= x < self.map_size[0] and 0 <= y - 1 < self.map_size[1]:
-    #             if self.battle_map.is_tile_unoccupied(x, y - 1):
-    #                 return True
-    #         if 0 <= x - 1 < self.map_size[0] and 0 <= y < self.map_size[1]:
-    #             if self.battle_map.is_tile_unoccupied(x - 1, y):
-    #                 return True
-    #     else:
-    #         print('Unit has', unit.Stamina.points, 'and cannot move.')
-    #     return False
-
-    # FIXME: Convert for use by Enemies only, then move to GamePhases.BattlePhase
-    # def can_move_onto_tile(self, unit, x, y):
-    #     coordinate = unit.Position
-    #     if 0 <= coordinate[0] + x < self.battle_map.map_size[0]\
-    #             and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
-    #         destination = self.battle_map.get_tile(coordinate[0] + x,
-    #                                                coordinate[1] + y)
-    #         if destination.is_unoccupied():
-    #             if unit.Stamina.points >= destination.get_terrain_movement_cost():
-    #                 return True
-    #
-    #     return False
-
-    # FIXME: change to use new functions, then move to GamePhases.BattlePhase
-    # def move_enemy(self, enemy, destination):
-    #     x_distance = abs(enemy.Position[0] - destination[0])
-    #     y_distance = abs(enemy.Position[1] - destination[1])
-    #     i = 0
-    #     while i <= enemy.Stamina.get_pool_size():
-    #         if x_distance != 0:
-    #             if enemy.Position[0] < destination[0] and self.can_move_onto_tile(enemy, 1, 0):
-    #                 self.move_unit(enemy, DIRECTION[1], 1)
-    #             elif enemy.Position[0] > destination[0] and self.can_move_onto_tile(enemy, -1, 0):
-    #                 self.move_unit(enemy, DIRECTION[3], 1)
-    #         if y_distance != 0:
-    #             if enemy.Position[1] < destination[1] and self.can_move_onto_tile(enemy, 0, 1):
-    #                 self.move_unit(enemy, DIRECTION[0], 1)
-    #             elif enemy.Position[1] > destination[1] and self.can_move_onto_tile(enemy, 0, -1):
-    #                 self.move_unit(enemy, DIRECTION[2], 1)
-    #         if enemy.Stamina.points == 0:
-    #             break
-    #
-    #         x_distance = abs(enemy.Position[0] - destination[0])
-    #         y_distance = abs(enemy.Position[1] - destination[1])
-    #
-    #         i += 1
 
 
 class RangeInator(object):

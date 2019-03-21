@@ -2,7 +2,10 @@
 Processes the game logic of teams and their members taking their turns.
 """
 
+from src.CONSTANTS import CONSTANTS
 from src.EnemyTargeting import *
+
+DIRECTION = CONSTANTS.DIRECTION_TUPLES
 
 
 class BattlePhase(object):
@@ -120,44 +123,86 @@ class EnemyTurn(object):  # TODO: Update to new system
     Controls the enemy during their phase
     """
 
-    def __init__(self, enemy_horde, battle_map, movement, player_team):
-        self.enemy_horde = enemy_horde
+    def __init__(self, battle_map, player_team):
         self.battle_map = battle_map
-        self.movement = movement
         self.player_team = player_team
+        self.current_target = None
 
-    def enemy_turn_loop(self):
-        for enemy in self.enemy_horde:
-            if enemy.Alive:
-                print('\n' + 'Turn:', enemy.get_name(), enemy.Enemy_Number)
-                enemy.turn_beginning()
-                if enemy.Stamina.points > 0:
-                    target = self.find_target(enemy)
-                    print('Targeting:', target.Player_Name + ',', target.Class_Name)
-                    print('Moving from', enemy.Position, 'to ', end='')
-                    self.move_into_range(enemy, target)
-            else:
-                print('\n' + enemy.get_name(), enemy.Enemy_Number, 'is dead. Skipping Turn')
+    def start_turn(self, enemy):
+        if enemy.Alive:
+            enemy.turn_beginning()
+            self.current_target = self.__find_target(enemy)
+            return True
+        else:
+            return False
 
-    def find_target(self, enemy):
+    def take_turn(self, enemy):
+        if enemy.Stamina.points > 0:
+            self.__move_into_range(enemy, self.current_target)
+            if enemy.Stamina.points > 0:
+                # self.take_selected_action()
+                pass
+            enemy.turn_ending()
+            self.current_target = None
+
+    def __find_target(self, enemy):
         if enemy.Role_Name == 'Grunt':
             target = TargetNearest(enemy, self.player_team).find_nearest_player()
         else:
             target = TargetAT(enemy, self.player_team).find_AT_target()
         return target
 
-    def move_into_range(self, enemy, target):
-        self.movement.move_enemy(enemy, target.Position)
-        print(enemy.Position)
+    def __move_into_range(self, enemy, target):
         # check available actions
         # move into range of the best action to take
-        if enemy.Stamina.points > 0:
-            print('Remaining Stamina:', enemy.Stamina.points)
-            self.take_selected_action(enemy, target)
-        else:
-            print(enemy.get_name(), 'is out of Stamina!')
+        self.__move_enemy(enemy, target.Position)
 
-    def take_selected_action(self, enemy, target):
+    def __move_enemy(self, enemy, destination):
+        x_distance = abs(enemy.Position[0] - destination[0])
+        y_distance = abs(enemy.Position[1] - destination[1])
+        i = 0
+        while i <= enemy.Stamina.get_pool_size():
+            if x_distance != 0:
+                # Move Right
+                if enemy.Position[0] < destination[0] and self.__can_move_onto_tile(enemy, DIRECTION[1]):
+                    self.__move_onto_tile(enemy, DIRECTION[1])
+                # Move Left
+                elif enemy.Position[0] > destination[0] and self.__can_move_onto_tile(enemy, DIRECTION[3]):
+                    self.__move_onto_tile(enemy, DIRECTION[3])
+            if y_distance != 0:
+                # Move Up
+                if enemy.Position[1] < destination[1] and self.__can_move_onto_tile(enemy, DIRECTION[0]):
+                    self.__move_onto_tile(enemy, DIRECTION[0])
+                # Move Down
+                elif enemy.Position[1] > destination[1] and self.__can_move_onto_tile(enemy, DIRECTION[2]):
+                    self.__move_onto_tile(enemy, DIRECTION[2])
+            if enemy.Stamina.points == 0:
+                break
+
+            x_distance = abs(enemy.Position[0] - destination[0])
+            y_distance = abs(enemy.Position[1] - destination[1])
+
+            i += 1
+
+    def __move_onto_tile(self, enemy, direction):
+        tile_position = (enemy.Position[0] + direction[0], enemy.Position[1] + direction[1])
+        self.battle_map.move_unit(enemy, tile_position)
+
+    def __can_move_onto_tile(self, unit, direction):
+        x = direction[0]
+        y = direction[1]
+        coordinate = unit.Position
+        if 0 <= coordinate[0] + x < self.battle_map.map_size[0]\
+                and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
+            destination = self.battle_map.get_tile(coordinate[0] + x,
+                                                   coordinate[1] + y)
+            if destination.is_unoccupied():
+                if unit.Stamina.points >= destination.get_terrain_movement_cost():
+                    return True
+
+        return False
+
+    def take_selected_action(self, enemy, target):  # TODO: rework for future implementation
         x = abs(enemy.Position[0] - target.Position[0])
         y = abs(enemy.Position[1] - target.Position[1])
         distance = x + y
