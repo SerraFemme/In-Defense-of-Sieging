@@ -103,6 +103,31 @@ class Graphics(object):
 
         self.draw_box(black, (dash_offset, position[1] - 2), dash_box_size)
 
+    def print_card(self):
+        # Name
+        # Faction
+        # Type
+        # Restriction
+        # Stamina Cost
+        # Scar Cost
+        # Range
+        # Range Restriction
+        pass
+
+    def print_card_info(self):
+        # Name
+        # Faction
+        # Type
+        # Stamina Cost
+        # Scar Cost
+        # Range
+        # Range Restriction
+        # Text
+
+        # Back Button
+        # Play Button
+        pass
+
     def __text_object(self, text, font):
         text_surface = font.render(text, True, black)
         return text_surface, text_surface.get_rect()
@@ -947,7 +972,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
         self.option_selected = 0
         self.option_list = ['Hand',
                             'Passive',
-                            'Enchantments',  # TODO: rename
+                            'Permanents',  # TODO: rename
                             'Player Info',
                             'End Turn']
 
@@ -994,7 +1019,6 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             self.graphics.display_surface.blit(mapSurf, mapSurfRect)
 
             if self.initiate is False and active_team == 0:
-                self.__draw_tile_info_bar()
                 if self.player_mode == 2:
                     self.__draw_action_bar()
                 else:
@@ -1006,6 +1030,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                     self.enemy_turn.take_turn(enemy)
                 self.battle_phase.cycle_unit()
 
+            self.__draw_tile_info_bar(mapSurf)
             self.__draw_title()
 
             pygame.display.update()
@@ -1099,7 +1124,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
     def __movement_cursor(self, event):
         player = self.battle_phase.active_unit
         position = player.Position
-        tile = self.battle_map.get_tile(position[0], position[1])
+        tile = self.battle_map.get_tile(position)
         adjacent_tiles = tile.adjacent_tile_positions
         if event.key == K_w and 'up' in adjacent_tiles:
             self.position_selected = adjacent_tiles['up']
@@ -1182,7 +1207,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                 y_invert = self.map_size[1] - 1 - y
                 spaceRect = pygame.Rect((x * tile_size[0], y_invert * tile_size[1],
                                          tile_size[0], tile_size[1]))
-                tile = self.battle_map.get_tile(x, y)
+                tile = self.battle_map.get_tile((x, y))
 
                 terrain_type = tile.get_terrain_type()
                 tile_image = self.image_dict[terrain_type]
@@ -1196,7 +1221,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                         mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
                 elif self.player_mode == 1:  # Movement Mode
                     unit_position = self.battle_phase.active_unit.Position
-                    unit_tile = self.battle_map.get_tile(unit_position[0], unit_position[1])
+                    unit_tile = self.battle_map.get_tile(unit_position)
                     adjacent_tiles = unit_tile.adjacent_tile_positions
                     for i in adjacent_tiles:
                         if tile.coordinate == adjacent_tiles[i]:
@@ -1395,7 +1420,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             self.__draw_passive()
 
         elif self.option_selected == 2:  # TODO: print enchantments when selected
-            self.__draw_enchantment()
+            self.__draw_permanents()
 
         elif self.option_selected == 3:  # TODO: print info tabs and info when selected
             self.__draw_information_tabs()
@@ -1405,23 +1430,25 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
 
     def __draw_hand(self):
         # TODO: print cards in hand, make scrollable
+        # for card in hand:
         pass
 
     def __draw_passive(self):
         # TODO: print class passive, either text, bonuses given, and/or buttons
         pass
 
-    def __draw_enchantment(self):
-        # TODO: print buffs then debuffs, includes buttons of enchantments
+    def __draw_permanents(self):
+        # TODO: print buffs then debuffs, includes buttons of permanents
         pass
 
     def __draw_information_tabs(self):
         # TODO: draw full character info divided into multiple tabs
         pass
 
-    def __draw_tile_info_bar(self):
+    def __draw_tile_info_bar(self, mapSurf):
         info_bar_color = light_grey
         text = 'Tile Info'
+        title_y = 12
 
         if self.side_bar_displayed is False:
             closed_size = (100, 24)
@@ -1432,7 +1459,9 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             closed_box = self.graphics.draw_bordered_box(info_bar_color, closed_position, closed_size)
             self.graphics.write_text(text, closed_box)
         else:
-            if self.player_mode == 2 and self.option_selected == 3:
+            if self.initiate:
+                opened_size_y = window_height
+            elif self.player_mode == 2 and self.option_selected == 3:
                 opened_size_y = window_height - self.action_bar_height
             elif self.player_mode == 2:
                 opened_size_y = window_height - self.action_bar_height - self.info_box_height
@@ -1440,16 +1469,53 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                 opened_size_y = window_height - self.info_box_height
             opened_size = (200, opened_size_y)
             opened_x = window_width - opened_size[0]
+            opened_center_x = opened_x + int(opened_size[0] / 2)
             opened_y = 0
             opened_position = (opened_x, opened_y)
-            self.graphics.draw_bordered_box(info_bar_color, opened_position, opened_size)
-            self.graphics.write_text(text, (opened_x + int(opened_size[0] / 2), 12))
+
+            info_bar_box = self.graphics.draw_bordered_box(info_bar_color, opened_position, opened_size)
+            self.graphics.write_text(text, (opened_center_x, title_y))
+
             # TODO: print tile info
-            # Tile Picture
+            tile = self.battle_map.get_tile(self.position_selected)
+            unit = tile.unit
+            tile_y = title_y + tile_size[1]
+
+            terrain_type = tile.get_terrain_type()
+            tile_image = self.image_dict[terrain_type]  # Tile Picture
+
+            # FIXME: doesn't print image to screen
+            picture_rect = pygame.Rect((opened_center_x, tile_y, tile_size[0], tile_size[1]))
+
+            mapSurf.blit(tile_image, picture_rect)
+
             # Tile Name
+            tile_name_y = tile_y + 20
+            text = 'Terrain: ' + terrain_type
+            self.graphics.write_text(text, (opened_center_x, tile_name_y))
+
             # Movement Cost, if available
-            # If occupied
+            move_cost_y = tile_name_y + 24
+            if tile.get_terrain_movement_cost() is not None:
+                text = 'Move Cost: ' + str(tile.get_terrain_movement_cost())
+            else:
+                text = 'Move Cost: N/A'
+            self.graphics.write_text(text, (opened_center_x, move_cost_y))
 
             # TODO: print unit info
-            # If Player, print player info
-            # If Enemy, print enemy info
+            if unit is not None:
+                unit_text_y = move_cost_y + 40
+                text = 'Unit Info'
+                self.graphics.write_text(text, (opened_center_x, unit_text_y))
+
+                if isinstance(unit, str):
+                    unit_name_y = unit_text_y + 24
+                    text = 'Occupied: ' + unit
+                    self.graphics.write_text(text, (opened_center_x, unit_name_y))
+                else:
+                    unit_name_y = unit_text_y + 24
+                    self.graphics.write_text(unit.Full_Name, (opened_center_x, unit_name_y))
+                    if isinstance(unit, Player):
+                        pass  # print player info
+                    elif isinstance(unit, Enemy):
+                        pass  # print enemy info

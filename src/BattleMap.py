@@ -34,7 +34,7 @@ class MapManager(object):
         for x in range(self.map_size[0]):
             for y in range(self.map_size[1]):
                 position = (x, y)
-                tile = self.get_tile(x, y)
+                tile = self.get_tile(position)
                 tile.adjacent_tile_positions = self.__calculate_adjacent_tiles(position)
 
     def __basic_map_generator(self):
@@ -59,44 +59,42 @@ class MapManager(object):
 
         return adjacent_dict
 
-    def get_tile(self, x, y):
-        y_list = self.main_list[y]  # find the Y value
-        x_tile = y_list[x]  # find the X value
+    def get_tile(self, position):
+        y_list = self.main_list[position[1]]  # find the Y value
+        x_tile = y_list[position[0]]  # find the X value
         return x_tile  # return the tile
 
-    def is_tile_unoccupied(self, x, y):
-        tile = self.get_tile(x, y)
+    def is_tile_unoccupied(self, position):
+        tile = self.get_tile(position)
         return tile.is_unoccupied()
 
-    def get_unit(self, x, y):
-        tile = self.get_tile(x, y)
+    def get_unit(self, position):
+        tile = self.get_tile(position)
         return tile.unit
 
-    def set_unit(self, x, y, unit):
-        tile = self.get_tile(x, y)
+    def set_unit(self, position, unit):
+        tile = self.get_tile(position)
         tile.unit = unit
 
-    def set_tile_unoccupied(self, x, y):
-        tile = self.get_tile(x, y)
+    def set_tile_unoccupied(self, position):
+        tile = self.get_tile(position)
         tile.set_unit_empty()
 
     def move_unit(self, unit, destination, cost=True):
         start = unit.Position
-        x = destination[0]
-        y = destination[1]
-        dest_tile = self.get_tile(x, y)
-        if self.is_tile_unoccupied(x, y):
+        dest_tile = self.get_tile(destination)
+        if self.is_tile_unoccupied(destination):
             destination_cost = dest_tile.get_terrain_movement_cost()
             if cost:
                 if unit.Stamina.can_spend(destination_cost):
-                    self.set_unit(x, y, unit)
-                    unit.Position = (x, y)
+                    self.set_unit(destination, unit)
+                    unit.Position = destination
                     unit.Stamina.spend_stamina_points(destination_cost)
-                    self.set_tile_unoccupied(start[0], start[1])
+                    self.set_tile_unoccupied(start)
             else:
-                self.set_unit(x, y, unit)
-                unit.Position = (x, y)
-                self.set_tile_unoccupied(start[0], start[1])
+                self.set_unit(destination, unit)
+                unit.Position = destination
+                self.set_tile_unoccupied(start)
 
 
 class Tile(object):

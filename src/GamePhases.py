@@ -78,7 +78,7 @@ class BattlePhase(object):
     def place_player(self, position_selected):
         initiate = False
         if self.active_unit_number < len(self.player_team):
-            tile = self.battle_map.get_tile(position_selected[0], position_selected[1])
+            tile = self.battle_map.get_tile(position_selected)
             if tile.unit is None:
                 player = self.player_team[self.active_unit_number]
                 tile.unit = player
@@ -101,9 +101,10 @@ class BattlePhase(object):
             x = randrange(0, self.battle_map.map_size[0] - 1)
             y = randrange(self.battle_map.map_size[1] - self.battle_map.starting_range,
                           self.battle_map.map_size[1]) - 1
-            if self.battle_map.is_tile_unoccupied(x, y):
-                self.battle_map.set_unit(x, y, enemy)
-                enemy.Position = (x, y)
+            position = (x, y)
+            if self.battle_map.is_tile_unoccupied(position):
+                self.battle_map.set_unit(position, enemy)
+                enemy.Position = position
                 break
 
     def team_string(self):
@@ -197,8 +198,8 @@ class EnemyTurn(object):  # TODO: Update to new system
         coordinate = unit.Position
         if 0 <= coordinate[0] + x < self.battle_map.map_size[0]\
                 and 0 <= coordinate[1] + y < self.battle_map.map_size[1]:
-            destination = self.battle_map.get_tile(coordinate[0] + x,
-                                                   coordinate[1] + y)
+            destination = self.battle_map.get_tile((coordinate[0] + x,
+                                                   coordinate[1] + y))
             if destination.is_unoccupied():
                 if unit.Stamina.points >= destination.get_terrain_movement_cost():
                     return True

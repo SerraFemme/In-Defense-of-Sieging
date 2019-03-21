@@ -33,15 +33,6 @@ class CardMaker(object):
         for i in self.Effects_List:
             pass
 
-    def print_info(self):
-        print('Card Name:', self.Name)
-        print('Card Typing:', self.Faction_Type, self.Card_Type)
-        print('Text:', self.Text)
-        # print('Requirement:', self.Requirement)
-        # print('Stamina Cost:', self.Stamina_Cost)
-        # print('Scar Cost:', self.Scar_Cost)
-        # print Range
-
 
 class PlayerDeck(object):
     """
@@ -59,11 +50,11 @@ class PlayerDeck(object):
     """
 
     def __init__(self, deck):
-        self.deck_list = deck  # Contains all cards owned by the player
+        self.deck_list = deck  # List containing all cards owned by the player
         self.health_deck = deck  # Functions as Health Pool
         self.shuffle(self.health_deck)
         self.wound_pile = []  # Discard Pile
-        self.scar_pile = []  # Inaccessible Discard Pile
+        self.scar_pile = []  # Special Discard Pile, cards can be added but not removed
         self.hand = []
         self.permanents = []
 
@@ -98,7 +89,7 @@ class PlayerDeck(object):
     def shuffle(self, deck):
         random.shuffle(deck)
 
-    # Generic Functions
+    # Generic Functions to be used by any deck
     def get_top_card(self, deck):
         return deck.pop()
 
@@ -117,41 +108,15 @@ class PlayerDeck(object):
     # Hand
     def draw(self, value):
         for i in range(value):
-            if len(self.health_deck) > 0:
-                card = self.health_deck.pop()
+            if self.current_health() > 0:
+                card = self.get_top_card(self.health_deck)
                 self.hand.append(card)
 
-    def discard(self, value):
-        for i in range(value):
-            print('Select card to discard:')
-            for j in self.hand:
-                print(j.Name)
-            while True:
-                try:
-                    v = int(input('Enter digit of card to discard: '))
-                except ValueError:
-                    print('Invalid input, try again')
-                else:
-                    self.wound_pile.append(self.hand.pop(v))
+    def discard(self, value):  # Discards a single card at index value in hand
+        self.wound_pile.append(self.hand.pop(value))
 
     def put_card_into_hand(self, card):
         self.hand.append(card)
 
-    def mulligan(self):
-        if len(self.hand) == 0:
-            print('0 cards in hand, skipping Mulligan Phase')
-        else:
-            print('Mulligan Phase:')
-            while len(self.hand) > 0:
-                try:
-                    print('0: Pass Mulligan Phase')
-                    for j in self.hand:
-                        print(j.Name)
-                    v = int(input('Enter digit for selection: '))
-                except ValueError:
-                        print('Invalid input, try again')
-                else:
-                    if v == 0:
-                        break
-                    else:
-                        self.wound_pile.append(self.hand.pop(v-1))
+    def mulligan(self):  # Create for player use
+        pass

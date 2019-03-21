@@ -99,6 +99,7 @@ class Enemy(object):
         self.Role_Name = self.role_info['ID']
         self.Icon = self.race_info['Char'] + self.role_info['Char'] + str(number)
         self.Enemy_Number = number
+        self.Full_Name = self.Race_Name + ' ' + self.Role_Name + ' ' + str(number)
         self.Position = None
         self.Alive = True
         self.AT = None  # Aggression Token, only used by Elites
