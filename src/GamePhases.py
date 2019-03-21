@@ -120,10 +120,7 @@ class PlayerTurn(object):  # TODO: Update to new system
 
 class EnemyTurn(object):  # TODO: Update to new system
     """
-    Controls the enemy during their phase.
-    Enemies will always try to move first.
-    After movement, enemies will try to take the best action(s).
-    Then the enemy will pass their turn.
+    Controls the enemy during their phase
     """
 
     def __init__(self, battle_map, player_team):

@@ -903,7 +903,6 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
     players select starting position
     go to run_battle()
     """
-
     def __init__(self, graphics, player_team, enemy_team):
         self.graphics = graphics
         self.image_dict = graphics.image_dict
@@ -993,20 +992,19 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
 
             self.graphics.display_surface.blit(mapSurf, mapSurfRect)
 
+            self.__draw_title()
             if self.initiate is False and active_team == 0:
                 self.__draw_tile_info_bar()
                 if self.player_mode == 2:
                     self.__draw_action_bar()
                 else:
                     self.__draw_unit_info()
-            elif active_team == 1:  # Enemy Turn  # TODO: "Slow down" so players can observe
+            elif active_team == 1:  # Enemy Turn
                 enemy = self.battle_phase.active_unit
                 take_turn = self.enemy_turn.start_turn(enemy)
                 if take_turn:
                     self.enemy_turn.take_turn(enemy)
                 self.battle_phase.cycle_unit()
-
-            self.__draw_title()
 
             pygame.display.update()
             self.graphics.fps_clock.tick(fps)
@@ -1155,10 +1153,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                 pass  # TODO: info tab action?
             elif self.option_selected == 4:  # Pass Turn
                 self.battle_phase.cycle_unit()
-                if self.battle_phase.active_team_number == 0:
-                    self.position_selected = self.battle_phase.active_unit.Position
-                else:
-                    self.position_selected = self.player_team[0].Position
+                self.position_selected = self.battle_phase.active_unit.Position
                 self.player_mode = 0
                 self.option_selected = 0
 
@@ -1202,7 +1197,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                         if tile.coordinate == adjacent_tiles[i]:
                             if tile.get_terrain_movement_cost() is not None:
                                 # if tile.get_terrain_movement_cost() > self.active_player.Stamina.points:
-                                if self.battle_phase.active_unit.Stamina.can_spend(tile.get_terrain_movement_cost()) \
+                                if self.battle_phase.active_unit.Stamina.can_spend(tile.get_terrain_movement_cost())\
                                         is False:
                                     mapSurf.blit(self.image_dict['insuf_stam_tile'], spaceRect)
                                 elif tile.unit is None:  # Tile Empty
@@ -1222,15 +1217,12 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                         if isinstance(tile.unit, Player):
                             mapSurf.blit(self.image_dict['player_token'], spaceRect)
                             text = small_text
-                            if self.initiate is False and tile.unit.Player_Number \
+                            if self.initiate is False and tile.unit.Player_Number\
                                     == self.battle_phase.active_unit_number + 1:
                                 mapSurf.blit(self.image_dict['active_player'], spaceRect)
 
                         elif isinstance(tile.unit, Enemy):
-                            if tile.unit.Role_Name == 'Grunt':
-                                mapSurf.blit(self.image_dict['grunt_token'], spaceRect)
-                            else:
-                                mapSurf.blit(self.image_dict['elite_token'], spaceRect)
+                            mapSurf.blit(self.image_dict['enemy_token'], spaceRect)
                         self.graphics.write_text(tile.unit.Icon, spaceRect, text, mapSurf)
 
         return mapSurf
@@ -1246,7 +1238,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             if self.initiate:
                 boxes = [{'text': 'Select Starting Position',
                           'size': (260, 30)},
-                         {'text': unit.Full_Name,
+                         {'text': unit.Player_Name + ': ' + unit.Class_Name,
                           'size': (180, 30)}]
             else:
                 if self.player_mode == 0:  # Cursor
@@ -1258,17 +1250,14 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                 elif self.player_mode == 2:  # Action Mode
                     boxes = [{'text': 'Mode: Action',
                               'size': (150, 30)}]
-                boxes.insert(0, {'text': unit.Full_Name,
+                boxes.insert(0, {'text': unit.Player_Name + ': ' + unit.Class_Name,
                                  'size': (180, 30)})
 
         elif isinstance(unit, Enemy):
             boxes = [{'text': unit.get_name(),
+                      'size': (200, 30)},
+                     {'text': 'Target',
                       'size': (200, 30)}]
-            target = self.enemy_turn.current_target
-            if target is not None:
-                target_name = target.Full_Name
-                boxes.append({'text': 'Target: ' + target_name,
-                              'size': (200, 30)})
 
         if self.initiate is False:
             boxes.insert(0, {'text': team + ': Turn ' + str(self.turn_counter),

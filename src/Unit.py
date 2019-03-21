@@ -17,7 +17,6 @@ class Player(object):
         self.Position = None
         self.AT = []  # Aggression Tokens
         self.Class_Name = selected_class['ID']
-        self.Full_Name = self.Player_Name + ': ' + self.Class_Name
         self.Faction_Restriction = selected_class['Allowed_Faction']
         self.Equipment_Restriction = selected_class['Allowed_Equipment']
         self.Stamina = Stamina(selected_class['Stamina_Pool'])
