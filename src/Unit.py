@@ -1,7 +1,7 @@
 """
 Contains all classes used for storing various unit info
 """
-from src.UnitStat import *
+from src.UnitStat import StatTracker, Stamina
 
 
 class Player(object):
@@ -37,7 +37,7 @@ class Player(object):
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()
-        # self.Deck.mulligan()
+        self.Deck.mulligan()
         # upkeep
 
     def turn_ending(self):
@@ -80,7 +80,7 @@ class Player(object):
     # Deck Stuff
     def take_damage(self, value):  # Redo later
         self.Deck.mill(value)
-        if len(self.Deck) == 0:
+        if len(self.Deck.current_health()) == 0:
             self.Conscious = False
 
     def heal(self, value):  # Redo later

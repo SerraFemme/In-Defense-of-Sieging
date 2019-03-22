@@ -128,6 +128,9 @@ class Graphics(object):
         # Play Button
         pass
 
+    def print_equipment(self):
+        pass
+
     def __text_object(self, text, font):
         text_surface = font.render(text, True, black)
         return text_surface, text_surface.get_rect()
@@ -921,7 +924,7 @@ class EncounterSelect(object):
         return diff_dict
 
 
-class BattleSimulation(object):  # TODO: strip out game logic and leave only graphical logic
+class BattleSimulation(object):
     """
     Create map, size based on player team size
     auto-place enemy team
@@ -1179,6 +1182,7 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             elif self.option_selected == 3:
                 pass  # TODO: info tab action?
             elif self.option_selected == 4:  # Pass Turn
+                self.battle_phase.active_unit.turn_ending()
                 self.battle_phase.cycle_unit()
                 if self.battle_phase.active_team_number == 0:
                     self.position_selected = self.battle_phase.active_unit.Position
@@ -1256,6 +1260,8 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                                 mapSurf.blit(self.image_dict['grunt_token'], spaceRect)
                             else:
                                 mapSurf.blit(self.image_dict['elite_token'], spaceRect)
+                            if self.initiate is False and tile.unit == self.battle_phase.active_unit:
+                                mapSurf.blit(self.image_dict['active_player'], spaceRect)
                         self.graphics.write_text(tile.unit.Icon, spaceRect, text, mapSurf)
 
         return mapSurf
@@ -1346,10 +1352,12 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
         self.graphics.write_text(text, (health_x, info_box.centery))
 
         if isinstance(unit, Player):
-            text = 'N/A'
+            top_number = unit.Deck.current_health()
+            bottom_number = unit.Deck.max_health()
+            self.graphics.write_fraction(top_number, bottom_number, (health_value_x, info_box.centery))
         elif isinstance(unit, Enemy):
             text = str(unit.Health_Points)
-        self.graphics.write_text(text, (health_value_x, info_box.centery))
+            self.graphics.write_text(text, (health_value_x, info_box.centery))
 
         # Stamina
         text = 'Stamina:'
@@ -1385,8 +1393,8 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             text = 'Cards:'
             self.graphics.write_text(text, (cards_x, info_box.centery))
 
-            cards_number = 'N/A'  # TODO: get hand size
-            self.graphics.write_text(cards_number, (cards_value_x, info_box.centery))
+            cards_number = unit.Deck.current_hand_size()
+            self.graphics.write_text(str(cards_number), (cards_value_x, info_box.centery))
 
     def __draw_action_bar(self):
         action_bar_color = light_grey
@@ -1443,6 +1451,9 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
 
     def __draw_information_tabs(self):
         # TODO: draw full character info divided into multiple tabs
+        # Deck sizes and hand size
+        # Equipment breakdown
+        # List aggression tokens
         pass
 
     def __draw_tile_info_bar(self, mapSurf):
@@ -1476,7 +1487,6 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             info_bar_box = self.graphics.draw_bordered_box(info_bar_color, opened_position, opened_size)
             self.graphics.write_text(text, (opened_center_x, title_y))
 
-            # TODO: print tile info
             tile = self.battle_map.get_tile(self.position_selected)
             unit = tile.unit
             tile_y = title_y + tile_size[1]
@@ -1484,9 +1494,8 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
             terrain_type = tile.get_terrain_type()
             tile_image = self.image_dict[terrain_type]  # Tile Picture
 
-            # FIXME: doesn't print image to screen
+            # FIXME: doesn't print tile image to screen
             picture_rect = pygame.Rect((opened_center_x, tile_y, tile_size[0], tile_size[1]))
-
             mapSurf.blit(tile_image, picture_rect)
 
             # Tile Name
@@ -1502,7 +1511,6 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                 text = 'Move Cost: N/A'
             self.graphics.write_text(text, (opened_center_x, move_cost_y))
 
-            # TODO: print unit info
             if unit is not None:
                 unit_text_y = move_cost_y + 40
                 text = 'Unit Info'
@@ -1515,7 +1523,49 @@ class BattleSimulation(object):  # TODO: strip out game logic and leave only gra
                 else:
                     unit_name_y = unit_text_y + 24
                     self.graphics.write_text(unit.Full_Name, (opened_center_x, unit_name_y))
+
+                    health_y = unit_name_y + 32
+                    health_x = opened_center_x - 22
+                    health_value_x = health_x + 50
+                    stamina_y = health_y + 42
+                    stamina_x = opened_center_x - 20
+                    stamina_fraction_x = stamina_x + 55
+                    weapon_y = stamina_y + 32
+                    range_y = weapon_y + 26
+                    armor_y = range_y + 26
+
+                    # Health
                     if isinstance(unit, Player):
-                        pass  # print player info
+                        text = 'Health:'
+                        self.graphics.write_text(text, (health_x, health_y))
+
+                        top_number = unit.Deck.current_health()
+                        bottom_number = unit.Deck.max_health()
+                        self.graphics.write_fraction(top_number, bottom_number, (health_value_x, health_y))
+
                     elif isinstance(unit, Enemy):
-                        pass  # print enemy info
+                        text = 'Health: ' + str(unit.Health_Points)
+                        self.graphics.write_text(text, (opened_center_x, health_y))
+
+                    # Stamina
+                    text = 'Stamina:'
+                    self.graphics.write_text(text, (stamina_x, stamina_y))
+
+                    top_number = unit.Stamina.points
+                    bottom_number = unit.Stamina.get_pool_size()
+                    self.graphics.write_fraction(top_number, bottom_number, (stamina_fraction_x, stamina_y))
+
+                    # Weapon Damage
+                    damage_number = unit.Weapon_Damage.value
+                    text = 'Weapon DMG: ' + str(damage_number)
+                    self.graphics.write_text(text, (opened_center_x, weapon_y))
+
+                    # Bonus Range
+                    range_number = unit.Bonus_Range.value
+                    text = 'Bonus Range: ' + str(range_number)
+                    self.graphics.write_text(text, (opened_center_x, range_y))
+
+                    # Armor
+                    armor_number = unit.Armor.value
+                    text = 'Armor: ' + str(armor_number)
+                    self.graphics.write_text(text, (opened_center_x, armor_y))

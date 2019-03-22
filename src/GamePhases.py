@@ -74,6 +74,7 @@ class BattlePhase(object):
 
         self.active_team_size = len(self.active_team)
         self.active_unit = self.active_team[self.active_unit_number]
+        self.active_unit.turn_beginning()
 
     def place_player(self, position_selected):
         initiate = False

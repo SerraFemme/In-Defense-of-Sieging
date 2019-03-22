@@ -27,6 +27,7 @@ Battle Controls:
 -Cursor Down: S
 -Cursor Left: A
 -Cursor Right: D
+-Toggle Tile Info Bar: Tab
 -Cycle Player Modes: Space Bar
 -Select: Enter Key or E
 

@@ -5,6 +5,7 @@ their turns.
 
 from src.Unit import Player, Enemy
 from src.Equipment import Equipment
+from src.CardCompendium import CardMaker, PlayerDeck
 
 
 class PlayerMaker(object):
@@ -27,7 +28,8 @@ class PlayerMaker(object):
         # player.Passive = getattribute(src.ClassPassives, selected_class)
         # TODO: give player starting deck
         # self.add_s_deck(player, self.s_deck.get_item(selected_class, self.card_library)
-        # self.add_s_deck(player, self.s_deck.get_item("Test", self.card_library)
+        self.__create_s_deck(player, self.s_deck.get_item("Test"), self.card_library)
+        player.Deck.hand_size = player.HandSize.value
         return player
 
     def __equip_s_equipment(self, player, s_equip, equip_list):
@@ -35,6 +37,16 @@ class PlayerMaker(object):
         for i in s_list:
             e = Equipment(equip_list.get_item(i))
             player.add_equipment(e)
+
+    def __create_s_deck(self, player, s_deck, card_list):
+        s_deck_list = s_deck['Starting_Deck']  # gets deck list of cards for the selected class
+        deck = []
+        for i in s_deck_list:
+            card = CardMaker(card_list.get_item(i))
+            deck.append(card)
+
+        starting_deck = PlayerDeck(deck)
+        player.Deck = starting_deck
 
 
 class HordeMaker(object):
