@@ -30,6 +30,7 @@ light_grey = CONSTANTS.COLORS['light_grey']
 grey = CONSTANTS.COLORS['grey']
 blue = CONSTANTS.COLORS['blue']
 pale_turquoise = CONSTANTS.COLORS['pale_turquoise']
+tan = CONSTANTS.COLORS['tan']
 
 bg_color = pale_turquoise
 title_color = dark_orange
@@ -89,7 +90,7 @@ class Graphics(object):
         else:
             surface.blit(text_surface, text_rect)
 
-    def write_fraction(self, top_number, bottom_number, position):
+    def write_fraction(self, top_number, bottom_number, position):  # FIXME: fix logic for double digit numbers
         dash_offset = position[0] - 8
         dash_width = 16 + 4 * int(bottom_number / 10)
         dash_box_size = (dash_width, 1)
@@ -103,11 +104,19 @@ class Graphics(object):
 
         self.draw_box(black, (dash_offset, position[1] - 2), dash_box_size)
 
-    def print_card(self):
-        # Name
-        # Faction
-        # Type
-        # Restriction
+    def print_card(self, card, position, size, box_color=tan):
+        text_y = position[1] + 14
+        text_x = position[0] + int(size[0] / 2)
+
+        card_box = self.draw_bordered_box(box_color, position, size)
+
+        name_text = card.Name
+        self.write_text(name_text, (text_x, text_y))
+
+        type_text = card.Faction_Type + ' ' + card.Card_Type
+        type_text_y = text_y + 20
+        self.write_text(type_text, (text_x, type_text_y))
+
         # Stamina Cost
         # Scar Cost
         # Range
@@ -1437,9 +1446,17 @@ class BattleSimulation(object):
             pass
 
     def __draw_hand(self):
-        # TODO: print cards in hand, make scrollable
-        # for card in hand:
-        pass
+        card_spacing = 8
+        card_side_spacing = 6
+        if isinstance(self.battle_phase.active_unit, Player):
+            hand = self.battle_phase.active_unit.Deck.hand
+            card_size = (160, self.action_bar_height - card_spacing)
+            card_y = self.action_bar_top + int(card_spacing / 2)
+            card_x = 166
+            for card in hand:  # TODO: make scrollable
+                card_position = (card_x, card_y)
+                self.graphics.print_card(card, card_position, card_size)
+                card_x += card_size[0] + card_side_spacing
 
     def __draw_passive(self):
         # TODO: print class passive, either text, bonuses given, and/or buttons

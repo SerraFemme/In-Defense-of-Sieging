@@ -12,7 +12,7 @@ Equipment Specific Keywords:
 -Bludgeon X: Reduce the armor of a target by X after resolving an attack card against them until the end of your turn.
 
 Damage Types:
--Martial
+-Martial: Basic damage type
 -Divine: Undead receive double damage (Applies after armor reduction is calculated)
 -Arcane: Armor does not reduce value.
 -True Damage: Cannot be reduced or interrupted
