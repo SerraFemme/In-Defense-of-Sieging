@@ -1,4 +1,5 @@
 import sys
+import math
 import pygame
 from pygame.locals import *
 from src.ReadGameData import SubListManager
@@ -90,9 +91,10 @@ class Graphics(object):
         else:
             surface.blit(text_surface, text_rect)
 
-    def write_fraction(self, top_number, bottom_number, position):  # FIXME: fix logic for double digit numbers
-        dash_offset = position[0] - 8
-        dash_width = 16 + 4 * int(bottom_number / 10)
+    def write_fraction(self, top_number, bottom_number, position):
+        offset = int(math.log10(bottom_number)) + 1
+        dash_offset = position[0] - 4 - 4 * offset
+        dash_width = 10 + 8 * offset
         dash_box_size = (dash_width, 1)
 
         top_string = str(top_number)
@@ -104,7 +106,8 @@ class Graphics(object):
 
         self.draw_box(black, (dash_offset, position[1] - 2), dash_box_size)
 
-    def print_card(self, card, position, size, box_color=tan):
+    def print_card(self, card, position, size, displayed=False):
+        box_color = tan  # TODO: make dynamic based on card type?
         text_y = position[1] + 14
         text_x = position[0] + int(size[0] / 2)
 
@@ -121,7 +124,17 @@ class Graphics(object):
         # Scar Cost
         # Range
         # Range Restriction
-        pass
+
+        button_difference = 12
+        button_size = (size[0] - button_difference, 24)
+        button_position = (position[0] + int(button_difference / 2), position[1] + size[1] - button_size[1] - 4)
+        button_text = 'Select'
+
+        if displayed:
+            button_box = self.draw_bordered_box(selected_color, button_position, button_size)
+            self.write_text(button_text, button_box)
+        else:
+            button_box = self.draw_bordered_box(unselected_color, button_position, button_size)
 
     def print_card_info(self):
         # Name
@@ -462,16 +475,13 @@ class CreateTeam(object):
 
         self.graphics.write_text(display_string, mission_select)
 
-    def __cycle_classes(self, event):
+    def __cycle_classes(self, event):  # TODO: clean up logic
         if event.key == K_w or event.key == K_UP:
             if self.class_selected == self.top_displayed + 1:
-                if self.class_selected != 0:
-                    self.class_selected -= 1
-                if self.top_displayed != 0:
+                if self.top_displayed > 0:
                     self.top_displayed -= 1
-            else:
-                if self.class_selected != 0:
-                    self.class_selected -= 1
+            if self.class_selected > 0:
+                self.class_selected -= 1
         elif event.key == K_s or event.key == K_DOWN:
             if self.class_selected < self.top_displayed + self.max_classes_displayed - 2:
                 if self.class_selected < len(self.available_list) - 1:
@@ -757,7 +767,7 @@ class EncounterSelect(object):
                                          encounter_top),
                                         encounter_box_size)
 
-    def __draw_preview(self):  # TODO: complete
+    def __draw_preview(self):
         pygame.font.init()
         small_text = pygame.font.Font(default_font, 20)
 
@@ -818,7 +828,7 @@ class EncounterSelect(object):
 
         topCoord += name_box_size[1] + 20
 
-        # Print Enemies
+        # TODO: Print Enemies (numbers, stats, equipment, etc.)
 
     def __left_arrow(self, arrow_color, position, size):
         left_arrow = '<--'
@@ -882,10 +892,11 @@ class EncounterSelect(object):
                 if self.top_displayed + self.max_displayed < len(self.displayed_encounters):
                     self.top_displayed += 1
 
-        elif event.key == K_e or event.key == K_RETURN:  # FIXME: breaks when chosen encounter is None?
-            self.chosen_encounter = self.displayed_encounters[self.encounter_selected]
-            self.category_selected = 2
-            self.preview_encounter = True
+        elif event.key == K_e or event.key == K_RETURN:
+            if self.encounter_selected < len(self.displayed_encounters):
+                self.chosen_encounter = self.displayed_encounters[self.encounter_selected]
+                self.category_selected = 2
+                self.preview_encounter = True
 
     def __cycle_options(self, event):
         if event.key == K_d or event.key == K_RIGHT:
@@ -984,12 +995,18 @@ class BattleSimulation(object):
         self.option_selected = 0
         self.option_list = ['Hand',
                             'Passive',
-                            'Permanents',  # TODO: rename
+                            'Permanents',
                             'Player Info',
                             'End Turn']
 
-        self.info_box_height = 50
+        self.card_selected = 0
+        self.MAX_CARDS_DISPLAYED = 5
+        self.left_card_displayed = 0
+        self.passive_selected = 0
+        self.permanent_selected = 0
+        self.info_tab_selected = 0
 
+        self.info_box_height = 50
         self.action_bar_height = 150
         self.action_bar_top = window_height - self.action_bar_height
         self.side_bar_width = 200
@@ -1004,7 +1021,7 @@ class BattleSimulation(object):
             y = int(self.battle_map.starting_range / 2)
             self.position_selected = (x, y)
 
-        while True:
+        while True:  # TODO: clean up
             active_team = self.battle_phase.active_team_number
 
             for event in pygame.event.get():  # TODO: Add pause menu option
@@ -1086,6 +1103,7 @@ class BattleSimulation(object):
         elif event.key == K_RIGHT:
             self.camera_right = False
 
+    # Process User Input Functions
     def __player_input(self, event):
         unit = self.battle_phase.active_unit
         if isinstance(unit, Player):
@@ -1101,7 +1119,7 @@ class BattleSimulation(object):
             elif self.player_mode == 2:  # Action
                 self.__action_mode(event)
 
-    def __cursor_mode(self, event):  # TODO: clean up
+    def __cursor_mode(self, event):
         if event.key == K_w:  # Up
             if self.initiate:
                 if self.position_selected[1] < self.battle_map.starting_range:
@@ -1162,47 +1180,116 @@ class BattleSimulation(object):
                 self.option_selected += 1
             else:
                 self.option_selected = 0
-        elif event.key == K_d:  # Right
-            if self.option_selected == 0:
-                pass  # TODO: cycle card selected
-            elif self.option_selected == 1:
-                pass  # TODO: cycle passive button selected
-            elif self.option_selected == 2:
-                pass  # TODO: cycle enchantments
-            elif self.option_selected == 3:
-                pass  # TODO: cycle info tab
-        elif event.key == K_a:  # Left
-            if self.option_selected == 0:
-                pass  # TODO: cycle card selected
-            elif self.option_selected == 1:
-                pass  # TODO: cycle passive button selected
-            elif self.option_selected == 2:
-                pass  # TODO: cycle enchantments
-            elif self.option_selected == 3:
-                pass  # TODO: cycle info tab
-
-        elif event.key == K_e or event.key == K_RETURN:
-            if self.option_selected == 0:
-                pass  # TODO: use selected card
-            elif self.option_selected == 1:
-                pass  # TODO: use selected passive button
-            elif self.option_selected == 2:
-                pass  # TODO: use selected enchantment enchantments
-            elif self.option_selected == 3:
-                pass  # TODO: info tab action?
-            elif self.option_selected == 4:  # Pass Turn
-                self.battle_phase.active_unit.turn_ending()
-                self.battle_phase.cycle_unit()
-                if self.battle_phase.active_team_number == 0:
-                    self.position_selected = self.battle_phase.active_unit.Position
-                else:
-                    self.position_selected = self.player_team[0].Position
-                self.player_mode = 0
-                self.option_selected = 0
-
         elif event.key == K_SPACE:
             self.player_mode = 0
 
+        elif self.option_selected == 0:
+            self.__cycle_cards_in_hand(event)
+        elif self.option_selected == 1:
+            self.__cycle_passives(event)
+        elif self.option_selected == 2:
+            self.__cycle_permanents(event)
+        elif self.option_selected == 3:
+            self.__cycle_info_tab(event)
+        elif self.option_selected == 4:
+            self.__pass_turn(event)
+
+    def __pass_turn(self, event):
+        if event.key == K_e or event.key == K_RETURN:
+            self.battle_phase.active_unit.turn_ending()
+            self.battle_phase.cycle_unit()
+            if self.battle_phase.active_team_number == 0:
+                self.position_selected = self.battle_phase.active_unit.Position
+            else:
+                self.position_selected = self.player_team[0].Position
+            self.player_mode = 0
+            self.option_selected = 0
+
+    def __cycle_cards_in_hand(self, event):  # TODO: clean up logic
+        unit = self.battle_phase.active_unit
+        if isinstance(unit, Player):
+            hand = unit.Deck.hand
+
+            if self.card_selected >= len(hand):  # In case a card is played, may be redundant
+                self.card_selected = len(hand) - 1
+
+            if event.key == K_a:  # Left
+                if self.card_selected == self.left_card_displayed + 1:
+                    if self.left_card_displayed > 0:
+                        self.left_card_displayed -= 1
+                if self.card_selected > 0:
+                    self.card_selected -= 1
+
+            elif event.key == K_d:  # Right
+                if self.card_selected < self.left_card_displayed + self.MAX_CARDS_DISPLAYED - 2:
+                    if self.card_selected < len(hand) - 1:
+                        self.card_selected += 1
+                elif self.card_selected == self.left_card_displayed + self.MAX_CARDS_DISPLAYED - 1 and \
+                        self.left_card_displayed + self.MAX_CARDS_DISPLAYED != len(hand):
+                    if self.left_card_displayed + self.MAX_CARDS_DISPLAYED < len(hand):
+                        self.left_card_displayed += 1
+                else:
+                    if self.card_selected < len(hand) - 1:
+                        self.card_selected += 1
+                    if self.left_card_displayed + self.MAX_CARDS_DISPLAYED < len(hand):
+                        self.left_card_displayed += 1
+
+            elif event.key == K_e or event.key == K_RETURN:
+                pass
+
+    def __card_preview(self, event):
+        """
+        Back: go back to hand
+        Play: plays card, only available if there are valid targets
+        Displays all info
+        On Map: highlight tiles in range and valid targets
+        """
+        if event.key == K_d:  # Right
+            pass
+        elif event.key == K_a:  # Left
+            pass
+        elif event.key == K_e or event.key == K_RETURN:
+            pass
+
+    def __play_preview(self, event):
+        """
+        Calculate and display end results of card or effect being used
+        """
+        if event.key == K_d:  # Right
+            pass
+        elif event.key == K_a:  # Left
+            pass
+        elif event.key == K_e or event.key == K_RETURN:
+            pass
+
+    def __cycle_passives(self, event):  # TODO: cycle passive button selected
+        if event.key == K_d:  # Right
+            pass
+        elif event.key == K_a:  # Left
+            pass
+        elif event.key == K_e or event.key == K_RETURN:
+            pass
+
+    def __cycle_permanents(self, event):  # TODO: cycle permanents
+        if event.key == K_d:  # Right
+            pass
+        elif event.key == K_a:  # Left
+            pass
+        elif event.key == K_e or event.key == K_RETURN:
+            pass
+
+    def __cycle_info_tab(self, event):  # TODO: cycle info tab
+        # Cards/Decks Info (health, wound, scar, permanents, hand)
+        # Equipment
+        # Buffs/Debuffs Stats
+        if event.key == K_d:  # Right
+            pass
+        elif event.key == K_a:  # Left
+            pass
+        elif event.key == K_e or event.key == K_RETURN:
+            pass
+
+    # Graphics Functions
     def __draw_map(self):
         """
         Draws the map based on the tiles and their contents.
@@ -1446,16 +1533,31 @@ class BattleSimulation(object):
             pass
 
     def __draw_hand(self):
-        card_spacing = 8
-        card_side_spacing = 6
-        if isinstance(self.battle_phase.active_unit, Player):
-            hand = self.battle_phase.active_unit.Deck.hand
+        unit = self.battle_phase.active_unit
+        if isinstance(unit, Player):
+            hand = unit.Deck.hand
+
+            card_spacing = 8
+            card_side_spacing = 6
+
+            if self.MAX_CARDS_DISPLAYED <= len(hand):
+                right_number = self.MAX_CARDS_DISPLAYED
+            else:
+                right_number = len(hand)
+
+            if self.left_card_displayed + right_number > len(hand):
+                self.left_card_displayed -= 1
+
             card_size = (160, self.action_bar_height - card_spacing)
             card_y = self.action_bar_top + int(card_spacing / 2)
             card_x = 166
-            for card in hand:  # TODO: make scrollable
+            for i in range(self.left_card_displayed, self.left_card_displayed + right_number):
+                card = hand[i]
                 card_position = (card_x, card_y)
-                self.graphics.print_card(card, card_position, card_size)
+                if i == self.card_selected:
+                    self.graphics.print_card(card, card_position, card_size, True)
+                else:
+                    self.graphics.print_card(card, card_position, card_size)
                 card_x += card_size[0] + card_side_spacing
 
     def __draw_passive(self):
