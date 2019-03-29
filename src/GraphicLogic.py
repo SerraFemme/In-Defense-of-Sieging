@@ -80,12 +80,16 @@ class Graphics(object):
                          (position[0], position[1], size[0], size[1]), border_size)
         return box
 
-    def write_text(self, text, box, text_writer=small_text, surface=None):
+    def write_text(self, text, box, centered=True, text_writer=small_text, surface=None):
         text_surface, text_rect = self.__text_object(text, text_writer)
         if isinstance(box, Rect):
             text_rect.center = (box.centerx, box.centery)
         elif isinstance(box, tuple):
-            text_rect.center = (box[0], box[1])
+            if centered:
+                text_rect.center = (box[0], box[1])
+            else:
+                pass
+
         if surface is None:
             self.display_surface.blit(text_surface, text_rect)
         else:
@@ -111,7 +115,7 @@ class Graphics(object):
         text_y = position[1] + 14
         text_x = position[0] + int(size[0] / 2)
 
-        card_box = self.draw_bordered_box(box_color, position, size)
+        self.draw_bordered_box(box_color, position, size)
 
         name_text = card.Name
         self.write_text(name_text, (text_x, text_y))
@@ -134,7 +138,7 @@ class Graphics(object):
             button_box = self.draw_bordered_box(selected_color, button_position, button_size)
             self.write_text(button_text, button_box)
         else:
-            button_box = self.draw_bordered_box(unselected_color, button_position, button_size)
+            self.draw_bordered_box(unselected_color, button_position, button_size)
 
     def print_card_info(self):
         # Name
@@ -999,8 +1003,16 @@ class BattleSimulation(object):
                             'Player Info',
                             'End Turn']
 
+        self.info_list = ['Deck Info',
+                          'Equip. Info',
+                          'Aggr. Tokens']
+
+        self.card_preview = False
+        self.card = None
+
         self.card_selected = 0
-        self.MAX_CARDS_DISPLAYED = 5
+        self.card_button_selected = 0
+        self.max_cards_displayed = None
         self.left_card_displayed = 0
         self.passive_selected = 0
         self.permanent_selected = 0
@@ -1009,6 +1021,8 @@ class BattleSimulation(object):
         self.info_box_height = 50
         self.action_bar_height = 150
         self.action_bar_top = window_height - self.action_bar_height
+        self.option_box_size = (160, 30)
+
         self.side_bar_width = 200
         self.side_bar_y = window_width - self.side_bar_width
         self.side_bar_displayed = False
@@ -1048,6 +1062,8 @@ class BattleSimulation(object):
             self.graphics.display_surface.blit(mapSurf, mapSurfRect)
 
             if self.initiate is False and active_team == 0:
+                # unit = self.battle_phase.active_unit
+
                 if self.player_mode == 2:
                     self.__draw_action_bar()
                 else:
@@ -1120,6 +1136,7 @@ class BattleSimulation(object):
                 self.__action_mode(event)
 
     def __cursor_mode(self, event):
+        unit = self.battle_phase.active_unit
         if event.key == K_w:  # Up
             if self.initiate:
                 if self.position_selected[1] < self.battle_map.starting_range:
@@ -1145,11 +1162,15 @@ class BattleSimulation(object):
                     self.battle_phase.set_unit(0)
                     self.position_selected = self.battle_phase.active_unit.Position
                     self.battle_phase.active_unit.turn_beginning()
+                    self.player_mode = 2
 
         elif event.key == K_SPACE:
             if self.initiate is False:
-                self.player_mode = 1
-                self.position_selected = self.battle_phase.active_unit.Position
+                if unit.mulligan_phase is False and unit.discard_phase is False:
+                    self.player_mode = 1
+                    self.position_selected = unit.Position
+                else:
+                    self.player_mode = 2
 
     def __movement_cursor(self, event):
         player = self.battle_phase.active_unit
@@ -1170,6 +1191,8 @@ class BattleSimulation(object):
             self.player_mode = 2
 
     def __action_mode(self, event):
+        unit = self.battle_phase.active_unit
+
         if event.key == K_w:  # Up
             if self.option_selected > 0:
                 self.option_selected -= 1
@@ -1184,7 +1207,10 @@ class BattleSimulation(object):
             self.player_mode = 0
 
         elif self.option_selected == 0:
-            self.__cycle_cards_in_hand(event)
+            if self.card_preview:
+                self.__card_preview_input(event)
+            else:
+                self.__cycle_cards_in_hand(event)
         elif self.option_selected == 1:
             self.__cycle_passives(event)
         elif self.option_selected == 2:
@@ -1192,7 +1218,14 @@ class BattleSimulation(object):
         elif self.option_selected == 3:
             self.__cycle_info_tab(event)
         elif self.option_selected == 4:
-            self.__pass_turn(event)
+            if unit.mulligan_phase is False and unit.discard_phase is False:
+                self.__pass_turn(event)
+                self.player_mode = 2
+                self.option_selected = 0
+            else:
+                if unit.mulligan_phase is True:
+                    unit.upkeep()
+                    self.option_selected = 0
 
     def __pass_turn(self, event):
         if event.key == K_e or event.key == K_RETURN:
@@ -1210,9 +1243,6 @@ class BattleSimulation(object):
         if isinstance(unit, Player):
             hand = unit.Deck.hand
 
-            if self.card_selected >= len(hand):  # In case a card is played, may be redundant
-                self.card_selected = len(hand) - 1
-
             if event.key == K_a:  # Left
                 if self.card_selected == self.left_card_displayed + 1:
                     if self.left_card_displayed > 0:
@@ -1221,35 +1251,55 @@ class BattleSimulation(object):
                     self.card_selected -= 1
 
             elif event.key == K_d:  # Right
-                if self.card_selected < self.left_card_displayed + self.MAX_CARDS_DISPLAYED - 2:
+                if self.card_selected < self.left_card_displayed + self.max_cards_displayed - 2:
                     if self.card_selected < len(hand) - 1:
                         self.card_selected += 1
-                elif self.card_selected == self.left_card_displayed + self.MAX_CARDS_DISPLAYED - 1 and \
-                        self.left_card_displayed + self.MAX_CARDS_DISPLAYED != len(hand):
-                    if self.left_card_displayed + self.MAX_CARDS_DISPLAYED < len(hand):
+                elif self.card_selected == self.left_card_displayed + self.max_cards_displayed - 1 and \
+                        self.left_card_displayed + self.max_cards_displayed != len(hand):
+                    if self.left_card_displayed + self.max_cards_displayed < len(hand):
                         self.left_card_displayed += 1
                 else:
                     if self.card_selected < len(hand) - 1:
                         self.card_selected += 1
-                    if self.left_card_displayed + self.MAX_CARDS_DISPLAYED < len(hand):
+                    if self.left_card_displayed + self.max_cards_displayed < len(hand):
                         self.left_card_displayed += 1
 
             elif event.key == K_e or event.key == K_RETURN:
-                pass
+                self.card = hand[self.card_selected]
+                self.card_preview = True
 
-    def __card_preview(self, event):
+    def __card_preview_input(self, event):
         """
         Back: go back to hand
         Play: plays card, only available if there are valid targets
         Displays all info
         On Map: highlight tiles in range and valid targets
         """
-        if event.key == K_d:  # Right
-            pass
-        elif event.key == K_a:  # Left
-            pass
+        unit = self.battle_phase.active_unit
+        hand = unit.Deck.hand
+
+        if event.key == K_a:  # Right
+            self.card_button_selected = 0
+        elif event.key == K_d:  # Left
+            self.card_button_selected = 1
+
         elif event.key == K_e or event.key == K_RETURN:
-            pass
+            if self.card_button_selected == 0:  # Back
+                self.card_preview = False
+                self.card = None
+            elif self.card_button_selected == 1:  # Play/Discard
+                if unit.mulligan_phase is False and unit.discard_phase is False:
+                    pass  # Play
+                elif unit.mulligan_phase is True:  # Mulligan
+                    unit.Deck.mulligan_card(self.card_selected)
+                    self.card = None
+                    self.card_preview = False
+                    self.card_button_selected = 0
+                elif unit.discard_phase is True:  # Discard
+                    unit.Deck.discard(self.card_selected)
+
+                if self.card_selected >= len(hand):  # In case a card is played, may be redundant
+                    self.card_selected = len(hand) - 1
 
     def __play_preview(self, event):
         """
@@ -1279,13 +1329,13 @@ class BattleSimulation(object):
             pass
 
     def __cycle_info_tab(self, event):  # TODO: cycle info tab
-        # Cards/Decks Info (health, wound, scar, permanents, hand)
-        # Equipment
-        # Buffs/Debuffs Stats
-        if event.key == K_d:  # Right
-            pass
-        elif event.key == K_a:  # Left
-            pass
+        if event.key == K_a:  # Left
+            if self.info_tab_selected > 0:
+                self.info_tab_selected -= 1
+        elif event.key == K_d:  # Right
+            if self.info_tab_selected < len(self.info_list) - 1:
+                self.info_tab_selected += 1
+
         elif event.key == K_e or event.key == K_RETURN:
             pass
 
@@ -1313,6 +1363,8 @@ class BattleSimulation(object):
                 tile_image = self.image_dict[terrain_type]
 
                 mapSurf.blit(tile_image, spaceRect)
+
+                # TODO: display tiles in range
 
                 if self.initiate and tile.coordinate[1] <= self.battle_map.starting_range:
                     if tile.unit is None:  # Tile Empty
@@ -1343,10 +1395,10 @@ class BattleSimulation(object):
 
                 if tile.unit is not None:  # Draw Unit Icon
                     if tile.unit != 'Invalid':
-                        text = icon_text
+                        text_font = icon_text
                         if isinstance(tile.unit, Player):
                             mapSurf.blit(self.image_dict['player_token'], spaceRect)
-                            text = small_text
+                            text_font = small_text
                             if self.initiate is False and tile.unit.Player_Number \
                                     == self.battle_phase.active_unit_number + 1:
                                 mapSurf.blit(self.image_dict['active_player'], spaceRect)
@@ -1358,11 +1410,11 @@ class BattleSimulation(object):
                                 mapSurf.blit(self.image_dict['elite_token'], spaceRect)
                             if self.initiate is False and tile.unit == self.battle_phase.active_unit:
                                 mapSurf.blit(self.image_dict['active_player'], spaceRect)
-                        self.graphics.write_text(tile.unit.Icon, spaceRect, text, mapSurf)
+                        self.graphics.write_text(tile.unit.Icon, spaceRect, True, text_font, mapSurf)
 
         return mapSurf
 
-    def __draw_title(self):
+    def __draw_title(self):  # TODO: display if mulligan step
         topCoord = 0
         box_color = green_yellow
         boxes = None
@@ -1385,6 +1437,12 @@ class BattleSimulation(object):
                 elif self.player_mode == 2:  # Action Mode
                     boxes = [{'text': 'Mode: Action',
                               'size': (150, 30)}]
+                if unit.mulligan_phase is True:
+                    boxes.insert(0, {'text': 'Mulligan Phase',
+                                     'size': (180, 30)})
+                elif unit.discard_phase is True:
+                    boxes.insert(0, {'text': 'Discard Phase',
+                                     'size': (180, 30)})
                 boxes.insert(0, {'text': unit.Full_Name,
                                  'size': (180, 30)})
 
@@ -1443,7 +1501,7 @@ class BattleSimulation(object):
         cards_x = armor_value_x + 60
         cards_value_x = cards_x + 60
 
-        # Health
+        # Health: Fraction
         text = 'Health:'
         self.graphics.write_text(text, (health_x, info_box.centery))
 
@@ -1455,7 +1513,7 @@ class BattleSimulation(object):
             text = str(unit.Health_Points)
             self.graphics.write_text(text, (health_value_x, info_box.centery))
 
-        # Stamina
+        # Stamina: Fraction
         text = 'Stamina:'
         self.graphics.write_text(text, (stamina_x, info_box.centery))
 
@@ -1485,14 +1543,17 @@ class BattleSimulation(object):
         self.graphics.write_text(str(armor_number), (armor_value_x, info_box.centery))
 
         if isinstance(unit, Player):
-            # Number of Cards in Hand
+            # Number of Cards in Hand: Fraction
             text = 'Cards:'
             self.graphics.write_text(text, (cards_x, info_box.centery))
 
             cards_number = unit.Deck.current_hand_size()
-            self.graphics.write_text(str(cards_number), (cards_value_x, info_box.centery))
+            hand_size = unit.Deck.hand_size
+            self.graphics.write_fraction(cards_number, hand_size, (cards_value_x, info_box.centery))
 
     def __draw_action_bar(self):
+        unit = self.battle_phase.active_unit
+
         action_bar_color = light_grey
         action_bar_size = (window_width, self.action_bar_height)
         action_bar_center = (int(action_bar_size[0] / 2), int(action_bar_size[1] / 2))
@@ -1505,20 +1566,27 @@ class BattleSimulation(object):
         if self.option_selected != 3:  # If not player info selected
             self.__draw_unit_info(self.action_bar_top)
 
-        option_box_size = (160, 30)
-        option_box_center = (int(option_box_size[0] / 2), int(option_box_size[1] / 2))
+        option_box_center = (int(self.option_box_size[0] / 2), int(self.option_box_size[1] / 2))
         option_coordinate = self.action_bar_top
-        for option in self.option_list:
-            if option == self.option_list[self.option_selected]:
+
+        for i in range(len(self.option_list)):
+            if i == self.option_selected:
                 action_color = selected_color
             else:
                 action_color = unselected_color
-            action_box = self.graphics.draw_bordered_box(action_color, (0, option_coordinate), option_box_size)
-            self.graphics.write_text(option, action_box)
-            option_coordinate += option_box_size[1]
+
+            action_box = self.graphics.draw_bordered_box(action_color, (0, option_coordinate), self.option_box_size)
+            text = self.option_list[i]
+            if unit.mulligan_phase is True and i == len(self.option_list) - 1:
+                text = 'End Mulligan'
+            self.graphics.write_text(text, action_box)
+            option_coordinate += self.option_box_size[1]
 
         if self.option_selected == 0:  # TODO: print cards to screen when hand selected
-            self.__draw_hand()
+            if self.card_preview:
+                self.__draw_card_preview()
+            else:
+                self.__draw_hand()
 
         elif self.option_selected == 1:  # TODO: print passive to screen
             self.__draw_passive()
@@ -1533,24 +1601,28 @@ class BattleSimulation(object):
             pass
 
     def __draw_hand(self):
+        card_spacing = 8
+        card_side_spacing = 6
+        card_size = (160, self.action_bar_height - card_spacing)
+        card_y = self.action_bar_top + int(card_spacing / 2)
+        card_x = self.option_box_size[0] + 6
+
+        if self.max_cards_displayed is None:
+            value = window_width - card_x
+            self.max_cards_displayed = int(value / (card_size[0] + card_side_spacing))
+
         unit = self.battle_phase.active_unit
         if isinstance(unit, Player):
             hand = unit.Deck.hand
 
-            card_spacing = 8
-            card_side_spacing = 6
-
-            if self.MAX_CARDS_DISPLAYED <= len(hand):
-                right_number = self.MAX_CARDS_DISPLAYED
+            if self.max_cards_displayed <= len(hand):
+                right_number = self.max_cards_displayed
             else:
                 right_number = len(hand)
 
             if self.left_card_displayed + right_number > len(hand):
                 self.left_card_displayed -= 1
 
-            card_size = (160, self.action_bar_height - card_spacing)
-            card_y = self.action_bar_top + int(card_spacing / 2)
-            card_x = 166
             for i in range(self.left_card_displayed, self.left_card_displayed + right_number):
                 card = hand[i]
                 card_position = (card_x, card_y)
@@ -1559,6 +1631,96 @@ class BattleSimulation(object):
                 else:
                     self.graphics.print_card(card, card_position, card_size)
                 card_x += card_size[0] + card_side_spacing
+
+    def __draw_card_preview(self):
+        unit = self.battle_phase.active_unit
+
+        display_x = self.option_box_size[0] + 4
+        display_center_x = window_width_half + int(self.option_box_size[0] / 2)
+        info_display_y = self.action_bar_top + 12
+
+        # Buttons
+        back_button_x = self.option_box_size[0] + 6
+        back_button_y = self.action_bar_top + 4
+        back_button_size = (120, 20)
+        back_text = 'Back'
+
+        if self.card_button_selected == 0:
+            back_button_color = selected_color
+        else:
+            back_button_color = unselected_color
+
+        back_box = self.graphics.draw_bordered_box(back_button_color, (back_button_x, back_button_y), back_button_size)
+        self.graphics.write_text(back_text, back_box)
+
+        # Play/Discard Button
+        play_button_x = window_width - self.option_box_size[0] - 6
+        play_button_y = self.action_bar_top + 4
+        play_button_size = (120, 20)
+
+        if unit.mulligan_phase is False and unit.discard_phase is False:
+            play_text = 'Play'
+        else:
+            play_text = 'Discard'
+
+        if self.card_button_selected == 1:
+            play_button_color = selected_color
+        else:
+            play_button_color = unselected_color
+
+        play_box = self.graphics.draw_bordered_box(play_button_color, (play_button_x, play_button_y), play_button_size)
+        self.graphics.write_text(play_text, play_box)
+
+        # Card Info
+        text_list = []
+
+        line_1 = self.card.Name + ': ' + self.card.Faction_Type + ' ' + self.card.Card_Type
+        text_list.append(line_1)
+
+        if 'Requirement' in self.card.features:
+            line_2 = 'Requirement: ' + self.card.features['Requirement']
+            text_list.append(line_2)
+
+        line_3 = None
+        line_4 = None
+
+        if 'Stamina_Cost' in self.card.features:
+            line_3 = 'Stamina Cost: ' + str(self.card.features['Stamina_Cost'])
+
+        if 'Scar_Cost' in self.card.features:
+            line_4 = 'Scar Cost: ' + str(self.card.features['Scar_Cost'])
+
+        if line_3 is not None and line_4 is not None:
+           cost_text = line_3 + '    ' + line_4
+           text_list.append(cost_text)
+        else:
+            if line_3 is not None:
+                text_list.append(line_3)
+            elif line_4 is not None:
+                text_list.append(line_4)
+
+        if 'Range' in self.card.features:
+            range_dict = self.card.get_range(unit.Bonus_Range.value)
+            if range_dict['Min'] == range_dict['Max']:
+                line_5 = 'Range: ' + str(range_dict['Min'])
+            else:
+                line_5 = 'Range: ' + str(range_dict['Min']) + '-' + str(range_dict['Max'])
+            if range_dict['Restriction'] is not None:
+                range_text = line_5 + ' ' + range_dict['Restriction']
+                text_list.append(range_text)
+            else:
+                text_list.append(line_5)
+
+        if 'Trigger_Text' in self.card.features:
+            line_6 = 'Trigger: ' + self.card.features['Trigger_Text']
+            text_list.append(line_6)
+
+        line_7 = self.card.Text
+        text_list.append(line_7)
+
+        for i in range(len(text_list)):
+            self.graphics.write_text(text_list[i], (display_center_x, info_display_y))
+            info_display_y += 20
 
     def __draw_passive(self):
         # TODO: print class passive, either text, bonuses given, and/or buttons
@@ -1569,11 +1731,97 @@ class BattleSimulation(object):
         pass
 
     def __draw_information_tabs(self):
-        # TODO: draw full character info divided into multiple tabs
-        # Deck sizes and hand size
-        # Equipment breakdown
-        # List aggression tokens
-        pass
+        info_tab_size = (180, 30)
+        info_position_x = self.option_box_size[0] + 10
+        info_position_y = self.action_bar_top + 4
+
+        for i in range(len(self.info_list)):
+            text = self.info_list[i]
+            if i == self.info_tab_selected:
+                info_color = selected_color
+            else:
+                info_color = unselected_color
+            info_box = self.graphics.draw_bordered_box(info_color,
+                                                       (info_position_x, info_position_y),
+                                                       info_tab_size)
+            self.graphics.write_text(text, info_box)
+
+            info_position_x += info_tab_size[0] + 10
+
+        if self.info_tab_selected == 0:
+            y = info_position_y + info_tab_size[1]
+            self.__deck_info_tab(y)
+        elif self.info_tab_selected == 1:
+            self.__equipment_info_tab()
+        elif self.info_tab_selected == 2:
+            self.__AT_info_tab()
+
+    def __deck_info_tab(self, info_display_y):
+        unit = self.battle_phase.active_unit
+
+        display_x = self.option_box_size[0] + 4
+        display_center_x = window_width_half + int(self.option_box_size[0] / 2)
+        info_display_y += 20
+
+        text_list = []
+
+        if isinstance(unit, Player):
+            # Deck Size
+            deck_size = unit.Deck.total_owned()
+            deck_text = 'Deck: ' + str(deck_size)
+
+            # Scar
+            scar_size = unit.Deck.current_scars()
+            scar_text = 'Scars: ' + str(scar_size)
+
+            line_1 = deck_text + '    ' + scar_text
+            text_list.append(line_1)
+
+            # Health
+            health_size = unit.Deck.current_health()
+            health_text = 'Health: ' + str(health_size)
+
+            # Wound
+            wound_size = unit.Deck.current_wounds()
+            wound_text = 'Wounds: ' + str(wound_size)
+
+            line_2 = health_text + '    ' + wound_text
+            text_list.append(line_2)
+
+            # Permanents
+            permanents_size = unit.Deck.current_permanents()
+            permanents_text = 'Permanents: ' + str(permanents_size)
+            text_list.append(permanents_text)
+
+            # Hand Size
+            hand_size = unit.Deck.hand_size
+            hand_text = 'Hand Size: ' + str(hand_size)
+
+            # Cards in Hand
+            cards_size = unit.Deck.current_hand_size()
+            cards_text = 'Cards in Hand: ' + str(cards_size)
+
+            line_4 = hand_text + '    ' + cards_text
+            text_list.append(line_4)
+
+            for i in text_list:  # TODO: print text on left side instead of centered
+                self.graphics.write_text(i, (display_center_x, info_display_y))
+                info_display_y += 20
+
+    def __equipment_info_tab(self):
+        """
+        Displays player's equipment.
+        Players are only allowed up to 3 equipment (weapon, shield, and armor).
+        Players will always have at least a weapon.
+        """
+        unit = self.battle_phase.active_unit
+        if isinstance(unit, Player):
+            pass
+
+    def __AT_info_tab(self):
+        unit = self.battle_phase.active_unit
+        if isinstance(unit, Player):
+            pass
 
     def __draw_tile_info_bar(self, mapSurf):
         info_bar_color = light_grey

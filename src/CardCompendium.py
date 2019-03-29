@@ -11,7 +11,7 @@ class CardMaker(object):
     from CardLibrary.json.
     """
 
-    def __init__(self, card):  # TODO: Rework, implement dictionary for 'features'
+    def __init__(self, card):
         self.ID = card['ID']
         self.Faction_Type = card['Faction_Type']
         self.Card_Type = card['Card_Type']
@@ -130,6 +130,12 @@ class PlayerDeck(object):
     def current_wounds(self):
         return len(self.wound_pile)
 
+    def current_scars(self):
+        return len(self.scar_pile)
+
+    def current_permanents(self):
+        return len(self.permanents)
+
     def current_hand_size(self):
         return len(self.hand)
 
@@ -183,14 +189,20 @@ class PlayerDeck(object):
                 card = self.get_top_card(self.health_deck)
                 self.hand.append(card)
 
+    def draw_hand(self):
+        draw_number = self.hand_size - len(self.hand)
+        if draw_number > 0:
+            self.draw(draw_number)
+
     def discard(self, value):  # Discards a single card at index value in hand
         self.wound_pile.append(self.hand.pop(value))
 
     def put_card_into_hand(self, card):
         self.hand.append(card)
 
-    def mulligan(self):
-        # TODO: discard selected cards
-        draw_number = self.hand_size - len(self.hand)
-        if draw_number > 0:
-            self.draw(draw_number)
+    def end_mulligan(self):
+        self.draw_hand()
+
+    def mulligan_card(self, value):
+        card = self.hand.pop(value)
+        self.put_card_on_bottom(self.health_deck, card)

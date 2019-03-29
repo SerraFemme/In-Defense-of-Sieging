@@ -84,6 +84,7 @@ class BattlePhase(object):
                 player = self.player_team[self.active_unit_number]
                 tile.unit = player
                 player.Position = position_selected
+                player.Deck.draw_hand()
                 if self.active_unit_number < len(self.player_team):
                     initiate = True
                 self.cycle_unit(True)

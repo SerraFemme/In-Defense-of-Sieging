@@ -26,6 +26,8 @@ class Player(object):
         self.Bonus_Range = StatTracker()
         self.HandSize = StatTracker(selected_class['Hand_Size'])
         self.Deck = None
+        self.mulligan_phase = False
+        self.discard_phase = False
         self.Equipment = []  # Restrict to 3 items
         self.Abilities = None  # Stores passives and other misc abilities
         # TODO: convert Stats to a dict
@@ -37,11 +39,16 @@ class Player(object):
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()
-        self.Deck.mulligan()
-        # upkeep
+        self.mulligan_phase = True
+
+    def upkeep(self):
+        self.Deck.end_mulligan()
+        self.mulligan_phase = False
+        # upkeep step
 
     def turn_ending(self):
         # end step effects
+        # self.discard_phase = True
         # discard step
         pass
 
@@ -118,7 +125,11 @@ class Enemy(object):
 
     def turn_beginning(self):
         self.Stamina.reset_stamina_points()
+        self.upkeep()
+
+    def upkeep(self):
         # upkeep
+        pass
 
     def turn_ending(self):
         # end step effects
