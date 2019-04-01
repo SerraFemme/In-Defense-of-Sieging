@@ -962,7 +962,7 @@ class BattleSimulation(object):
         self.terrain_list = SubListManager(graphics.master_list.get_list('Terrain'))
         self.player_team = player_team
         self.enemy_team = enemy_team
-        self.battle_map = MapManager(self.terrain_list)
+        self.battle_map = MapManager(self.terrain_list, self.player_team, self.enemy_team)
         self.map_size = self.battle_map.map_size
         self.battle_phase = BattlePhase(player_team, enemy_team, self.battle_map)
         self.enemy_turn = EnemyTurn(self.battle_map, self.player_team)
@@ -1009,6 +1009,7 @@ class BattleSimulation(object):
 
         self.card_preview = False
         self.card = None
+        self.positions_in_range = None
 
         self.card_selected = 0
         self.card_button_selected = 0
@@ -1267,6 +1268,10 @@ class BattleSimulation(object):
             elif event.key == K_e or event.key == K_RETURN:
                 self.card = hand[self.card_selected]
                 self.card_preview = True
+                bonus_range = unit.Bonus_Range.value
+                card_range = self.card.get_range(bonus_range)
+                if card_range is not None:
+                    self.positions_in_range = self.battle_map.calculate_range(unit.Position, card_range)
 
     def __card_preview_input(self, event):
         """
@@ -1287,6 +1292,7 @@ class BattleSimulation(object):
             if self.card_button_selected == 0:  # Back
                 self.card_preview = False
                 self.card = None
+                self.positions_in_range = None
             elif self.card_button_selected == 1:  # Play/Discard
                 if unit.mulligan_phase is False and unit.discard_phase is False:
                     pass  # Play
@@ -1364,7 +1370,7 @@ class BattleSimulation(object):
 
                 mapSurf.blit(tile_image, spaceRect)
 
-                # TODO: display tiles in range
+                unit = self.battle_phase.active_unit
 
                 if self.initiate and tile.coordinate[1] <= self.battle_map.starting_range:
                     if tile.unit is None:  # Tile Empty
@@ -1388,6 +1394,12 @@ class BattleSimulation(object):
                                     mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
                             else:  # Tile Occupied
                                 mapSurf.blit(self.image_dict['invalid_move_tile'], spaceRect)
+
+                elif isinstance(unit, Player) and self.card_preview:  # Display tiles in range
+                    if self.positions_in_range is not None:  # TODO: display tiles in range
+                        for position in self.positions_in_range:
+                            if tile.coordinate == position:
+                                mapSurf.blit(self.image_dict['valid_move_tile'], spaceRect)
 
                 if self.position_selected is not None and self.player_mode != 2:  # Draw Cursor
                     if self.position_selected[0] == x and self.position_selected[1] == y:
@@ -1415,6 +1427,13 @@ class BattleSimulation(object):
         return mapSurf
 
     def __draw_title(self):  # TODO: display if mulligan step
+        """
+        Draws the various titles of the current state of the game
+        -Active team and turn counter
+        -Active unit
+        -Current phase (if applicable)
+        -Current player mode
+        """
         topCoord = 0
         box_color = green_yellow
         boxes = None
@@ -1472,6 +1491,9 @@ class BattleSimulation(object):
             topCoord += size[1] + 5
 
     def __draw_unit_info(self, top_coordinate=None):  # TODO: Clean Up
+        """
+        Draws info bar for active unit at the bottom of the screen
+        """
         unit = self.battle_phase.active_unit
 
         if top_coordinate is None:
@@ -1552,6 +1574,9 @@ class BattleSimulation(object):
             self.graphics.write_fraction(cards_number, hand_size, (cards_value_x, info_box.centery))
 
     def __draw_action_bar(self):
+        """
+        Draws the action bar for the player at the bottom of the screen
+        """
         unit = self.battle_phase.active_unit
 
         action_bar_color = light_grey
@@ -1582,19 +1607,19 @@ class BattleSimulation(object):
             self.graphics.write_text(text, action_box)
             option_coordinate += self.option_box_size[1]
 
-        if self.option_selected == 0:  # TODO: print cards to screen when hand selected
+        if self.option_selected == 0:
             if self.card_preview:
                 self.__draw_card_preview()
             else:
                 self.__draw_hand()
 
-        elif self.option_selected == 1:  # TODO: print passive to screen
+        elif self.option_selected == 1:
             self.__draw_passive()
 
-        elif self.option_selected == 2:  # TODO: print enchantments when selected
+        elif self.option_selected == 2:
             self.__draw_permanents()
 
-        elif self.option_selected == 3:  # TODO: print info tabs and info when selected
+        elif self.option_selected == 3:
             self.__draw_information_tabs()
 
         elif self.option_selected == 4:  # TODO: print "end of turn" effects
@@ -1731,6 +1756,9 @@ class BattleSimulation(object):
         pass
 
     def __draw_information_tabs(self):
+        """
+        Draws the information tabs of the player info option of the action bar
+        """
         info_tab_size = (180, 30)
         info_position_x = self.option_box_size[0] + 10
         info_position_y = self.action_bar_top + 4
@@ -1757,6 +1785,9 @@ class BattleSimulation(object):
             self.__AT_info_tab()
 
     def __deck_info_tab(self, info_display_y):
+        """
+        Displays the full deck information of the active player
+        """
         unit = self.battle_phase.active_unit
 
         display_x = self.option_box_size[0] + 4
@@ -1819,11 +1850,18 @@ class BattleSimulation(object):
             pass
 
     def __AT_info_tab(self):
+        """
+        Incomplete
+        Will display the full Elite list and their targets
+        """
         unit = self.battle_phase.active_unit
         if isinstance(unit, Player):
             pass
 
     def __draw_tile_info_bar(self, mapSurf):
+        """
+        Draws the tile info bar on the right side of the screen
+        """
         info_bar_color = light_grey
         text = 'Tile Info'
         title_y = 12
